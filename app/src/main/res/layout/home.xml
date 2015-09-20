@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  >
+  <ImageView
+    android:id="@+id/scan_barcode"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    android:layout_marginTop="20dp"
+    android:background="@color/gray"
+    android:src="@drawable/nav_icon_scan_nor"
+    />
+  <EditText
+    android:id="@+id/input_barcode"
+    android:padding="10dp"
+    android:layout_width="wrap_content"
+    android:hint="请输入二维码"
+    android:layout_centerHorizontal="true"
+    android:layout_above="@id/scan_barcode"
+    android:textColorHint="@color/gray"
+    android:layout_height="wrap_content"
+    />
+</RelativeLayout>
