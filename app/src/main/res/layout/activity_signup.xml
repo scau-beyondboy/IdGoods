@@ -1,0 +1,51 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="250dp">
+
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/iconx" />
+    </RelativeLayout>
+
+    <EditText
+        android:hint="请输入用户名"
+        android:id="@+id/et_name"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:drawableLeft="@drawable/loginuserx"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:hint="请输入密码"
+        android:id="@+id/et_password"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:drawableLeft="@drawable/loginpasswordx"
+        android:inputType="textPassword" />
+
+    <EditText
+        android:hint="请再次输入密码"
+        android:id="@+id/et_passworde2"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:drawableLeft="@drawable/loginpasswordx"
+        android:inputType="number" />
+    <Button
+        android:id="@+id/btn_signup"
+        android:layout_marginTop="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="注册"
+        android:background="@drawable/buttonselector"/>
+</LinearLayout>
