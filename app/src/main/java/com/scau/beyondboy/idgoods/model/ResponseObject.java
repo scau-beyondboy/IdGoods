@@ -9,8 +9,8 @@ package com.scau.beyondboy.idgoods.model;
  */
 public class ResponseObject<T>
 {
-    private int result;
     private T data;
+    private int result;
 
     public int getResult()
     {

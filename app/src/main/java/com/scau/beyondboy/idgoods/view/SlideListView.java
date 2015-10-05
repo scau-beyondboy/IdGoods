@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Scroller;
@@ -49,6 +50,8 @@ public class SlideListView extends ListView
      */
     private Scroller scroller;
     private static final int SNAP_VELOCITY =1500;
+    /**点击item位置*/
+    private int clickPosition=-1;
      /**速度追踪对象*/
     private VelocityTracker velocityTracker;
     /**
@@ -95,6 +98,9 @@ public class SlideListView extends ListView
                 // 假如scroller滚动还没有结束或删除按钮显示，我们直接返回
                 if (!scroller.isFinished()||isDeleteShown)
                 {
+                    //屏蔽onItem的发生
+                    ((ViewGroup)itemView).setDescendantFocusability(FOCUS_AFTER_DESCENDANTS);
+                    clickPosition=pointToPosition((int)event.getX(),(int)event.getY());
                     return super.dispatchTouchEvent(event);
                 }
                 downX = (int) event.getX();
@@ -107,6 +113,8 @@ public class SlideListView extends ListView
                 }
                 // 获取我们点击的item view
                 itemView = getChildAt(slidePosition - getFirstVisiblePosition());
+                //恢复onItem发生
+                ((ViewGroup)itemView).setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
                 break;
             }
             case MotionEvent.ACTION_MOVE:
@@ -120,8 +128,8 @@ public class SlideListView extends ListView
                 break;
             }
             case MotionEvent.ACTION_UP:
-                //按钮显示时，使其恢复原位置
-                if(isDeleteShown==true&&scroller.isFinished())
+                //按钮显示时,且点击删除按钮那一项时，使其恢复原位置
+                if(isDeleteShown==true&&scroller.isFinished()&&clickPosition==slidePosition)
                 {
                     itemView.scrollTo(0, 0);
                     invalidate();

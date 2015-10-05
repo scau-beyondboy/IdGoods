@@ -11,8 +11,8 @@ import java.util.List;
  */
 public class TimeProductBean
 {
-    public List<ProductBean> beanList;
-    public String dateTime;
+    private List<ProductBean> beanList;
+    private String dateTime;
 
     public String getDateTime()
     {

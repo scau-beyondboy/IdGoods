@@ -3,26 +3,27 @@ package com.scau.beyondboy.idgoods.model;
 /**
  * Author:beyondboy
  * Gmail:xuguoli.scau@gmail.com
- * Date: 2015-10-03
- * Time: 00:49
- * 产品实体
+ * Date: 2015-10-06
+ * Time: 01:03
+ * 用户详情界面
  */
-public class ProductBean
+public class ProductInfo
 {
-    private String name;
-    private String advertisementPhoto;
     private String advertisementName;
+    private String advertisementPhoto;
+    private int discount;
+    private String name;
     private String serialNumber;
-    private String dateTime;
+    private String time;
 
-    public String getDateTime()
+    public int getDiscount()
     {
-        return dateTime;
+        return discount;
     }
 
-    public void setDateTime(String dateTime)
+    public void setDiscount(int discount)
     {
-        this.dateTime = dateTime;
+        this.discount = discount;
     }
 
     public String getName()
@@ -65,9 +66,14 @@ public class ProductBean
         this.serialNumber = serialNumber;
     }
 
-    @Override
-    public String toString()
+    public String getTime()
     {
-        return String.format("{\"name\":\"%s\",\"advertisementPhoto\":\"%s\",\"advertisementName\":\"%s\",\"serialNumber\":\"%s\"}",name,advertisementPhoto,advertisementName,serialNumber);
+        return time;
     }
+
+    public void setTime(String time)
+    {
+        this.time = time;
+    }
+
 }

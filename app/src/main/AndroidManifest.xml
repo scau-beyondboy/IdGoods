@@ -29,7 +29,10 @@
           android:theme="@style/zxing_CaptureTheme"
           android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
-
+        <activity android:name=".ProductDetailActivity"
+          android:screenOrientation="portrait"
+          android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+          />
     </application>
 
 </manifest>
