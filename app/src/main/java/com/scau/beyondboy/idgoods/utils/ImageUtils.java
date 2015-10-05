@@ -1,11 +1,14 @@
 package com.scau.beyondboy.idgoods.utils;
 
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 
@@ -18,6 +21,8 @@ import java.lang.reflect.Field;
  */
 public class ImageUtils
 {
+    private static final String TAG = ImageSize.class.getName();
+
     /**
      * 根据InputStream获取图片实际的宽度和高度
      * @param imageStream 图片流
@@ -51,6 +56,34 @@ public class ImageUtils
         }
     }
 
+    /**
+     * 压缩图片，返回压缩过的图片
+     * @param imageView 显示图片组件
+     * @param bitmapBytes 实际图片字节
+     */
+    public static Bitmap compressBitmap(final ImageView imageView,byte[] bitmapBytes)
+    {
+        DisplayMetrics displayMetrics = imageView.getContext().getResources().getDisplayMetrics();
+        ImageSize  targetSize=getImageViewSize(imageView);
+        ImageSize srcSize=getBytesImageSize(bitmapBytes);
+        int inSampleSize=calculateInSampleSize(srcSize,targetSize);
+        BitmapFactory.Options ops = new BitmapFactory.Options();
+        ops.inDensity=displayMetrics.densityDpi;
+        ops.inTargetDensity=displayMetrics.densityDpi;
+        ops.inJustDecodeBounds = false;
+        ops.inSampleSize = inSampleSize;
+        Log.i(TAG,"压缩比例：  "+inSampleSize);
+        return BitmapFactory.decodeByteArray(bitmapBytes,0,bitmapBytes.length, ops);
+    }
+
+    /**通过字节获取图片实际尺寸*/
+    private static ImageSize getBytesImageSize(byte[] bitmapBites)
+    {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds =true;
+        BitmapFactory.decodeByteArray(bitmapBites,0,bitmapBites.length,options);
+        return new ImageSize(options.outWidth, options.outHeight);
+    }
     /**
      * 计算图片压缩比例
      * @param srcSize 原图片尺寸
@@ -163,9 +196,17 @@ public class ImageUtils
                     .getDisplayMetrics();
             height = displayMetrics.heightPixels;
         }
+        Log.i(TAG,"组件高度："+height );
         return height;
     }
 
+    public static ImageSize getBitmapSize(Bitmap bitmap)
+    {
+        ImageSize bitmapSize=new ImageSize();
+        bitmapSize.height=bitmap.getHeight();
+        bitmapSize.width=bitmap.getWidth();
+        return  bitmapSize;
+    }
     /**
      * 根据view获得期望的宽度
      * @param view 图片组件
@@ -199,6 +240,7 @@ public class ImageUtils
                     .getDisplayMetrics();
             width = displayMetrics.widthPixels;
         }
+        Log.i(TAG,"组件宽度："+width );
         return width;
     }
 
@@ -225,5 +267,22 @@ public class ImageUtils
         {
         }
         return value;
+    }
+
+    /**获取输出流字节*/
+    public static byte[] readStream(InputStream inStream) throws Exception
+    {
+        byte[] buffer = new byte[1024];
+        int len = -1;
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        while ((len = inStream.read(buffer)) != -1)
+        {
+            outStream.write(buffer, 0, len);
+        }
+        byte[] data = outStream.toByteArray();
+        outStream.close();
+        inStream.close();
+        return data;
+
     }
 }

@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.IntegerRes;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.google.gson.Gson;
@@ -43,6 +44,7 @@ import java.util.Set;
  */
 public class OkHttpNetWorkUtil
 {
+    private static final String TAG = OkHttpNetWorkUtil.class.getName();
     private static OkHttpNetWorkUtil mInstance;
     private OkHttpClient mOkHttpClient;
     private Handler mDelivery;
@@ -585,6 +587,7 @@ public class OkHttpNetWorkUtil
                 try
                 {
                     final String string = response.body().string();
+                    Log.i(TAG,"响应内容：  "+string );
                     if (callback.mType == String.class)
                     {
                         sendSuccessResultCallback(string, callback);
@@ -608,7 +611,7 @@ public class OkHttpNetWorkUtil
     }
 
     /**响应回调处理类*/
-    private static abstract class ResultCallback<T>
+    public static abstract class ResultCallback<T>
     {
         Type mType;
 
@@ -672,7 +675,7 @@ public class OkHttpNetWorkUtil
     /**
      * 请求参数实体
      */
-    private static class Param
+    public static class Param
     {
         public Param()
         {
@@ -707,7 +710,7 @@ public class OkHttpNetWorkUtil
         return contentTypeFor;
     }
 
-    /**转换map集合为数组对象*/
+    /**转换map集合为param数组对象*/
     private Param[] map2Params(Map<String, String> params)
     {
         if (params == null) return new Param[0];
