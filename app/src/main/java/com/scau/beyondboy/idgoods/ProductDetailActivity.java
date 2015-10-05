@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.scau.beyondboy.idgoods.consts.Consts;
 import com.scau.beyondboy.idgoods.utils.OkHttpNetWorkUtil;
 import com.squareup.okhttp.Request;
 

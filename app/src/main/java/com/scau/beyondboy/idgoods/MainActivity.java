@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+        changeFragment(new FragmentHome(), true);
     }
     @OnClick(R.id.menu_toggle)
     public void menuToggle()
