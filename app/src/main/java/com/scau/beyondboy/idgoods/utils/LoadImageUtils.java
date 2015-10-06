@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.scau.beyondboy.idgoods.MyApplication;
 import com.scau.beyondboy.idgoods.R;
 
 import java.io.File;
@@ -23,9 +24,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 /**
  * 下载图片，如果内存缓存有图片，则从内存拉取图片
  * 如果内存没有缓存该图片，看SD卡上是否缓存有图片
@@ -44,8 +42,8 @@ public class LoadImageUtils
     private static LoadImageUtils sImageUtils;
     /**下载失败显示的图片*/
     private Bitmap mFailBitmap;
-    /**建立线程缓存池，最大线程是五个，并且线程空闲状态超过60s将会自动删除其线程*/
-    public static ExecutorService mExecutorService= new ThreadPoolExecutor(0, 5,60L, TimeUnit.SECONDS,new LinkedBlockingQueue<Runnable>());
+    /**建立线程缓存池，最大线程是五个，并且线程空闲状态超过60s将会自动删除其线程*//*
+    public static ExecutorService mExecutorService= MyApplication.getInstance().sThreadManager.createThreadPool(3);*/
     private LoadImageHandle mImageHandle;
     private LoadImageUtils()
     {
@@ -107,6 +105,8 @@ public class LoadImageUtils
     @SuppressWarnings("UnnecessaryReturnStatement")
     public void loadImage(final ImageView ImageView,final  String ImageUrl,Context context)
     {
+        //建立线程缓存池，最大线程是五个，并且线程空闲状态超过60s将会自动删除其线程
+        ExecutorService mExecutorService= MyApplication.getInstance().sThreadManager.createThreadPool();
         Log.i(TAG,"图片地址： "+ImageUrl);
         if(mImageHandle!=null)
             mImageHandle.start(ImageView);
@@ -216,6 +216,7 @@ public class LoadImageUtils
     {
         this.mFailBitmap = failBitmap;
     }
+
     /**
      * 图片下载回调接口
      */

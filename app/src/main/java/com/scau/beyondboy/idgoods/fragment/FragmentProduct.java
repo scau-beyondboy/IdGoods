@@ -17,9 +17,11 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.scau.beyondboy.idgoods.MainActivity;
+import com.scau.beyondboy.idgoods.MyApplication;
 import com.scau.beyondboy.idgoods.ProductDetailActivity;
 import com.scau.beyondboy.idgoods.R;
 import com.scau.beyondboy.idgoods.consts.Consts;
+import com.scau.beyondboy.idgoods.manager.ThreadManager;
 import com.scau.beyondboy.idgoods.model.ProductBean;
 import com.scau.beyondboy.idgoods.model.ResponseObject;
 import com.scau.beyondboy.idgoods.model.TimeProductBean;
@@ -58,6 +60,7 @@ public class FragmentProduct extends Fragment
     {
         super.onAttach(context);
         mMainActivity=(MainActivity)context;
+        ThreadManager.scoolPoolSize=3;
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -228,4 +231,11 @@ public class FragmentProduct extends Fragment
         }
     }
 
+    @Override
+    public void onDestroyView()
+    {
+        super.onDestroyView();
+        //释放线程池资源
+        MyApplication.getInstance().sThreadManager.release();
+    }
 }

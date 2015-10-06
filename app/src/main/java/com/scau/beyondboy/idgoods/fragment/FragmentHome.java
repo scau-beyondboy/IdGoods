@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.scau.beyondboy.idgoods.CaptureActivityAnyOrientation;
+import com.scau.beyondboy.idgoods.CustomScannerActivity;
 import com.scau.beyondboy.idgoods.R;
 
 import butterknife.Bind;
@@ -53,7 +53,7 @@ public class FragmentHome extends Fragment
     private void scanFromFragment()
     {
         IntentIntegrator integrator =IntentIntegrator.forSupportFragment(this);
-        integrator.setCaptureActivity(CaptureActivityAnyOrientation.class);
+        integrator.setCaptureActivity(CustomScannerActivity.class);
         integrator.setBeepEnabled(true);
         integrator.setOrientationLocked(true);
         integrator.setCameraId(0);  // Use a specific camera of the device

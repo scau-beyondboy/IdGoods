@@ -10,11 +10,11 @@
   <com.journeyapps.barcodescanner.ViewfinderView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:alpha="0.75"
     android:id="@+id/zxing_viewfinder_view"
-    zxing_finder:zxing_possible_result_points="@android:color/holo_green_dark"
-    zxing_finder:zxing_result_view="@android:color/holo_orange_dark"
-    zxing_finder:zxing_viewfinder_laser="@color/zxing_custom_viewfinder_laser"
-    zxing_finder:zxing_viewfinder_mask="@android:color/darker_gray"/>
+    zxing_finder:zxing_viewfinder_laser="@android:color/holo_green_light"
+    zxing_finder:zxing_viewfinder_mask="@android:color/black"
+    />
 
   <TextView
     android:id="@+id/zxing_status_view"
