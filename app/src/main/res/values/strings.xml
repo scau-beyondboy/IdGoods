@@ -5,4 +5,15 @@
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_signup">SignupActivity</string>
     <string name="title_activity_get_check_code">GetCheckCode</string>
+    <string name="title_activity_personal_information">PersonalInformationActivity</string>
+    <string name="title_activity_change_email">ChangeEmailActivity</string>
+    <string name="title_activity_change_address">ChangeAddressActivity</string>
+    <string name="title_activity_selecte_pay">SelectePayActivity</string>
+    <string name="title_activity_sound_record">SoundRecord</string>
+
+    <string name="state_normal">按住说话</string>
+    <string name="state_recording">松开停止</string>
+    <string name="state_check">回放录音</string>
+    <string name="state_stop">暂停</string>
+
 </resources>
