@@ -1,5 +1,8 @@
 package com.scau.beyondboy.idgoods.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.litepal.crud.DataSupport;
 
 /**
@@ -7,9 +10,9 @@ import org.litepal.crud.DataSupport;
  * Gmail:xuguoli.scau@gmail.com
  * Date: 2015-10-06
  * Time: 15:55
- * 用户信息实体
+ * 可序列化的用户信息实体
  */
-public class UserBean extends DataSupport
+public class UserBean extends DataSupport implements Parcelable
 {
     private int id;
     private String userId;
@@ -23,6 +26,24 @@ public class UserBean extends DataSupport
     private String inviteCodeValue;
     private boolean isVerify;
 
+    public UserBean()
+    {
+        super();
+    }
+
+    public UserBean(Parcel in)
+    {
+        userId=in.readString();
+        account=in.readString();
+        sex=in.readInt();
+        birthday=in.readLong();
+        avater=in.readString();
+        email=in.readString();
+        address=in.readString();
+        nickname=in.readString();
+        inviteCodeValue=in.readString();
+        isVerify=Boolean.valueOf(in.readString());
+    }
     public int getId()
     {
         return id;
@@ -131,5 +152,41 @@ public class UserBean extends DataSupport
     public void setIsVerify(boolean isVerify)
     {
         this.isVerify = isVerify;
+    }
+
+    public static final Parcelable.Creator<UserBean> CREATOR = new Creator<UserBean>()
+    {
+        @Override
+        public UserBean[] newArray(int size)
+        {
+            return new UserBean[size];
+        }
+
+        @Override
+        public UserBean createFromParcel(Parcel in)
+        {
+            return new UserBean(in);
+        }
+    };
+
+    @Override
+    public int describeContents()
+    {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
+    {
+        dest.writeString(userId);
+        dest.writeString(account);
+        dest.writeInt(sex);
+        dest.writeLong(birthday);
+        dest.writeString(avater);
+        dest.writeString(email);
+        dest.writeString(address);
+        dest.writeString(nickname);
+        dest.writeString(inviteCodeValue);
+        dest.writeString(isVerify+"");
     }
 }

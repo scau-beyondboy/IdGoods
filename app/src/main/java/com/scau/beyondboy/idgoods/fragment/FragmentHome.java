@@ -1,13 +1,18 @@
 package com.scau.beyondboy.idgoods.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -18,6 +23,7 @@ import com.scau.beyondboy.idgoods.R;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnEditorAction;
 
 
 /**
@@ -49,6 +55,26 @@ public class FragmentHome extends Fragment
         scanFromFragment();
     }
 
+    @OnEditorAction(R.id.input_barcode)
+    public boolean onEditorAction(TextView content,int actionId,KeyEvent event)
+    {
+        final String serialNumber=content.getText().toString().trim();
+        if(actionId== EditorInfo.IME_ACTION_SEND||(event!=null&&event.getKeyCode()== KeyEvent.KEYCODE_ENTER))
+        {
+            if(serialNumber==null||"".equals(serialNumber))
+            {
+                Toast.makeText(getActivity(),"请输入二维码序列号",Toast.LENGTH_SHORT).show();
+            }
+             /*隐藏软键盘*/
+            InputMethodManager imm = (InputMethodManager)content.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm.isActive())
+            {
+                  imm.hideSoftInputFromWindow(content.getApplicationWindowToken(), 0);
+            }
+            return true;
+        }
+        return false;
+    }
     /**二维码扫描*/
     private void scanFromFragment()
     {

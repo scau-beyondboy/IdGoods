@@ -35,6 +35,13 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:windowSoftInputMode="stateAlwaysHidden">
       </activity>
-
+      <activity android:name=".GetCashActivity"
+        android:screenOrientation="portrait"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
+      <activity android:name=".FinishRegisterActivity"
+        android:screenOrientation="portrait"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        />
 </application>
 </manifest>

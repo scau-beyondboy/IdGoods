@@ -27,5 +27,7 @@ public class Consts
     public static final String INVITECODEVALUE_KEY = "inviteCodeValue";
     public static final String SELLERID_KEY = "sellerId";
     public static final String TESTSELLERID = "8ee375cdd803459c967737322b0785e9";
+    public static final String TOURIST_SCAN = HOST+"/ScanController/touristScan";
+    public static final String SCAN_CODE_BEAN = "scanCodeBean";
 }
 

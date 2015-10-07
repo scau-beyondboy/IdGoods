@@ -16,11 +16,11 @@ import butterknife.OnClick;
 /**
  * Author:beyondboy
  * Gmail:xuguoli.scau@gmail.com
- * Date: 2015-10-03
- * Time: 12:27
- * 领取返现界面
+ * Date: 2015-10-07
+ * Time: 21:12
+ * 登记完成界面
  */
-public class GetCashActivity extends AppCompatActivity
+public class FinishRegisterActivity extends AppCompatActivity
 {
     @Bind(R.id.header_image)
     ImageView headerImage;
@@ -28,22 +28,25 @@ public class GetCashActivity extends AppCompatActivity
     TextView adverseSerialNumber;
     @Bind(R.id.product_name)
     TextView productName;
+    @Bind(R.id.discount)
+    TextView discount;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.get_cash);
+        setContentView(R.layout.finish_register);
         ButterKnife.bind(this);
         String serialNumber=(String)getIntent().getStringExtra(Consts.SERIALNUMBERVALUEKEY);
         ScanCodeBean scanCodeBean=(ScanCodeBean)getIntent().getSerializableExtra(Consts.SCAN_CODE_BEAN);
-        LoadImageUtils.getInstance().loadImage(headerImage,scanCodeBean.getGetAdversementPhoto(),this);
+        LoadImageUtils.getInstance().loadImage(headerImage, scanCodeBean.getGetAdversementPhoto(), this);
         adverseSerialNumber.setText(serialNumber);
         productName.setText(scanCodeBean.getName());
     }
 
-    @OnClick(R.id.getcashbn)
+    @OnClick(R.id.finishbn)
+    //跳转到首页
     public void onClick()
     {
-        //跳转支付界面
+        finish();
     }
 }

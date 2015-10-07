@@ -136,6 +136,25 @@ public class FragmentProduct extends Fragment
         }
 
         @Override
+        public Object getItem(int position)
+        {
+            return mProductBeanList.get(position);
+        }
+
+        @Override
+        public int getItemViewType(int position)
+        {
+            if(getItem(position) instanceof ProductBean)
+            {
+                return 0;
+            }
+            else
+            {
+                return 1;
+            }
+        }
+
+        @Override
         public View getView(final int position, View convertView, ViewGroup parent)
         {
             if(mProductBeanList.get(position) instanceof ProductBean)
