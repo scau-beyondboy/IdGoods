@@ -2,11 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.scau.beyondboy.idgoods" >
     <uses-permission android:name="android.permission.CAMERA" />
+    <!-- 授予该程序录制声音的权限 -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.FLASHLIGHT" />
+  <!-- 授予该程序向外部存储器写入数据的权限 -->
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.FLASHLIGHTWRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS" />
+    <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKSREAD_EXTERNAL_STORAGE" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -43,5 +48,29 @@
         android:screenOrientation="portrait"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         />
-</application>
+      <activity
+        android:name=".SignupActivity"
+        android:label="@string/title_activity_signup" >
+      </activity>
+      <activity
+        android:name=".GetCheckCodeActivity"
+        android:label="@string/title_activity_get_check_code" >
+      </activity>
+      <activity
+        android:name=".PersonalInformationActivity"
+        android:label="@string/title_activity_personal_information" >
+      </activity>
+      <activity
+        android:name=".ChangeEmailActivity"
+        android:label="@string/title_activity_change_email" >
+      </activity>
+      <activity
+        android:name=".ChangeAddressActivity"
+        android:label="@string/title_activity_change_address" >
+      </activity>
+      <activity
+        android:name=".SelectePayActivity"
+        android:label="@string/title_activity_selecte_pay" >
+      </activity>
+    </application>
 </manifest>
