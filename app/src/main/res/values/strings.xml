@@ -4,4 +4,7 @@
   <string name="action_settings">Settings</string>
   <string name="open">打开</string>
   <string name="close">关闭</string>
+  <string name="turn_on_flashlight">打开闪关灯</string>
+  <string name="turn_off_flashlight">关闭闪关灯</string>
+
 </resources>

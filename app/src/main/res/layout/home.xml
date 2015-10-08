@@ -18,8 +18,10 @@
     android:padding="10dp"
     android:layout_width="wrap_content"
     android:hint="请输入二维码"
+    android:imeOptions="actionSend"
     android:layout_centerHorizontal="true"
     android:layout_above="@id/scan_barcode"
+    android:singleLine="true"
     android:textColorHint="@color/gray"
     android:layout_height="wrap_content"
     />

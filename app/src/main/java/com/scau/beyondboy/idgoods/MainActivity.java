@@ -25,6 +25,7 @@ import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity
 {
+    private static final String TAG = MainActivity.class.getName();
     @Bind(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
     @Bind(R.id.menu_toggle)
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+        changeFragment(new FragmentHome(), true);
     }
     @OnClick(R.id.menu_toggle)
     public void menuToggle()
@@ -108,10 +110,12 @@ public class MainActivity extends AppCompatActivity
         //开启事务
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
         transaction.replace(R.id.content_frame, fragment);
+        //加入后退栈
         if (!isAddToStack)
         {
             transaction.addToBackStack(null);
         }
         transaction.commit();
     }
+
 }
