@@ -129,9 +129,14 @@ public class ScanCodeBean implements Parcelable
         dest.writeString(name);
         dest.writeString(address);
         dest.writeString(discount);
-        dest.writeString(address);
         dest.writeString(adversementName);
         dest.writeString(getAdversementPhoto);
         dest.writeString(hasAdded+"");
+    }
+
+    @Override
+    public String toString()
+    {
+        return String.format("{\"type\":\"%s\",\"name\":\"%s\",\"address\":\"%s\",\"discount\":\"%s\",\"adversementName\":\"%s\",\"getAdversementPhotoe\":\"%s\",\"hasAdded\":\"%s\"}", type,name,address,discount,adversementName,getAdversementPhoto,hasAdded);
     }
 }

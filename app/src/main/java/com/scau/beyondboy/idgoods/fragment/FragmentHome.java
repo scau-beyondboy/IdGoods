@@ -1,7 +1,6 @@
 package com.scau.beyondboy.idgoods.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,9 +15,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 import com.scau.beyondboy.idgoods.CustomScannerActivity;
 import com.scau.beyondboy.idgoods.R;
+import com.scau.beyondboy.idgoods.handler.FinshBarCodeHandler;
+import com.scau.beyondboy.idgoods.utils.ShareUtils;
+import com.scau.beyondboy.idgoods.utils.StringUtils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -47,7 +48,16 @@ public class FragmentHome extends Fragment
         inputTdcodeText.setFocusable(true);
         inputTdcodeText.setFocusableInTouchMode(true);
         inputTdcodeText.requestFocus();
+        initTest();
         return view;
+    }
+
+    public void initTest()
+    {
+        ShareUtils.clearTempDate(getActivity());
+        ShareUtils.putPassword(getActivity(), "123456");
+        ShareUtils.putUserId(getActivity(), "b9255242c2bf403d92280d364de2ab6c");
+        //ShareUtils.putInviteCodeValue(getActivity(),"0A0D688AFE");
     }
     @OnClick(R.id.scan_barcode)
     public void onClick()
@@ -61,9 +71,15 @@ public class FragmentHome extends Fragment
         final String serialNumber=content.getText().toString().trim();
         if(actionId== EditorInfo.IME_ACTION_SEND||(event!=null&&event.getKeyCode()== KeyEvent.KEYCODE_ENTER))
         {
-            if(serialNumber==null||"".equals(serialNumber))
+            if(StringUtils.isEmpty(serialNumber))
             {
                 Toast.makeText(getActivity(),"请输入二维码序列号",Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                FinshBarCodeHandler.init(serialNumber,getActivity(),0);
+                //二维码扫描处理
+                FinshBarCodeHandler.finishScanHandler();
             }
              /*隐藏软键盘*/
             InputMethodManager imm = (InputMethodManager)content.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -94,22 +110,5 @@ public class FragmentHome extends Fragment
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if(result != null)
-        {
-            if(result.getContents() == null)
-            {
-                toast = "Cancelled from fragment";
-            } else
-            {
-                toast = "Scanned from fragment: " + result.getContents();
-            }
-            // At this point we may or may not have a reference to the activity
-            displayToast();
-        }
-    }
 }
 

@@ -53,7 +53,7 @@ public  final class StorageUtils
         if(appCacheDir==null)
         {
             String cacheDirPath="/data/data/"+context.getPackageName()+"/cache";
-            Log.w("Can't define system cache directory! '%s' will be used.", cacheDirPath);
+            Log.i(TAG,String.format("Can't define system cache directory! '%s' will be used.", cacheDirPath));
             appCacheDir=new File(cacheDirPath);
         }
         return appCacheDir;

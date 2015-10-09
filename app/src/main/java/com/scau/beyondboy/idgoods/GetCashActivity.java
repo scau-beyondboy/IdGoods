@@ -1,5 +1,6 @@
 package com.scau.beyondboy.idgoods;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
@@ -22,22 +23,26 @@ import butterknife.OnClick;
  */
 public class GetCashActivity extends AppCompatActivity
 {
+    private static final String TAG = GetCashActivity.class.getName();
     @Bind(R.id.header_image)
     ImageView headerImage;
     @Bind(R.id.adverse_serialnumber)
     TextView adverseSerialNumber;
     @Bind(R.id.product_name)
     TextView productName;
+    private String serialNumberValue;
+    private ScanCodeBean scanCodeBean;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.get_cash);
+        setContentView(R.layout.activity_get_cash);
         ButterKnife.bind(this);
-        String serialNumber=(String)getIntent().getStringExtra(Consts.SERIALNUMBERVALUEKEY);
-        ScanCodeBean scanCodeBean=(ScanCodeBean)getIntent().getSerializableExtra(Consts.SCAN_CODE_BEAN);
+        serialNumberValue=(String)getIntent().getStringExtra(Consts.SERIALNUMBERVALUEKEY);
+        scanCodeBean=(ScanCodeBean)getIntent().getParcelableExtra(Consts.SCAN_CODE_BEAN);
         LoadImageUtils.getInstance().loadImage(headerImage,scanCodeBean.getGetAdversementPhoto(),this);
-        adverseSerialNumber.setText(serialNumber);
+        adverseSerialNumber.setText(serialNumberValue);
         productName.setText(scanCodeBean.getName());
     }
 
@@ -45,5 +50,12 @@ public class GetCashActivity extends AppCompatActivity
     public void onClick()
     {
         //跳转支付界面
+        Intent intent=new Intent(GetCashActivity.this,PayActivity.class);
+        Bundle bundle=new Bundle();
+        bundle.putString(Consts.SERIALNUMBERVALUEKEY, serialNumberValue);
+        bundle.putParcelable(Consts.SCAN_CODE_BEAN, scanCodeBean);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        finish();
     }
 }

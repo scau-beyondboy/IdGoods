@@ -110,7 +110,7 @@ public class LoadImageUtils
         Log.i(TAG,"图片地址： "+ImageUrl);
         if(mImageHandle!=null)
             mImageHandle.start(ImageView);
-        final String key=MD5.encode(ImageUrl);
+        final String key=StringUtils.md5(ImageUrl);
         if(mCacheMap.containsKey(key))
         {
             Bitmap bitmap=mCacheMap.get(key);

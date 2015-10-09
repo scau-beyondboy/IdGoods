@@ -34,17 +34,17 @@ public class FinishRegisterActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.finish_register);
+        setContentView(R.layout.activity_finish_register);
         ButterKnife.bind(this);
-        String serialNumber=(String)getIntent().getStringExtra(Consts.SERIALNUMBERVALUEKEY);
-        ScanCodeBean scanCodeBean=(ScanCodeBean)getIntent().getSerializableExtra(Consts.SCAN_CODE_BEAN);
+        String serialNumber=getIntent().getStringExtra(Consts.SERIALNUMBERVALUEKEY);
+        ScanCodeBean scanCodeBean=getIntent().getParcelableExtra(Consts.SCAN_CODE_BEAN);
         LoadImageUtils.getInstance().loadImage(headerImage, scanCodeBean.getGetAdversementPhoto(), this);
         adverseSerialNumber.setText(serialNumber);
         productName.setText(scanCodeBean.getName());
     }
 
-    @OnClick(R.id.finishbn)
     //跳转到首页
+    @OnClick(R.id.finishbn)
     public void onClick()
     {
         finish();

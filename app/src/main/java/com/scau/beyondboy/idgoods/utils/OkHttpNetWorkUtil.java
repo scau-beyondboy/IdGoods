@@ -562,6 +562,7 @@ public class OkHttpNetWorkUtil
         FormEncodingBuilder builder = new FormEncodingBuilder();
         for (Param param : params)
         {
+            //Log.i(TAG,"空指针吗：  "+param);
             builder.add(param.key, param.value);
         }
         RequestBody requestBody = builder.build();
@@ -688,6 +689,12 @@ public class OkHttpNetWorkUtil
         }
         String key;
         String value;
+
+        @Override
+        public String toString()
+        {
+            return String.format("{\"key\":\"%s\",\"value\":\"%s\"}",key, value);
+        }
     }
 
     /**检验请求参数的有效性*/

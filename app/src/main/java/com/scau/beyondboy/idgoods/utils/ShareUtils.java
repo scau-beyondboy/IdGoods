@@ -33,7 +33,7 @@ public class ShareUtils
     }
     public static  void putInviteCodeValue(Context context,String inviteCodeValue)
     {
-        context.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).edit().putString(inviteCodeValue,inviteCodeValue).apply();
+        context.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).edit().putString(INVITE_CODE_VALUE,inviteCodeValue).apply();
     }
     public static String getInviteCodeValue(Context context)
     {
@@ -41,6 +41,6 @@ public class ShareUtils
     }
     public static void clearTempDate(Context context)
     {
-        context.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).edit().clear();
+        context.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).edit().clear().apply();
     }
 }

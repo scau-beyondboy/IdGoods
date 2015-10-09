@@ -1,6 +1,5 @@
 package com.scau.beyondboy.idgoods;
 
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,23 +7,14 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
 import com.google.zxing.ResultPoint;
 import com.journeyapps.barcodescanner.BarcodeCallback;
 import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.CompoundBarcodeView;
-import com.scau.beyondboy.idgoods.consts.Consts;
-import com.scau.beyondboy.idgoods.model.ResponseObject;
+import com.scau.beyondboy.idgoods.handler.FinshBarCodeHandler;
 import com.scau.beyondboy.idgoods.model.ScanCodeBean;
-import com.scau.beyondboy.idgoods.utils.OkHttpNetWorkUtil;
-import com.scau.beyondboy.idgoods.utils.ShareUtils;
-import com.squareup.okhttp.Request;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -43,6 +33,7 @@ public class CustomScannerActivity extends AppCompatActivity implements Compound
     /**登录身份标记，0代表用户登录，1代表销售员登录，2代表游客登录*/
     private int identity=0;
     private CompoundBarcodeView barcodeScannerView;
+    private String serialNumberValue;
     private Button switchFlashlightButton;
     private BarcodeCallback callback = new BarcodeCallback()
     {
@@ -52,8 +43,11 @@ public class CustomScannerActivity extends AppCompatActivity implements Compound
             if (result.getText() != null)
             {
                 barcodeScannerView.setStatusText(result.getText());
+                serialNumberValue=result.getText().toString();
+                FinshBarCodeHandler.init(serialNumberValue,CustomScannerActivity.this,1);
+                FinshBarCodeHandler.finishScanHandler();
             }
-            Toast.makeText(CustomScannerActivity.this, "显示二维码：" + result.getText(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(CustomScannerActivity.this, "显示二维码：" + result.getText(), Toast.LENGTH_SHORT).show();
         }
         @Override
         public void possibleResultPoints(List<ResultPoint> resultPoints)
@@ -147,46 +141,46 @@ public class CustomScannerActivity extends AppCompatActivity implements Compound
         switchFlashlightButton.setText(R.string.turn_on_flashlight);
     }
 
-    /**扫完二维码处理*/
+   /* *//**扫完二维码处理*//*
     private void finishScanHandler()
     {
         //用户登录
         if(ShareUtils.getUserId(this)!=null&&ShareUtils.getInviteCodeValue(this)==null)
         {
-
+            identity=0;
         }
         //销售员登录
         else if(ShareUtils.getUserId(this)!=null&&ShareUtils.getInviteCodeValue(this)!=null)
         {
-
+            identity=1;
         }
         else if(ShareUtils.getUserId(this)==null)
         {
-
+            identity=2;
         }
+        barCodeVerifyHandler(identity);
     }
 
-    /**二维码序列号认证处理*/
-    private void barCodeVerifyHandler(final String serialNumberValue, final int identity)
+    *//**二维码序列号认证处理*//*
+    private void barCodeVerifyHandler(final int identity)
     {
         String url=null;
-        OkHttpNetWorkUtil.Param param[]=new OkHttpNetWorkUtil.Param[2];
-        OkHttpNetWorkUtil.ResultCallback<String> resultCallback;
+        OkHttpNetWorkUtil.Param params[]=new OkHttpNetWorkUtil.Param[2];
         switch (identity)
         {
             case 0:
                 url= Consts.CUSTOMER_SCAN;
-                param[0]=new OkHttpNetWorkUtil.Param(Consts.CUSTOMERID_KEY,ShareUtils.getUserId(this));
-                param[1]=new OkHttpNetWorkUtil.Param(Consts.SERIALNUMBERVALUEKEY,serialNumberValue);
+                params[0]=new OkHttpNetWorkUtil.Param(Consts.CUSTOMERID_KEY,ShareUtils.getUserId(this));
+                params[1]=new OkHttpNetWorkUtil.Param(Consts.SERIALNUMBERVALUEKEY,serialNumberValue);
                 break;
             case 1:
                 url=Consts.SELLER_SCAN;
-                param[0]=new OkHttpNetWorkUtil.Param(Consts.SELLERID_KEY,ShareUtils.getUserId(this));
-                param[1]=new OkHttpNetWorkUtil.Param(Consts.SERIALNUMBERVALUEKEY,serialNumberValue);
+                params[0]=new OkHttpNetWorkUtil.Param(Consts.SELLERID_KEY,ShareUtils.getUserId(this));
+                params[1]=new OkHttpNetWorkUtil.Param(Consts.SERIALNUMBERVALUEKEY,serialNumberValue);
                 break;
             case 2:
                 url=Consts.TOURIST_SCAN;
-                param[0]=new OkHttpNetWorkUtil.Param(Consts.SERIALNUMBERVALUEKEY,serialNumberValue);
+                params[0]=new OkHttpNetWorkUtil.Param(Consts.SERIALNUMBERVALUEKEY,serialNumberValue);
         }
         OkHttpNetWorkUtil.postAsyn(url, new OkHttpNetWorkUtil.ResultCallback<String>()
         {
@@ -199,21 +193,22 @@ public class CustomScannerActivity extends AppCompatActivity implements Compound
             @Override
             public void onResponse(String response)
             {
-                skipHandler(serialNumberValue,identity,response);
+                skipHandler(identity,response);
             }
-        },param);
+        },params);
     }
 
-    /**
+    *//**
      * 扫描跳转处理
      * @param identity 身份信息
      * @param response 响应实体
-     */
-    private void skipHandler(final String serialNumberValue,int identity,String response)
+     *//*
+    private void skipHandler(int identity,String response)
     {
         ScanCodeBean scanCodeBean=parsescanCodeJson(response,identity);
         switch (identity)
         {
+            //销售员
             case 0:
                 if (scanCodeBean != null)
                 {
@@ -240,16 +235,6 @@ public class CustomScannerActivity extends AppCompatActivity implements Compound
                             // TODO: 2015/10/7 第二次扫描明信片
                         }
                     }
-                    /*else if (scanCodeBean.getType() == 2)
-                    {
-                        if (scanCodeBean.isHasAdded() == false)
-                        {
-                            //todo 第一次扫描其他
-                        } else if (scanCodeBean.isHasAdded() == true)
-                        {
-                            // TODO: 2015/10/7 第二次扫描其他
-                        }
-                    }*/
                     Bundle bundle=new Bundle();
                     bundle.putString(Consts.SERIALNUMBERVALUEKEY,serialNumberValue);
                     bundle.putParcelable(Consts.SCAN_CODE_BEAN,scanCodeBean);
@@ -257,18 +242,20 @@ public class CustomScannerActivity extends AppCompatActivity implements Compound
                     startActivity(intent);
                 }
                 break;
+            //游客
             case 2:
                 if (scanCodeBean != null)
                 {
                    //todo 跳转界面
                 }
-
+                break;
         }
+        finish();
     }
 
-    /**
+    *//**
      * 若返回数据出错，则返回空,并显示信息提示用户，否则返回{@link ScanCodeBean}
-     */
+     *//*
     private ScanCodeBean parsescanCodeJson(String scanCodeJson,int identity)
     {
         Gson gson=new Gson();
@@ -289,26 +276,21 @@ public class CustomScannerActivity extends AppCompatActivity implements Compound
         }
     }
 
-    /**
+    *//**
      * 返回数据异常处理
      * @param identity 登录身份
      * @param errorInfo 异常信息
-     */
+     *//*
     private void resultExceptionHandler(int identity,String errorInfo)
     {
-       /* switch (identity)
-        {
-            *//*case 0:
-                displayToast("如果该二维码作用于药品\n请先让销售员先扫描！");
-                break;
-            case 1:
-            case 2:*//*
-
-                break;
-        }*/
+        //销售员单独处理
         if(identity==1&&errorInfo.equals("OK"))
         {
-            //// TODO: 2015/10/7 销售员扫描药品成功
+            // TODO: 2015/10/7 销售员扫描药品成功
+            Intent intent=new Intent(CustomScannerActivity.this,FinishRegisterActivity.class);
+            Bundle bundle=new Bundle();
+            bundle.putString(Consts.SERIALNUMBERVALUEKEY, serialNumberValue);
+            startActivity(intent);
             return;
         }
         displayToast(errorInfo);
@@ -317,5 +299,5 @@ public class CustomScannerActivity extends AppCompatActivity implements Compound
     private void displayToast(String warnning)
     {
         Toast.makeText(this,warnning,Toast.LENGTH_SHORT).show();
-    }
+    }*/
 }

@@ -29,5 +29,7 @@ public class Consts
     public static final String TESTSELLERID = "8ee375cdd803459c967737322b0785e9";
     public static final String TOURIST_SCAN = HOST+"/ScanController/touristScan";
     public static final String SCAN_CODE_BEAN = "scanCodeBean";
+    public static final String WECHAT = "wechatAccount";
+    public static final String ALIAPAY = "alipayAccount";
 }
 

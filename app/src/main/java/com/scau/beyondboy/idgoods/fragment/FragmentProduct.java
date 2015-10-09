@@ -65,7 +65,7 @@ public class FragmentProduct extends Fragment
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view=inflater.inflate(R.layout.myproduct,container,false);
+        View view=inflater.inflate(R.layout.activity_myproduct,container,false);
         ButterKnife.bind(this, view);
         mMainActivity.mSearchView.setVisibility(View.VISIBLE);
         loadDate();

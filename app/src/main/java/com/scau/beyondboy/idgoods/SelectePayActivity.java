@@ -2,8 +2,6 @@ package com.scau.beyondboy.idgoods;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,7 +17,7 @@ public class SelectePayActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_selecte_pay);
+        setContentView(R.layout.activity_pay);
         ed1 = (EditText) findViewById(R.id.account1);
         ed2 = (EditText) findViewById(R.id.account2);
         btn_ali = (Button) findViewById(R.id.alipay);

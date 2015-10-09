@@ -57,6 +57,14 @@
         android:label="@string/title_activity_get_check_code" >
       </activity>
       <activity
+        android:name=".PayActivity"
+        android:label="@string/title_activity_selecte_pay" >
+      </activity>
+      <activity
+        android:name=".Vendibility"
+        android:label="@string/title_activity_selecte_pay" >
+      </activity>
+      <activity
         android:name=".PersonalInformationActivity"
         android:label="@string/title_activity_personal_information" >
       </activity>
