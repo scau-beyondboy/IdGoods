@@ -1,6 +1,5 @@
 package com.scau.beyondboy.idgoods;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -11,6 +10,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.scau.beyondboy.idgoods.consts.Consts;
+import com.scau.beyondboy.idgoods.model.ProductBean;
 import com.scau.beyondboy.idgoods.model.ProductInfo;
 import com.scau.beyondboy.idgoods.model.ResponseObject;
 import com.scau.beyondboy.idgoods.utils.LoadImageUtils;
@@ -43,25 +43,30 @@ public class ProductDetailActivity extends AppCompatActivity
     TextView discount;
     @Bind(R.id.date)
     TextView date;
-
+    private ProductBean mProductBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.product_detail);
-        Intent intent=getIntent();
+        mProductBean=getIntent().getParcelableExtra(Consts.PRODUCT_BEAN);
         ButterKnife.bind(this);
-        loadData(intent.getStringExtra(Consts.SERIALNUMBERVALUEKEY));
+        loadData();
     }
 
-    private void loadData(final String  serialNumberValue )
+    private void loadData()
     {
         OkHttpNetWorkUtil.postAsyn(Consts.GET_PRODUCT_INFO, new OkHttpNetWorkUtil.ResultCallback<String>()
         {
             @Override
             public void onError(Request request, Exception e)
             {
+                LoadImageUtils.getInstance().loadImage(headerImage, mProductBean.getAdvertisementPhoto(), ProductDetailActivity.this);
+                productName.setText(mProductBean.getName());
+                adverseSerialNumber.setText(mProductBean.getSerialNumber());
+                discount.setText("优惠??元");
+                date.setText(mProductBean.getDateTime());
                 e.printStackTrace();
                 Toast.makeText(ProductDetailActivity.this, "网络异常", Toast.LENGTH_SHORT).show();
             }
@@ -71,13 +76,13 @@ public class ProductDetailActivity extends AppCompatActivity
             {
                 Log.i(TAG, "response:  " + response);
                 ProductInfo productInfo =parseProductDataJson(response);
-                LoadImageUtils.getInstance().loadImage(headerImage, productInfo.getAdvertisementPhoto(), ProductDetailActivity.this);
+                LoadImageUtils.getInstance().loadImage(headerImage, mProductBean.getAdvertisementPhoto(), ProductDetailActivity.this);
                 productName.setText(productInfo.getName());
                 adverseSerialNumber.setText(productInfo.getSerialNumber());
                 discount.setText("优惠"+productInfo.getDiscount()+"元");
                 date.setText(productInfo.getTime());
             }
-        }, new OkHttpNetWorkUtil.Param(Consts.SERIALNUMBERVALUEKEY, serialNumberValue));
+        }, new OkHttpNetWorkUtil.Param(Consts.SERIALNUMBERVALUEKEY,mProductBean.getSerialNumber()));
     }
     @OnClick(R.id.product_detail_back)
     public void onClick()

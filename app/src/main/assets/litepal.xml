@@ -4,5 +4,7 @@
   <version value="1"/>
   <list>
     <mapping class="com.scau.beyondboy.idgoods.model.UserBean"/>
+    <mapping class="com.scau.beyondboy.idgoods.model.ProductBean"/>
+    <mapping class="com.scau.beyondboy.idgoods.model.TimeProductBean"/>
   </list>
 </litepal>

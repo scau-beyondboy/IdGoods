@@ -40,7 +40,8 @@ public class ThreadManager
     /**释放线程资源*/
     public static void release()
     {
-        sExecutorService.shutdown();
+        if(sExecutorService!=null)
+            sExecutorService.shutdown();
         sExecutorService=null;
     }
 

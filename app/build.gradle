@@ -30,4 +30,5 @@ dependencies {
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'org.litepal.android:core:1.2.1'
     compile project(':zxing')
+    compile 'com.qiniu:qiniu-android-sdk:7.0.+'
 }

@@ -149,7 +149,7 @@ public class UserBean extends DataSupport implements Parcelable
         return isVerify;
     }
 
-    public void setIsVerify(boolean isVerify)
+    public void setVerify(boolean isVerify)
     {
         this.isVerify = isVerify;
     }

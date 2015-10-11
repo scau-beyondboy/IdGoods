@@ -31,5 +31,14 @@ public class Consts
     public static final String SCAN_CODE_BEAN = "scanCodeBean";
     public static final String WECHAT = "wechatAccount";
     public static final String ALIAPAY = "alipayAccount";
+    public static final String DELETE_PRODUCT =HOST+"/GoodsController/deleteProduct";
+    public static final String PRODUCT_BEAN = "productBean";
+    public static final String SEND_CODE =HOST+"/VerificationCodes/sendCode";
+    public static final String VERIFY_CODE =HOST+"/VerificationCodes/verifyCode";
+    public static final String SMS_CODE = "verifyCode";
+    public static final String USERS_SIGNUP =HOST+"/Users/signup";
+    public static final String UPDATE_PASSWORD = "Users/updatePassword";
+    public static final String ORIPASSWORD_KEY = "oriPassword";
+    public static final String NEWPASSWORD_KEY = "newPassword";
 }
 

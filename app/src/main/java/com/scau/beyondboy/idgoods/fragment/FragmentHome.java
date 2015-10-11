@@ -18,7 +18,6 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.scau.beyondboy.idgoods.CustomScannerActivity;
 import com.scau.beyondboy.idgoods.R;
 import com.scau.beyondboy.idgoods.handler.FinshBarCodeHandler;
-import com.scau.beyondboy.idgoods.utils.ShareUtils;
 import com.scau.beyondboy.idgoods.utils.StringUtils;
 
 import butterknife.Bind;
@@ -48,17 +47,17 @@ public class FragmentHome extends Fragment
         inputTdcodeText.setFocusable(true);
         inputTdcodeText.setFocusableInTouchMode(true);
         inputTdcodeText.requestFocus();
-        initTest();
+      //  initTest();
         return view;
     }
 
-    public void initTest()
+   /* public void initTest()
     {
         ShareUtils.clearTempDate(getActivity());
         ShareUtils.putPassword(getActivity(), "123456");
         ShareUtils.putUserId(getActivity(), "b9255242c2bf403d92280d364de2ab6c");
         //ShareUtils.putInviteCodeValue(getActivity(),"0A0D688AFE");
-    }
+    }*/
     @OnClick(R.id.scan_barcode)
     public void onClick()
     {

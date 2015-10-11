@@ -3,6 +3,7 @@ package com.scau.beyondboy.idgoods;
 import com.scau.beyondboy.idgoods.manager.ThreadManager;
 
 import org.litepal.LitePalApplication;
+import org.litepal.tablemanager.Connector;
 
 /**
  * Author:beyondboy
@@ -35,5 +36,7 @@ public class MyApplication extends LitePalApplication
     {
         super.onCreate();
         sMyApplication=this;
+        Connector.getDatabase();
     }
+
 }

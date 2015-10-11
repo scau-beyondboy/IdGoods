@@ -12,7 +12,7 @@
       android:layout_height="match_parent"
       android:orientation="vertical">
       <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         >
         <ImageView
@@ -21,6 +21,16 @@
           android:layout_width="wrap_content"
           android:layout_height="?attr/actionBarSize"
           android:src="@drawable/ic_menu_black_24dp"
+          />
+        <TextView
+          android:id="@+id/title_content"
+          android:layout_width="wrap_content"
+          android:text="设置"
+          android:layout_centerInParent="true"
+          android:textSize="25sp"
+          android:textColor="@color/black"
+          android:visibility="gone"
+          android:layout_height="wrap_content"
           />
         <android.support.v7.widget.SearchView
           android:id="@+id/menu_search"
@@ -44,7 +54,7 @@
       android:layout_width="280dp"
       android:layout_gravity="start"
       android:layout_height="match_parent"
-      android:background="@color/gray"
+      android:background="@color/deepgray"
       android:orientation="vertical">
       <RelativeLayout
         android:layout_width="match_parent"
@@ -121,8 +131,9 @@
         android:layout_height="wrap_content"
         >
         <TextView
+          android:id="@+id/changesetting"
           android:drawableLeft="@drawable/ic_setting_high_black_24dp"
-          android:text="设置"
+          android:text="登陆"
           style="@style/draw_left_menu_textview"
           />
         <include layout="@layout/draw_left_menu_imageview"/>

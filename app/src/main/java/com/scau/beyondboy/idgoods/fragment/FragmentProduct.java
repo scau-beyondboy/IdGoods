@@ -26,9 +26,13 @@ import com.scau.beyondboy.idgoods.model.ProductBean;
 import com.scau.beyondboy.idgoods.model.ResponseObject;
 import com.scau.beyondboy.idgoods.model.TimeProductBean;
 import com.scau.beyondboy.idgoods.utils.LoadImageUtils;
+import com.scau.beyondboy.idgoods.utils.NetworkUtils;
 import com.scau.beyondboy.idgoods.utils.OkHttpNetWorkUtil;
+import com.scau.beyondboy.idgoods.utils.ShareUtils;
 import com.scau.beyondboy.idgoods.view.SlideListView;
 import com.squareup.okhttp.Request;
+
+import org.litepal.crud.DataSupport;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -92,34 +96,82 @@ public class FragmentProduct extends Fragment
      */
     private void loadDate()
     {
-        OkHttpNetWorkUtil.postAsyn(Consts.GET_PRODUCT, new OkHttpNetWorkUtil.ResultCallback<String>()
+        if(NetworkUtils.isNetworkReachable(getActivity()))
         {
-
-            @Override
-            public void onError(Request request, Exception e)
+            OkHttpNetWorkUtil.postAsyn(Consts.GET_PRODUCT, new OkHttpNetWorkUtil.ResultCallback<String>()
             {
-                Toast.makeText(getContext(),request.body().toString(),Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "错误", e);
-            }
 
-            @Override
-            public void onResponse(String response)
-            {
-                List<TimeProductBean> timeProductBeanList = parseProductDataJson(response);
-                for (TimeProductBean timeProductBean : timeProductBeanList)
+                @Override
+                public void onError(Request request, Exception e)
                 {
-                    mProductBeanList.add(timeProductBean.getDateTime());
-                    for(ProductBean productBean:timeProductBean.getBeanList())
-                    {
-                        productBean.setDateTime(timeProductBean.getDateTime());
-                        mProductBeanList.add(productBean);
-                    }
-                    mDateCountProduct.put(timeProductBean.getDateTime(),timeProductBean.getBeanList().size());
+                    Toast.makeText(getContext(),"有异常抛出",Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "错误", e);
                 }
-                Log.i(TAG, "数据：  " + mProductBeanList.size());
-                mProductListView.setAdapter(new ProductAdapter());
+
+                @Override
+                public void onResponse(String response)
+                {
+                    List<TimeProductBean> timeProductBeanList = parseProductDataJson(response);
+                    for (TimeProductBean timeProductBean : timeProductBeanList)
+                    {
+                        //存入数据库时间，由于数据库识别不了中文，转成全英的
+                        String dateTimedb=timeProductBean.getDateTime().replaceAll("[\u4e00-\u9fa5]+","/");
+                        dateTimedb=dateTimedb.substring(0,dateTimedb.length()-1);
+                        TimeProductBean timeProductBeandb;
+                        List<TimeProductBean> timeProductBeanListdb=DataSupport.where("datetime =?",dateTimedb).find(TimeProductBean.class);
+                        if(timeProductBeanListdb==null||timeProductBeanListdb.size()==0)
+                        {
+                            timeProductBeandb=new TimeProductBean();
+                            //保存到数据库
+                            timeProductBeandb.setDateTime(dateTimedb);
+                        }
+                        else
+                        {
+                            //返回原来数据
+                            timeProductBeandb=DataSupport.where("datetime =?",dateTimedb).find(TimeProductBean.class).get(0);
+                        }
+                        mProductBeanList.add(timeProductBean.getDateTime());
+                        for(ProductBean productBean:timeProductBean.getBeanList())
+                        {
+                            productBean.setDateTime(timeProductBean.getDateTime());
+                            //添加数据库中
+                            if(DataSupport.where("serialnumber=? and name=?",productBean.getSerialNumber(),productBean.getName()).find(ProductBean.class).size()==0)
+                            {
+                                productBean.save();
+                            }
+                            //添加不重复到数据库中
+                            timeProductBeandb.getBeanList().add(productBean);
+                            mProductBeanList.add(productBean);
+                        }
+                        //提交到数据库中
+                        timeProductBeandb.save();
+                        mDateCountProduct.put(timeProductBean.getDateTime(),timeProductBean.getBeanList().size());
+                    }
+                    mProductListView.setAdapter(new ProductAdapter());
+                }
+            }, new OkHttpNetWorkUtil.Param(Consts.USERID_KEY, Consts.TESTUSERID));
+        }
+        else
+        {
+            List<TimeProductBean> timeProductBeanList=DataSupport.findAll(TimeProductBean.class,true);
+            for (TimeProductBean timeProductBean : timeProductBeanList)
+            {
+                String dateTimedb=timeProductBean.getDateTime();
+                String[] dateArray=dateTimedb.split("/");
+                if(dateArray!=null&&dateArray.length!=0)
+                {
+                    dateTimedb=dateArray[0]+"年"+dateArray[1]+"月"+dateArray[2]+"日";
+                }
+                mProductBeanList.add(dateTimedb);
+                for(ProductBean productBean:timeProductBean.getBeanList())
+                {
+                    productBean.setDateTime(dateTimedb);
+                    mProductBeanList.add(productBean);
+                }
+                mDateCountProduct.put(dateTimedb,timeProductBean.getBeanList().size());
             }
-        }, new OkHttpNetWorkUtil.Param(Consts.USERID_KEY, Consts.TESTUSERID));
+            mProductListView.setAdapter(new ProductAdapter());
+        }
     }
 
     private class ProductAdapter extends ArrayAdapter<Object>
@@ -192,8 +244,28 @@ public class FragmentProduct extends Fragment
                             if(count==0)
                             {
                                 mProductBeanList.remove(productBean.getDateTime());
+                                //删除数据库对应的时间
+                                DataSupport.deleteAll(TimeProductBean.class, "datetime=?",productBean.getDateTime());
+
                             }
                             mDateCountProduct.put(productBean.getDateTime(),count);
+                            OkHttpNetWorkUtil.postAsyn(Consts.DELETE_PRODUCT, new OkHttpNetWorkUtil.ResultCallback<String>()
+                            {
+                                @Override
+                                public void onError(Request request, Exception e)
+                                {
+                                    e.printStackTrace();
+                                    displayToast("删除失败");
+                                }
+
+                                @Override
+                                public void onResponse(String response)
+                                {
+                                    //删除数据库对应的产品
+                                    DataSupport.deleteAll(ProductBean.class, "serialnumber=? and name=?", productBean.getSerialNumber(), productBean.getName());
+                                    displayToast("删除成功");
+                                }
+                            },new OkHttpNetWorkUtil.Param(Consts.USERID_KEY, ShareUtils.getUserId(getActivity())),new OkHttpNetWorkUtil.Param(Consts.SERIALNUMBERVALUEKEY,productBean.getSerialNumber()));
                             notifyDataSetChanged();
                         }
                     }
@@ -244,7 +316,10 @@ public class FragmentProduct extends Fragment
         {
             Log.i(TAG,"点击");
             Intent intent=new Intent();
-            intent.putExtra(Consts.SERIALNUMBERVALUEKEY,((ProductBean)mProductBeanList.get(position)).getSerialNumber());
+            Bundle bundle=new Bundle();
+            bundle.putParcelable(Consts.PRODUCT_BEAN,(ProductBean)mProductBeanList.get(position));
+           // intent.putExtra(Consts.SERIALNUMBERVALUEKEY,((ProductBean)mProductBeanList.get(position)).getSerialNumber());
+            intent.putExtras(bundle);
             intent.setClass(getActivity(), ProductDetailActivity.class);
             startActivity(intent);
         }
@@ -256,5 +331,10 @@ public class FragmentProduct extends Fragment
         super.onDestroyView();
         //释放线程池资源
         MyApplication.getInstance().sThreadManager.release();
+    }
+
+    private void displayToast(String warnning)
+    {
+        Toast.makeText(getActivity(),warnning,Toast.LENGTH_SHORT).show();
     }
 }

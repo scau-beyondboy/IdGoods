@@ -1,5 +1,6 @@
 package com.scau.beyondboy.idgoods;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,9 +15,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.scau.beyondboy.idgoods.consts.Consts;
 import com.scau.beyondboy.idgoods.fragment.FragmentHome;
+import com.scau.beyondboy.idgoods.fragment.FragmentLogin;
 import com.scau.beyondboy.idgoods.fragment.FragmentProduct;
+import com.scau.beyondboy.idgoods.fragment.FragmentModifyPassword;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -26,12 +31,16 @@ import butterknife.OnClick;
 public class MainActivity extends AppCompatActivity
 {
     private static final String TAG = MainActivity.class.getName();
+    @Bind(R.id.title_content)
+    TextView titleContent;
     @Bind(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
     @Bind(R.id.menu_toggle)
     ImageView toggleImageView;
     @Bind(R.id.menu_search)
     public SearchView mSearchView;
+    @Bind(R.id.changesetting)
+    TextView changeSetting;
     private FragmentManager mFragmentManager;
     private ActionBarDrawerToggle mDrawerToggle;
     @Override
@@ -78,8 +87,31 @@ public class MainActivity extends AppCompatActivity
             case R.id.myproduct:
                 changeFragment(new FragmentProduct(), true);
                 break;
+            case R.id.setting:
+                if(changeSetting.getText().toString().equals("登陆"))
+                {
+                    changeFragment(new FragmentLogin(),true);
+                }
+                else
+                {
+                    changeFragment(new FragmentModifyPassword(),true);
+                    titleContent.setVisibility(View.VISIBLE);
+                }
+                break;
         }
     }
+
+    @Override
+    protected void onNewIntent(Intent intent)
+    {
+        super.onNewIntent(intent);
+        if(intent.getBooleanExtra(Consts.USERS_SIGNUP,false))
+        {
+            changeSetting.setText("设置");
+            changeFragment(new FragmentHome(),true);
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -88,6 +120,10 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    public void setChangeSetting(String content)
+    {
+        changeSetting.setText(content);
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -105,7 +141,7 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
     //切换不同的fragment
-    private void changeFragment(Fragment fragment,boolean isAddToStack)
+    public void changeFragment(Fragment fragment,boolean isAddToStack)
     {
         //开启事务
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
@@ -118,4 +154,8 @@ public class MainActivity extends AppCompatActivity
         transaction.commit();
     }
 
+    public TextView getTitleContent()
+    {
+        return titleContent;
+    }
 }
