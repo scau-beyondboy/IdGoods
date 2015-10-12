@@ -40,5 +40,13 @@ public class Consts
     public static final String UPDATE_PASSWORD = "Users/updatePassword";
     public static final String ORIPASSWORD_KEY = "oriPassword";
     public static final String NEWPASSWORD_KEY = "newPassword";
+    public static final String UPDATE_INFO =HOST+"/Users/updateInfo";
+    public static final String AVATER_KEY = "avater";
+    public static final String EMAIL_KEY = "email";
+    public static final String BIRTHDAY_KEY = "birthday";
+    public static final String ADDRESS_KEY = "address";
+    public static final String SEX_KEY = "sex";
+    public static final String NICKNAME_KEY = "nickname";
+    public static final String DATE="date";
 }
 

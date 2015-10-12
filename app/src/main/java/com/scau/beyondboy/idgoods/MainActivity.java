@@ -20,8 +20,9 @@ import android.widget.TextView;
 import com.scau.beyondboy.idgoods.consts.Consts;
 import com.scau.beyondboy.idgoods.fragment.FragmentHome;
 import com.scau.beyondboy.idgoods.fragment.FragmentLogin;
-import com.scau.beyondboy.idgoods.fragment.FragmentProduct;
 import com.scau.beyondboy.idgoods.fragment.FragmentModifyPassword;
+import com.scau.beyondboy.idgoods.fragment.FragmentProduct;
+import com.scau.beyondboy.idgoods.model.UserBean;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -43,6 +44,10 @@ public class MainActivity extends AppCompatActivity
     TextView changeSetting;
     private FragmentManager mFragmentManager;
     private ActionBarDrawerToggle mDrawerToggle;
+    @Bind(R.id.user_name)
+    TextView userName;
+    private UserBean mUserBean;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -67,13 +72,19 @@ public class MainActivity extends AppCompatActivity
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         changeFragment(new FragmentHome(), true);
+       /* List<UserBean> userBeans= DataSupport.where("account=?", ShareUtils.getAccount(this)).find(UserBean.class);
+        if(userBeans.size()!=0)
+        {
+            mUserBean =userBeans.get(0);
+        }
+        userName.setText(mUserBean.getNickname());*/
     }
     @OnClick(R.id.menu_toggle)
     public void menuToggle()
     {
         mDrawerLayout.openDrawer(GravityCompat.START);
     }
-    @OnClick({R.id.home,R.id.myproduct,R.id.mycollect,R.id.setting})
+    @OnClick({R.id.home,R.id.myproduct,R.id.mycollect,R.id.setting,R.id.header_image})
     public void onClick(View view)
     {
         boolean isDrawerOpen=mDrawerLayout.isDrawerOpen(GravityCompat.START);
@@ -98,6 +109,8 @@ public class MainActivity extends AppCompatActivity
                     titleContent.setVisibility(View.VISIBLE);
                 }
                 break;
+            case R.id.header_image:
+                startActivity(new Intent(this,PersonInfoActivity.class));
         }
     }
 

@@ -67,10 +67,6 @@
         android:label="@string/title_activity_selecte_pay" >
       </activity>
       <activity
-        android:name=".PersonalInformationActivity"
-        android:label="@string/title_activity_personal_information" >
-      </activity>
-      <activity
         android:name=".ChangeEmailActivity"
         android:label="@string/title_activity_change_email" >
       </activity>
@@ -79,7 +75,15 @@
         android:label="@string/title_activity_change_address" >
       </activity>
       <activity
+        android:name=".ChangeNickNameActivity"
+        android:label="@string/title_activity_change_address" >
+      </activity>
+      <activity
         android:name=".SelectePayActivity"
+        android:label="@string/title_activity_selecte_pay" >
+      </activity>
+      <activity
+        android:name=".PersonInfoActivity"
         android:label="@string/title_activity_selecte_pay" >
       </activity>
     </application>

@@ -23,20 +23,23 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * 修改地址
+ * Author:beyondboy
+ * Gmail:xuguoli.scau@gmail.com
+ * Date: 2015-10-12
+ * Time: 11:05
+ * 修改昵称
  */
-
-public class ChangeAddressActivity extends AppCompatActivity
+public class ChangeNickNameActivity extends AppCompatActivity
 {
-    @Bind(R.id.address)
-    ClearEditText address;
+    @Bind(R.id.nickname)
+    ClearEditText nickname;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_change_address);
+        setContentView(R.layout.activity_change_nickname);
         ButterKnife.bind(this);
-        address.setText(getIntent().getStringExtra(Consts.ADDRESS_KEY));
+        nickname.setText(getIntent().getStringExtra(Consts.NICKNAME_KEY));
     }
 
     @OnClick({R.id.change_back,R.id.save})
@@ -55,7 +58,7 @@ public class ChangeAddressActivity extends AppCompatActivity
 
     private void changeAddress()
     {
-        if(StringUtils.isEmpty(address.getText().toString()))
+        if(StringUtils.isEmpty(nickname.getText().toString()))
         {
             displayToast("不能为空");
         }
@@ -75,11 +78,11 @@ public class ChangeAddressActivity extends AppCompatActivity
                 {
                     parseAddressDataJson(response);
                     ContentValues values = new ContentValues();
-                    values.put(Consts.ADDRESS_KEY,address.getText().toString());
+                    values.put(Consts.NICKNAME_KEY, nickname.getText().toString());
                     //更新数据库
-                    DataSupport.updateAll(UserBean.class, values, "account=?", ShareUtils.getAccount(ChangeAddressActivity.this));
+                    DataSupport.updateAll(UserBean.class, values, "account=?", ShareUtils.getAccount(ChangeNickNameActivity.this));
                 }
-            },new OkHttpNetWorkUtil.Param(Consts.USERID_KEY, ShareUtils.getUserId(this)),new OkHttpNetWorkUtil.Param(Consts.ADDRESS_KEY,address.getText().toString()));
+            }, new OkHttpNetWorkUtil.Param(Consts.USERID_KEY, ShareUtils.getUserId(this)), new OkHttpNetWorkUtil.Param(Consts.NICKNAME_KEY, nickname.getText().toString()));
         }
     }
 

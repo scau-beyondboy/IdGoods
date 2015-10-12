@@ -18,13 +18,15 @@ public class ShareUtils
     public static final String PASSWORD = "password";
     public static final String INVITE_CODE_VALUE = "inviteCodeValue";
     public static final String ACCOUNT = "account";
+    private static final String TAG = ShareUtils.class.getName();
+
     public static  void putUserId(Context context,String userId)
     {
         context.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).edit().putString(USER_ID, userId).apply();
     }
     public static  void putAccount(Context context,String account)
     {
-        context.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).edit().putString(USER_ID, account).apply();
+        context.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).edit().putString(ACCOUNT, account).apply();
     }
     public static String getUserId(Context context)
     {

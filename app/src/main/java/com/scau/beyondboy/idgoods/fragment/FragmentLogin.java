@@ -101,7 +101,6 @@ public class FragmentLogin extends Fragment
                         ShareUtils.putUserInfo(getActivity(), userBean, password.getText().toString());
                         mActivity.changeFragment(new FragmentHome(), true);
                         mActivity.setChangeSetting("设置");
-                        Log.i(TAG,"userBean: "+userBean);
                         //添加数据库中
                         if(DataSupport.where("account=?", userBean.getAccount()).find(UserBean.class).size()==0)
                         {
