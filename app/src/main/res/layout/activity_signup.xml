@@ -1,63 +1,76 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/white"
+  android:orientation="vertical"
+  >
+  <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize">
-        <ImageView
-          android:id="@+id/signup_back"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_alignParentLeft="true"
-          android:layout_centerVertical="true"
-          android:src="@drawable/ic_navigate_black_24dp"
-          />
-    </RelativeLayout>
-
+    android:layout_height="?android:attr/actionBarSize"
+    >
     <ImageView
-      android:layout_marginTop="35dp"
-      android:layout_gravity="center_horizontal"
-      android:layout_width="150dp"
-      android:layout_height="150dp"
-      android:layout_centerInParent="true"
-      android:src="@drawable/iconx" />
-
-    <EditText
-      android:hint="请输入用户名"
-      android:layout_marginTop="35dp"
-      android:id="@+id/et_name"
-      android:layout_width="300dp"
+      android:id="@+id/signup_back"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_gravity="center"
-      android:drawableLeft="@drawable/loginuserx"
-      android:inputType="textPersonName" />
-
-    <EditText
-        android:hint="请输入密码"
-        android:id="@+id/et_password"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:drawableLeft="@drawable/loginpasswordx"
-        android:inputType="textPassword" />
-
-    <EditText
-        android:hint="请再次输入密码"
-        android:id="@+id/et_passworde2"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:drawableLeft="@drawable/loginpasswordx"
-        android:inputType="textPassword" />
-    <Button
-        android:id="@+id/btn_signup"
-        android:layout_marginTop="40dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="注册"
-        android:background="@drawable/buttonselector"/>
+      android:layout_alignParentLeft="true"
+      android:layout_centerVertical="true"
+      android:layout_marginLeft="15dp"
+      android:paddingLeft="5dp"
+      android:paddingRight="5dp"
+      android:src="@drawable/ic_navigate_black_24dp"
+      />
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textSize="30sp"
+      android:text="注册"
+      android:textColor="@color/black"
+      android:layout_centerInParent="true"
+      />
+  </RelativeLayout>
+  <ImageView
+    android:layout_width="150dp"
+    android:layout_height="150dp"
+    android:layout_centerInParent="true"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginTop="35dp"
+    android:src="@drawable/iconx"
+    />
+  <EditText
+    android:id="@+id/et_name"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginTop="35dp"
+    android:drawableLeft="@drawable/loginuserx"
+    android:hint="请输入用户名"
+    android:inputType="textPersonName"
+    />
+  <EditText
+    android:id="@+id/et_password"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:drawableLeft="@drawable/loginpasswordx"
+    android:hint="请输入密码"
+    android:inputType="textPassword"
+    />
+  <EditText
+    android:id="@+id/et_passworde2"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:drawableLeft="@drawable/loginpasswordx"
+    android:hint="请再次输入密码"
+    android:inputType="textPassword"
+    />
+  <Button
+    android:id="@+id/btn_signup"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginTop="40dp"
+    android:background="@drawable/button_bound"
+    android:text="注册"
+    />
 </LinearLayout>

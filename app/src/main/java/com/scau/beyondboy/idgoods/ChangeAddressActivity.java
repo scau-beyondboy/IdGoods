@@ -2,7 +2,6 @@ package com.scau.beyondboy.idgoods;
 
 import android.content.ContentValues;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
@@ -26,7 +25,7 @@ import butterknife.OnClick;
  * 修改地址
  */
 
-public class ChangeAddressActivity extends AppCompatActivity
+public class ChangeAddressActivity extends BaseActivity
 {
     @Bind(R.id.address)
     ClearEditText address;
@@ -101,5 +100,11 @@ public class ChangeAddressActivity extends AppCompatActivity
         {
             displayToast(data);
         }
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
     }
 }

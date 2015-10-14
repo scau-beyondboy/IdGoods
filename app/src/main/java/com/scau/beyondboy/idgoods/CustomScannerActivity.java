@@ -2,8 +2,6 @@ package com.scau.beyondboy.idgoods;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -26,7 +24,7 @@ import butterknife.OnClick;
  * Time: 20:32
  * 自定义二维扫描框
  */
-public class CustomScannerActivity extends AppCompatActivity implements CompoundBarcodeView.TorchListener
+public class CustomScannerActivity extends BaseActivity implements CompoundBarcodeView.TorchListener
 {
     private static final String TAG = CustomScannerActivity.class.getName();
     /**登录身份标记，0代表用户登录，1代表销售员登录，2代表游客登录*/
@@ -51,7 +49,7 @@ public class CustomScannerActivity extends AppCompatActivity implements Compound
         @Override
         public void possibleResultPoints(List<ResultPoint> resultPoints)
         {
-            Log.i(TAG, "坐标： " + resultPoints);
+           // Log.i(TAG, "坐标： " + resultPoints);
         }
     };
     @Override
@@ -139,4 +137,5 @@ public class CustomScannerActivity extends AppCompatActivity implements Compound
     {
         switchFlashlightButton.setText(R.string.turn_on_flashlight);
     }
+
 }

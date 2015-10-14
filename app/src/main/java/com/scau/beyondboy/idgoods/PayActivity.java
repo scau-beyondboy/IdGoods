@@ -2,7 +2,6 @@ package com.scau.beyondboy.idgoods;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -31,7 +30,7 @@ import butterknife.OnClick;
  * Time: 10:16
  * 支付界面
  */
-public class PayActivity extends AppCompatActivity
+public class PayActivity extends BaseActivity
 {
     private static final String TAG = PayActivity.class.getName();
     /**0代表支付宝，1代表微信*/
@@ -155,5 +154,11 @@ public class PayActivity extends AppCompatActivity
         gson.toJson(new ResponseObject<String>(), type);
         ResponseObject<String> responseObject=gson.fromJson(discountJson,type );
         return responseObject;
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
     }
 }

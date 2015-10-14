@@ -69,6 +69,7 @@ public class FragmentModifyPassword extends Fragment
                 modifyPassword();
                 break;
             case R.id.logout:
+                ShareUtils.clearTempDate(mActivity);
                 mActivity.changeFragment(new FragmentLogin(), true);
                 mActivity.setChangeSetting("登陆");
                 break;

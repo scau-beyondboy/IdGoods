@@ -2,7 +2,6 @@ package com.scau.beyondboy.idgoods;
 
 import android.content.ContentValues;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
@@ -29,7 +28,7 @@ import butterknife.OnClick;
  * Time: 11:05
  * 修改昵称
  */
-public class ChangeNickNameActivity extends AppCompatActivity
+public class ChangeNickNameActivity extends BaseActivity
 {
     @Bind(R.id.nickname)
     ClearEditText nickname;
@@ -104,5 +103,11 @@ public class ChangeNickNameActivity extends AppCompatActivity
         {
             displayToast(data);
         }
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
     }
 }

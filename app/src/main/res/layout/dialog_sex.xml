@@ -4,6 +4,7 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:orientation="vertical"
+  android:background="@drawable/button_bound"
   >
   <RelativeLayout
     android:layout_width="match_parent"
@@ -14,6 +15,8 @@
       android:layout_alignParentBottom="true"
       android:textSize="20sp"
       android:text="取消"
+      android:background="@drawable/button_bound"
+      android:padding="5dp"
       android:layout_marginLeft="10dp"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -21,7 +24,7 @@
     <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:textSize="30sp"
+      android:textSize="25sp"
       android:text="请选择性别"
       android:layout_centerHorizontal="true"
       />
@@ -31,6 +34,8 @@
       android:layout_alignParentRight="true"
       android:layout_marginRight="10dp"
       android:textSize="20sp"
+      android:background="@drawable/button_bound"
+      android:padding="5dp"
       android:text="确定"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -41,6 +46,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     >
+    <RadioButton
+      android:id="@+id/other"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textSize="40sp"
+      android:button="@null"
+      android:background="@drawable/dialog_sex_selector"
+      android:gravity="center"
+      android:text="其他"
+      />
     <RadioButton
       android:id="@+id/man"
       android:layout_width="match_parent"

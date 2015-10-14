@@ -1,11 +1,10 @@
 package com.scau.beyondboy.idgoods;
 
 
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -19,7 +18,7 @@ import com.scau.beyondboy.idgoods.manager.MediaManager;
  * 录音主界面
  */
 
-public class SoundRecordActivity extends AppCompatActivity implements MediaManager.SoundFinishListener {
+public class SoundRecordActivity extends BaseActivity implements MediaManager.SoundFinishListener {
     private static final int STATE_NORMAL = 1;
     private static final int STATE_RECORDING = 2;
     private static final int STATE_CHECKE = 3;

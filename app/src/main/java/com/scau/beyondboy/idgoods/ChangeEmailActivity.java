@@ -2,7 +2,6 @@ package com.scau.beyondboy.idgoods;
 
 import android.content.ContentValues;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
@@ -25,7 +24,8 @@ import butterknife.OnClick;
 /**
  *修改email
  */
-public class ChangeEmailActivity extends AppCompatActivity {
+public class ChangeEmailActivity extends BaseActivity
+{
 
     @Bind(R.id.email)
     ClearEditText email;
@@ -100,5 +100,11 @@ public class ChangeEmailActivity extends AppCompatActivity {
         {
             displayToast(data);
         }
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
     }
 }

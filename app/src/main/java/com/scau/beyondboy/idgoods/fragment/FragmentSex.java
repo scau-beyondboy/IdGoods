@@ -31,7 +31,7 @@ import butterknife.OnClick;
 public class FragmentSex extends DialogFragment
 {
     private static FragmentSex sFragmentSex;
-    private String[] sexs=new String[]{"未知性别","男","女"};
+    private String[] sexs=new String[]{"其他","男","女"};
     private int whichSex=0;
     private PersonInfoActivity mActivity;
     private Dialog mDialog;
@@ -68,7 +68,7 @@ public class FragmentSex extends DialogFragment
         return mDialog;
     }
 
-    @OnClick({R.id.man,R.id.female,R.id.comfirm,R.id.cancel})
+    @OnClick({R.id.man,R.id.female,R.id.comfirm,R.id.cancel,R.id.other})
     public void changeSex(View view)
     {
         switch (view.getId())
@@ -78,6 +78,9 @@ public class FragmentSex extends DialogFragment
                 break;
             case R.id.female:
                 whichSex=2;
+                break;
+            case R.id.other:
+                whichSex=0;
                 break;
             case R.id.comfirm:
                 mActivity.setSex(sexs[whichSex]);

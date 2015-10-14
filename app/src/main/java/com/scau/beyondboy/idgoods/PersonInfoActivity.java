@@ -3,7 +3,6 @@ package com.scau.beyondboy.idgoods;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +30,7 @@ import butterknife.OnClick;
  * Time: 23:41
  * 设置个人信息
  */
-public class PersonInfoActivity extends AppCompatActivity
+public class PersonInfoActivity extends BaseActivity
 {
     @Bind(R.id.nickname)
     TextView nickName;
@@ -52,7 +51,13 @@ public class PersonInfoActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_information);
-        List<UserBean> userBeans=DataSupport.where("account=?", ShareUtils.getAccount(this)).find(UserBean.class);
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        List<UserBean> userBeans= DataSupport.where("account=?", ShareUtils.getAccount(this)).find(UserBean.class);
         if(userBeans.size()!=0)
         {
             mUserBean=userBeans.get(0);
@@ -124,5 +129,11 @@ public class PersonInfoActivity extends AppCompatActivity
     {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日");
         birthday.setText(simpleDateFormat.format(date));
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
     }
 }

@@ -48,5 +48,6 @@ public class Consts
     public static final String SEX_KEY = "sex";
     public static final String NICKNAME_KEY = "nickname";
     public static final String DATE="date";
+    public static final String FINISHREGISTER = "finishregister";
 }
 

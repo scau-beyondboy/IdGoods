@@ -47,7 +47,6 @@ public class FragmentHome extends Fragment
         inputTdcodeText.setFocusable(true);
         inputTdcodeText.setFocusableInTouchMode(true);
         inputTdcodeText.requestFocus();
-      //  initTest();
         return view;
     }
 

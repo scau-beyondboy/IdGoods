@@ -8,10 +8,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
 import com.scau.beyondboy.idgoods.FinishRegisterActivity;
-import com.scau.beyondboy.idgoods.GetCashActivity;
+import com.scau.beyondboy.idgoods.fragment.FragmentGetCash;
+import com.scau.beyondboy.idgoods.MainActivity;
 import com.scau.beyondboy.idgoods.Vendibility;
 import com.scau.beyondboy.idgoods.consts.Consts;
 import com.scau.beyondboy.idgoods.model.ResponseObject;
@@ -19,8 +18,6 @@ import com.scau.beyondboy.idgoods.model.ScanCodeBean;
 import com.scau.beyondboy.idgoods.utils.OkHttpNetWorkUtil;
 import com.scau.beyondboy.idgoods.utils.ShareUtils;
 import com.squareup.okhttp.Request;
-
-import java.lang.reflect.Type;
 
 /**
  * Author:beyondboy
@@ -90,7 +87,7 @@ final public class FinshBarCodeHandler
                 url=Consts.TOURIST_SCAN;
                 params[0]=new OkHttpNetWorkUtil.Param(Consts.SERIALNUMBERVALUEKEY,serialNumberValue);
         }
-        OkHttpNetWorkUtil.postAsyn(url, new OkHttpNetWorkUtil.ResultCallback<String>()
+        OkHttpNetWorkUtil.postAsyn(url, new OkHttpNetWorkUtil.ResultCallback<ResponseObject<Object>>()
         {
             @Override
             public void onError(Request request, Exception e)
@@ -100,7 +97,7 @@ final public class FinshBarCodeHandler
             }
 
             @Override
-            public void onResponse(String response)
+            public void onResponse(ResponseObject<Object> response)
             {
                 skipHandler(identity,response);
             }
@@ -112,39 +109,15 @@ final public class FinshBarCodeHandler
      * @param identity 身份信息
      * @param response 响应实体
      */
-    public static void skipHandler(int identity,String response)
+    public static void skipHandler(int identity,ResponseObject<Object> response)
     {
         ScanCodeBean scanCodeBean=null;
-        if(identity!=1)
-        {
-            scanCodeBean=parsescanCodeJson(response,identity);
-        }
-        else if(identity==1)
-        {
-            Gson gson=new Gson();
-            Type type=new TypeToken<ResponseObject<String>>(){}.getType();
-            gson.toJson(new ResponseObject<String>(), type);
-            ResponseObject<String> responseObject=gson.fromJson(response,type );
-            // TODO: 2015/10/7 销售员扫描药品成功
-            if(responseObject.getResult()==1)
-            {
-                Log.i(TAG,"销售员成功扫描");
-                Intent intent=new Intent(mContext,Vendibility.class);
-                Bundle bundle=new Bundle();
-                bundle.putString(Consts.SERIALNUMBERVALUEKEY, serialNumberValue);
-                mContext.startActivity(intent);
-                ((AppCompatActivity)mContext).finish();
-            }
-            else
-            {
-                displayToast(responseObject.getData());
-            }
-        }
+        scanCodeBean=parsescanCodeJson(response,identity);
         if(scanCodeBean!=null)
         {
             switch (identity)
             {
-                //销售员
+                //普通用户
                 case 0:
                     Intent intent = null;
                     if (scanCodeBean.getType() == 0 || scanCodeBean.getType() == 2)
@@ -152,13 +125,28 @@ final public class FinshBarCodeHandler
                         if (scanCodeBean.isHasAdded() == false)
                         {
                             //todo 第一次扫描药品,第一次扫描其他
-                            intent = new Intent(mContext, GetCashActivity.class);
+                            if(InputBarCodeWay==0)
+                            {
+                                Log.i(TAG,"到这里吗？");
+                                Bundle bundle=new Bundle();
+                                bundle.putString(Consts.SERIALNUMBERVALUEKEY,serialNumberValue);
+                                bundle.putParcelable(Consts.SCAN_CODE_BEAN, scanCodeBean);
+                                FragmentGetCash fragmentGetCash=new FragmentGetCash();
+                                fragmentGetCash.setArguments(bundle);
+                                ((MainActivity) mContext).changeFragment(fragmentGetCash, true);
+                                return;
+                            }
+                            else
+                            {
+                                intent = new Intent(mContext, MainActivity.class);
+                            }
                         } else if (scanCodeBean.isHasAdded() == true)
                         {
                             // TODO: 2015/10/7 第二次扫描药品,第二次扫描其他
                             intent = new Intent(mContext, FinishRegisterActivity.class);
                         }
-                    } else if (scanCodeBean.getType() == 1)
+                    }
+                    else if (scanCodeBean.getType() == 1)
                     {
                         if (scanCodeBean.isHasAdded() == false)
                         {
@@ -169,8 +157,8 @@ final public class FinshBarCodeHandler
                         }
                     }
                     Bundle bundle = new Bundle();
+                    bundle.putBoolean(Consts.GET_DIS_COUNT, true);
                     bundle.putString(Consts.SERIALNUMBERVALUEKEY, serialNumberValue);
-                    Log.i(TAG,"浏览扫描成功数据： "+scanCodeBean);
                     bundle.putParcelable(Consts.SCAN_CODE_BEAN, scanCodeBean);
                     intent.putExtras(bundle);
                     mContext.startActivity(intent);
@@ -180,6 +168,7 @@ final public class FinshBarCodeHandler
                     //todo 跳转界面
                     break;
             }
+            // 二维码扫描时，要销毁该Activity实例
             if(InputBarCodeWay==1)
             {
                 ((AppCompatActivity)mContext).finish();
@@ -190,34 +179,37 @@ final public class FinshBarCodeHandler
     /**
      * 若返回数据出错，则返回空,并显示信息提示用户，否则返回{@link ScanCodeBean}
      */
-    private static ScanCodeBean parsescanCodeJson(String scanCodeJson,int identity)
+    private static ScanCodeBean parsescanCodeJson(ResponseObject<Object> responseObject,int identity)
     {
         Gson gson=new Gson();
-        try
+        String data=gson.toJson(responseObject.getData());
+        //销售员扫描成功或其他身份用户扫描不成功
+        if(responseObject.getResult()!=1||(responseObject.getResult()==1&&identity==1))
         {
-            Type type=new TypeToken<ResponseObject<ScanCodeBean>>(){}.getType();
-            gson.toJson(new ResponseObject<ScanCodeBean>(), type);
-            ResponseObject<ScanCodeBean> responseObject=gson.fromJson(scanCodeJson,type );
-            return responseObject.getData();
-        } catch (JsonSyntaxException e)
-        {
-            e.printStackTrace();
-            Type type=new TypeToken<ResponseObject<String>>(){}.getType();
-            gson.toJson(new ResponseObject<String>(), type);
-            ResponseObject<String> responseObject=gson.fromJson(scanCodeJson,type );
-            resultExceptionHandler(identity,responseObject.getData());
+            if(responseObject.getResult()==1)
+            {
+                Log.i(TAG,"销售员扫描成功");
+                Intent intent=new Intent(mContext,Vendibility.class);
+                Bundle bundle=new Bundle();
+                bundle.putString(Consts.SERIALNUMBERVALUEKEY, serialNumberValue);
+                mContext.startActivity(intent);
+                // 二维码扫描时，要销毁该Activity实例
+                if(InputBarCodeWay==1)
+                {
+                    ((AppCompatActivity)mContext).finish();
+                }
+               // ((AppCompatActivity)mContext).finish();
+            }
+            else
+            {
+                displayToast(data);
+            }
             return null;
         }
-    }
-
-    /**
-     * 返回数据异常处理
-     * @param identity 登录身份
-     * @param errorInfo 异常信息
-     */
-    private static void resultExceptionHandler(int identity,String errorInfo)
-    {
-        displayToast(errorInfo);
+        else
+        {
+            return gson.fromJson(data,ScanCodeBean.class);
+        }
     }
 
     private static void displayToast(String warnning)

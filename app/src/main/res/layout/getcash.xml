@@ -5,28 +5,28 @@
   android:layout_height="match_parent"
   android:orientation="vertical"
   >
-  <RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="?android:attr/actionBarSize"
-    >
-    <ImageView
-      android:id="@+id/product_detail_back"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_centerVertical="true"
-      android:layout_marginLeft="15dp"
-      android:src="@drawable/ic_menu_black_24dp"
-      />
-    <ImageView
-      android:id="@+id/product_detail_voice"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentRight="true"
-      android:layout_centerVertical="true"
-      android:layout_marginRight="15dp"
-      android:src="@drawable/ic_volume_up_black_24dp"
-      />
-  </RelativeLayout>
+  <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="?android:attr/actionBarSize"-->
+    <!-->-->
+    <!--<ImageView-->
+      <!--android:id="@+id/product_detail_back"-->
+      <!--android:layout_width="wrap_content"-->
+      <!--android:layout_height="wrap_content"-->
+      <!--android:layout_centerVertical="true"-->
+      <!--android:layout_marginLeft="15dp"-->
+      <!--android:src="@drawable/ic_menu_black_24dp"-->
+      <!--/>-->
+    <!--<ImageView-->
+      <!--android:id="@+id/product_detail_voice"-->
+      <!--android:layout_width="wrap_content"-->
+      <!--android:layout_height="wrap_content"-->
+      <!--android:layout_alignParentRight="true"-->
+      <!--android:layout_centerVertical="true"-->
+      <!--android:layout_marginRight="15dp"-->
+      <!--android:src="@drawable/ic_volume_up_black_24dp"-->
+      <!--/>-->
+  <!--</RelativeLayout>-->
   <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"

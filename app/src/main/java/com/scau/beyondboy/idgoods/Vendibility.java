@@ -2,7 +2,6 @@ package com.scau.beyondboy.idgoods;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.scau.beyondboy.idgoods.consts.Consts;
@@ -18,7 +17,7 @@ import butterknife.OnClick;
  * Time: 09:43
  * 产品可销售界面
  */
-public class Vendibility extends AppCompatActivity
+public class Vendibility extends BaseActivity
 {
     @Bind(R.id.adverse_serialnumber)
     TextView serialNumberTextView;
@@ -36,5 +35,11 @@ public class Vendibility extends AppCompatActivity
     public void onClick()
     {
         finish();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
     }
 }

@@ -100,6 +100,7 @@ public class FragmentLogin extends Fragment
                         ShareUtils.clearTempDate(getActivity());
                         ShareUtils.putUserInfo(getActivity(), userBean, password.getText().toString());
                         mActivity.changeFragment(new FragmentHome(), true);
+                        mActivity.setNickName(userBean.getNickname());
                         mActivity.setChangeSetting("设置");
                         //添加数据库中
                         if(DataSupport.where("account=?", userBean.getAccount()).find(UserBean.class).size()==0)
@@ -135,6 +136,6 @@ public class FragmentLogin extends Fragment
 
     private void displayToast(String warnning)
     {
-        Toast.makeText(getActivity(), warnning, Toast.LENGTH_SHORT).show();
+        Toast.makeText(mActivity, warnning, Toast.LENGTH_SHORT).show();
     }
 }

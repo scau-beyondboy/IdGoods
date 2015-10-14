@@ -1,90 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.scau.beyondboy.idgoods" >
-    <uses-permission android:name="android.permission.CAMERA" />
-    <!-- 授予该程序录制声音的权限 -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<manifest package="com.scau.beyondboy.idgoods"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  >
+  <uses-permission android:name="android.permission.CAMERA"/>
+  <!-- 授予该程序录制声音的权限 -->
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+  <uses-permission android:name="android.permission.VIBRATE"/>
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
   <!-- 授予该程序向外部存储器写入数据的权限 -->
-  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.FLASHLIGHTWRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKSREAD_EXTERNAL_STORAGE" />
-    <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:name=".MyApplication"
-        android:theme="@style/AppTheme" >
-        <activity
-          android:name=".MainActivity"
-          android:screenOrientation="portrait"
-          android:launchMode="singleTask"
-          android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-          android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-      <activity android:name=".ProductDetailActivity"
-          android:screenOrientation="portrait"
-          android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-          />
-      <activity
-        android:name=".CustomScannerActivity"
-        android:screenOrientation="portrait"
-        android:stateNotNeeded="true"
-        android:clearTaskOnLaunch="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-        android:windowSoftInputMode="stateAlwaysHidden">
-      </activity>
-      <activity android:name=".GetCashActivity"
-        android:screenOrientation="portrait"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-        />
-      <activity android:name=".FinishRegisterActivity"
-        android:screenOrientation="portrait"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-        />
-      <activity
-        android:name=".SignupActivity"
-        android:label="@string/title_activity_signup" >
-      </activity>
-      <activity
-        android:name=".CheckCodeActivity"
-        android:label="@string/title_activity_get_check_code" >
-      </activity>
-      <activity
-        android:name=".PayActivity"
-        android:label="@string/title_activity_selecte_pay" >
-      </activity>
-      <activity
-        android:name=".Vendibility"
-        android:label="@string/title_activity_selecte_pay" >
-      </activity>
-      <activity
-        android:name=".ChangeEmailActivity"
-        android:label="@string/title_activity_change_email" >
-      </activity>
-      <activity
-        android:name=".ChangeAddressActivity"
-        android:label="@string/title_activity_change_address" >
-      </activity>
-      <activity
-        android:name=".ChangeNickNameActivity"
-        android:label="@string/title_activity_change_address" >
-      </activity>
-      <activity
-        android:name=".SelectePayActivity"
-        android:label="@string/title_activity_selecte_pay" >
-      </activity>
-      <activity
-        android:name=".PersonInfoActivity"
-        android:label="@string/title_activity_selecte_pay" >
-      </activity>
-    </application>
+  <uses-permission android:name="android.permission.FLASHLIGHTWRITE_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.READ_CONTACTS"/>
+  <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKSREAD_EXTERNAL_STORAGE"/>
+  <application
+    android:name=".MyApplication"
+    android:allowBackup="true"
+    android:icon="@mipmap/ic_launcher"
+    android:label="@string/app_name"
+    android:theme="@style/AppTheme"
+    >
+    <activity
+      android:name=".MainActivity"
+      android:label="@string/app_name"
+      android:launchMode="singleTask"
+      android:screenOrientation="portrait"
+      android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+      >
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+    </activity>
+    <activity
+      android:name=".ProductDetailActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+      />
+    <activity
+      android:name=".CustomScannerActivity"
+      android:clearTaskOnLaunch="true"
+      android:screenOrientation="portrait"
+      android:stateNotNeeded="true"
+      android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+      android:windowSoftInputMode="stateAlwaysHidden"
+      >
+    </activity>
+    <!--<activity android:name=".FragmentGetCash"-->
+    <!--android:screenOrientation="portrait"-->
+    <!--android:theme="@style/Theme.AppCompat.Light.NoActionBar"-->
+    <!--/>-->
+    <activity
+      android:name=".FinishRegisterActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+      />
+    <activity
+      android:name=".SignupActivity"
+      android:label="@string/title_activity_signup"
+      >
+    </activity>
+    <activity
+      android:name=".CheckCodeActivity"
+      android:label="@string/title_activity_get_check_code"
+      >
+    </activity>
+    <activity
+      android:name=".PayActivity"
+      android:label="@string/title_activity_selecte_pay"
+      >
+    </activity>
+    <activity
+      android:name=".Vendibility"
+      android:label="@string/title_activity_selecte_pay"
+      >
+    </activity>
+    <activity
+      android:name=".ChangeEmailActivity"
+      android:label="@string/title_activity_change_email"
+      >
+    </activity>
+    <activity
+      android:name=".ChangeAddressActivity"
+      android:label="@string/title_activity_change_address"
+      >
+    </activity>
+    <activity
+      android:name=".ChangeNickNameActivity"
+      android:label="@string/title_activity_change_address"
+      >
+    </activity>
+    <activity
+      android:name=".PersonInfoActivity"
+      android:label="@string/title_activity_selecte_pay"
+      >
+    </activity>
+  </application>
 </manifest>

@@ -98,9 +98,6 @@ public class FragmentDatePicker extends DialogFragment
                 break;
             case R.id.comfirm:
                mActivity.setDate(mDate);
-                /*SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
-                String date=simpleDateFormat.format(mDate);
-                Log.i(TAG,"数据： "+date);*/
                 ContentValues values = new ContentValues();
                 values.put(Consts.BIRTHDAY_KEY,mDate.getTime());
                 //更新数据库

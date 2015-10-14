@@ -9,27 +9,32 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.scau.beyondboy.idgoods.consts.Consts;
+import com.scau.beyondboy.idgoods.fragment.FragmentGetCash;
 import com.scau.beyondboy.idgoods.fragment.FragmentHome;
 import com.scau.beyondboy.idgoods.fragment.FragmentLogin;
 import com.scau.beyondboy.idgoods.fragment.FragmentModifyPassword;
 import com.scau.beyondboy.idgoods.fragment.FragmentProduct;
 import com.scau.beyondboy.idgoods.model.UserBean;
+import com.scau.beyondboy.idgoods.utils.ShareUtils;
+
+import org.litepal.crud.DataSupport;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseActivity
 {
     private static final String TAG = MainActivity.class.getName();
     @Bind(R.id.title_content)
@@ -58,27 +63,51 @@ public class MainActivity extends AppCompatActivity
         mFragmentManager=getSupportFragmentManager();
         mDrawerToggle=new ActionBarDrawerToggle(this,mDrawerLayout,null,R.string.open,R.string.close)
         {
-            @Override
-            public void onDrawerOpened(View drawerView)
-            {
-                toggleImageView.setVisibility(View.INVISIBLE);
-            }
 
             @Override
             public void onDrawerClosed(View drawerView)
             {
                 toggleImageView.setVisibility(View.VISIBLE);
             }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset)
+            {
+                View content=mDrawerLayout.getChildAt(0);
+                View menu=mDrawerLayout.getChildAt(1);
+                float slideDistance=menu.getWidth()*slideOffset;
+                //平移主界面内容布局
+                content.setTranslationX(slideDistance);
+            }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         changeFragment(new FragmentHome(), true);
-       /* List<UserBean> userBeans= DataSupport.where("account=?", ShareUtils.getAccount(this)).find(UserBean.class);
-        if(userBeans.size()!=0)
+        if(ShareUtils.getAccount(this)!=null)
         {
-            mUserBean =userBeans.get(0);
+            List<UserBean> userBeans= DataSupport.where("account=?", ShareUtils.getAccount(this)).find(UserBean.class);
+            if(userBeans.size()!=0)
+            {
+                Log.i(TAG,"有Id");
+                mUserBean =userBeans.get(0);
+                userName.setText(mUserBean.getNickname());
+            }
+            else
+            {
+                userName.setText("未登陆");
+            }
         }
-        userName.setText(mUserBean.getNickname());*/
+        else
+        {
+            userName.setText("未登陆");
+        }
     }
+
+    @Override
+    public void onAttachFragment(Fragment fragment)
+    {
+        super.onAttachFragment(fragment);
+    }
+
     @OnClick(R.id.menu_toggle)
     public void menuToggle()
     {
@@ -93,12 +122,22 @@ public class MainActivity extends AppCompatActivity
         switch (view.getId())
         {
             case R.id.home:
+               // Log.i(TAG,"数据：  "+ShareUtils.getAccount(this)+"      "+ShareUtils.getPassword(this));
                 changeFragment(new FragmentHome(),true);
                 break;
             case R.id.myproduct:
-                changeFragment(new FragmentProduct(), true);
+               // Log.i(TAG, "数据：  " + ShareUtils.getAccount(this) + "      " + ShareUtils.getPassword(this));
+                if(ShareUtils.getAccount(this)==null&&ShareUtils.getPassword(this)==null)
+                {
+                    displayToast("请登录你的账号");
+                }
+                else
+                {
+                    changeFragment(new FragmentProduct(), true);
+                }
                 break;
             case R.id.setting:
+                Log.i(TAG,"数据：  "+ShareUtils.getAccount(this)+"      "+ShareUtils.getPassword(this));
                 if(changeSetting.getText().toString().equals("登陆"))
                 {
                     changeFragment(new FragmentLogin(),true);
@@ -110,49 +149,41 @@ public class MainActivity extends AppCompatActivity
                 }
                 break;
             case R.id.header_image:
-                startActivity(new Intent(this,PersonInfoActivity.class));
+                if(ShareUtils.getAccount(this)==null&&ShareUtils.getPassword(this)==null)
+                {
+                    displayToast("请登录你的账号");
+                }
+               // Log.i(TAG,"数据：  "+ShareUtils.getAccount(this)+"      "+ShareUtils.getPassword(this));
+                else
+                {
+                    startActivity(new Intent(this,PersonInfoActivity.class));
+                }
         }
     }
 
     @Override
     protected void onNewIntent(Intent intent)
     {
+        Log.i(TAG,"真假：  "+intent.getBooleanExtra(Consts.GET_DIS_COUNT,false) );
         super.onNewIntent(intent);
-        if(intent.getBooleanExtra(Consts.USERS_SIGNUP,false))
+        if(intent.getBooleanExtra(Consts.USERS_SIGNUP,false)||intent.getBooleanExtra(Consts.FINISHREGISTER,false))
         {
             changeSetting.setText("设置");
             changeFragment(new FragmentHome(),true);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        else if(intent.getBooleanExtra(Consts.GET_DIS_COUNT,false))
+        {
+            FragmentGetCash fragmentGetCash=new FragmentGetCash();
+            fragmentGetCash.setArguments(intent.getExtras());
+            changeFragment(fragmentGetCash,false);
+        }
     }
 
     public void setChangeSetting(String content)
     {
         changeSetting.setText(content);
     }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings)
-        {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
     //切换不同的fragment
     public void changeFragment(Fragment fragment,boolean isAddToStack)
     {
@@ -170,5 +201,20 @@ public class MainActivity extends AppCompatActivity
     public TextView getTitleContent()
     {
         return titleContent;
+    }
+
+    public void setNickName(String nickName)
+    {
+        userName.setText(nickName);
+    }
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+    }
+
+    private void displayToast(String warnning)
+    {
+        Toast.makeText(this, warnning, Toast.LENGTH_SHORT).show();
     }
 }

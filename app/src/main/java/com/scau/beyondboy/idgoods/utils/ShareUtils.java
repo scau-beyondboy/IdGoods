@@ -43,7 +43,7 @@ public class ShareUtils
     public static void putUserInfo(Context context,UserBean userBean,String password)
     {
         putUserId(context, userBean.getUserId());
-        putPassword(context, userBean.getInviteCodeValue());
+        putInviteCodeValue(context, userBean.getInviteCodeValue());
         putAccount(context, userBean.getAccount());
         putPassword(context,password);
     }

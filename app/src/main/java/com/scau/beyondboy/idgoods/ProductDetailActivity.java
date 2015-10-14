@@ -1,7 +1,6 @@
 package com.scau.beyondboy.idgoods;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,7 +29,7 @@ import butterknife.OnClick;
  * Time: 10:53
  * 产品详细介绍界面
  */
-public class ProductDetailActivity extends AppCompatActivity
+public class ProductDetailActivity extends BaseActivity
 {
     private static final String TAG = ProductDetailActivity.class.getName();
     @Bind(R.id.header_image)
@@ -98,5 +97,11 @@ public class ProductDetailActivity extends AppCompatActivity
         gson.toJson(new ResponseObject<ProductInfo>(), type);
         ResponseObject<ProductInfo> responseObject=gson.fromJson(productDataJson,type );
         return responseObject.getData();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
     }
 }
