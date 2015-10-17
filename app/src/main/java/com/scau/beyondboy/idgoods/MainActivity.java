@@ -158,6 +158,10 @@ public class MainActivity extends BaseActivity
                 {
                     startActivity(new Intent(this,PersonInfoActivity.class));
                 }
+                break;
+            case R.id.mycollect:
+                startActivity(new Intent(this,BlessingActivity.class));
+                break;
         }
     }
 

@@ -5,7 +5,6 @@
   <uses-permission android:name="android.permission.CAMERA"/>
   <!-- 授予该程序录制声音的权限 -->
   <uses-permission android:name="android.permission.INTERNET"/>
-  <uses-permission android:name="android.permission.RECORD_AUDIO"/>
   <uses-permission android:name="android.permission.VIBRATE"/>
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
   <!-- 授予该程序向外部存储器写入数据的权限 -->
@@ -14,6 +13,7 @@
   <uses-permission android:name="android.permission.FLASHLIGHTWRITE_EXTERNAL_STORAGE"/>
   <uses-permission android:name="android.permission.READ_CONTACTS"/>
   <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKSREAD_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.RECORD_AUDIO"/>
   <application
     android:name=".MyApplication"
     android:allowBackup="true"
@@ -92,8 +92,20 @@
       >
     </activity>
     <activity
+      android:name=".RecordActivity"
+      android:label="@string/title_activity_change_address"
+      android:screenOrientation="portrait"
+      />
+    <activity
+      android:name=".BlessingActivity"
+      android:label="@string/title_activity_change_address"
+      android:screenOrientation="portrait"
+      >
+    </activity>
+    <activity
       android:name=".PersonInfoActivity"
       android:label="@string/title_activity_selecte_pay"
+      android:screenOrientation="portrait"
       >
     </activity>
   </application>
