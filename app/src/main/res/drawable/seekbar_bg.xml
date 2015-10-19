@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<shape-->
+  <!--android:shape="rectangle"-->
+  <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+  <!-->-->
+  <!--<corners-->
+    <!--android:radius="5dp"/>-->
+  <!--<solid-->
+    <!--android:color="@color/gray"/>-->
+<!--</shape>-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+  <!-- 背景图，不可加clip属性，否则无显示效果 -->
+  <item android:id="@android:id/background">
+    <inset
+      android:insetBottom="5dip"
+      android:insetTop="5dip" >
+      <shape>
+        <corners android:radius="2dp"/>
+        <solid android:color="@color/gray" />
+      </shape>
+    </inset>
+  </item>
+  <!-- 第一进度条，必须放在第二进度条的下面，否则会被第二进度条覆盖掉而看不到效果 -->
+  <item android:id="@android:id/progress">
+    <clip>
+      <inset
+        android:insetBottom="5dip"
+        android:insetTop="5dip" >
+        <shape>
+          <corners android:radius="2dp"/>
+          <solid android:color="#ff4094eb" />
+        </shape>
+      </inset>
+    </clip>
+  </item>
+
+</layer-list>

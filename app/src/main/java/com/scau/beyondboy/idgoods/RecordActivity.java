@@ -1,6 +1,7 @@
 package com.scau.beyondboy.idgoods;
 
 
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -19,7 +20,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.scau.beyondboy.idgoods.consts.Consts;
 import com.scau.beyondboy.idgoods.manager.ThreadManager;
+import com.scau.beyondboy.idgoods.model.MediaBean;
 import com.scau.beyondboy.idgoods.utils.StorageUtils;
 
 import java.io.File;
@@ -70,10 +73,6 @@ public class RecordActivity extends BaseActivity
      * 采样率
      */
     private int mSamplerateinhz = 8000;
-    /**
-     * 音频源来自麦克风
-     */
-    private int mAudiosource = MediaRecorder.AudioSource.MIC;
     private RandomAccessFile randomAccessWriter;
     /**
      * 记录录音状态，0代表已经创建实例，1代表读取音频内容，2代表正在录音，3代表录音错误
@@ -162,9 +161,23 @@ public class RecordActivity extends BaseActivity
                     Log.i(TAG,"action_move");
                     break;
                 case MotionEvent.ACTION_UP:
-                    Log.i(TAG,"actong_up");
+                    Log.i(TAG, "actong_up");
                     stop();
                     isRecording=false;
+                    Bundle bundle=new Bundle();
+                    MediaBean mediaBean=new MediaBean();
+                    mediaBean.setAudioformat(mAudioformat);
+                    mediaBean.setBufferSize(bufferSize);
+                    mediaBean.setSamplerateinhz(mSamplerateinhz);
+                    mediaBean.setChannelInMono(mChannelInMono);
+                    mediaBean.setFilePath(filePath);
+                    mediaBean.setDate(date.getText().toString());
+                    bundle.putParcelable(Consts.MEDIA_BEAN, mediaBean);
+                    Intent intent=new Intent(this,MainActivity.class);
+                    intent.putExtra(Consts.FRAGMENT_PLAY,true);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                    finish();
                     break;
             }
             return true;

@@ -22,5 +22,5 @@
   <string name="state_recording">松开停止</string>
   <string name="state_check">回放录音</string>
   <string name="state_stop">暂停</string>
-
+  <string name="play_date">正在播放 %1$s</string>
 </resources>

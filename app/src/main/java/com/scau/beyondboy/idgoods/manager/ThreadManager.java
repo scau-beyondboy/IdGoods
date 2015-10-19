@@ -40,6 +40,7 @@ public class ThreadManager
     /**释放线程资源*/
     public static void release()
     {
+        Log.i(TAG,"释放");
         if(sExecutorService!=null)
             sExecutorService.shutdown();
         sExecutorService=null;

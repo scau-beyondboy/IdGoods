@@ -49,5 +49,7 @@ public class Consts
     public static final String NICKNAME_KEY = "nickname";
     public static final String DATE="date";
     public static final String FINISHREGISTER = "finishregister";
+    public static final String MEDIA_BEAN = "MediaBean";
+    public static final String FRAGMENT_PLAY = "FragmentPlay";
 }
 

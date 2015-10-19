@@ -21,6 +21,7 @@ import com.scau.beyondboy.idgoods.fragment.FragmentGetCash;
 import com.scau.beyondboy.idgoods.fragment.FragmentHome;
 import com.scau.beyondboy.idgoods.fragment.FragmentLogin;
 import com.scau.beyondboy.idgoods.fragment.FragmentModifyPassword;
+import com.scau.beyondboy.idgoods.fragment.FragmentPlay;
 import com.scau.beyondboy.idgoods.fragment.FragmentProduct;
 import com.scau.beyondboy.idgoods.model.UserBean;
 import com.scau.beyondboy.idgoods.utils.ShareUtils;
@@ -168,7 +169,7 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onNewIntent(Intent intent)
     {
-        Log.i(TAG,"真假：  "+intent.getBooleanExtra(Consts.GET_DIS_COUNT,false) );
+        Log.i(TAG, "真假：  " + intent.getBooleanExtra(Consts.GET_DIS_COUNT, false));
         super.onNewIntent(intent);
         if(intent.getBooleanExtra(Consts.USERS_SIGNUP,false)||intent.getBooleanExtra(Consts.FINISHREGISTER,false))
         {
@@ -179,7 +180,13 @@ public class MainActivity extends BaseActivity
         {
             FragmentGetCash fragmentGetCash=new FragmentGetCash();
             fragmentGetCash.setArguments(intent.getExtras());
-            changeFragment(fragmentGetCash,false);
+            changeFragment(fragmentGetCash,true);
+        }
+        else if(intent.getBooleanExtra(Consts.FRAGMENT_PLAY,false))
+        {
+            FragmentPlay fragmentPlay=new FragmentPlay();
+            fragmentPlay.setArguments(intent.getExtras());
+            changeFragment(fragmentPlay,true);
         }
     }
 
