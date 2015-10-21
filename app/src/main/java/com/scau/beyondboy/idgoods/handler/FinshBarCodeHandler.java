@@ -8,11 +8,13 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.scau.beyondboy.idgoods.BlessingActivity;
 import com.scau.beyondboy.idgoods.FinishRegisterActivity;
 import com.scau.beyondboy.idgoods.fragment.FragmentGetCash;
 import com.scau.beyondboy.idgoods.MainActivity;
 import com.scau.beyondboy.idgoods.Vendibility;
 import com.scau.beyondboy.idgoods.consts.Consts;
+import com.scau.beyondboy.idgoods.fragment.FragmentListen;
 import com.scau.beyondboy.idgoods.model.ResponseObject;
 import com.scau.beyondboy.idgoods.model.ScanCodeBean;
 import com.scau.beyondboy.idgoods.utils.OkHttpNetWorkUtil;
@@ -115,6 +117,10 @@ final public class FinshBarCodeHandler
         scanCodeBean=parsescanCodeJson(response,identity);
         if(scanCodeBean!=null)
         {
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(Consts.GET_DIS_COUNT, true);
+            bundle.putString(Consts.SERIALNUMBERVALUEKEY, serialNumberValue);
+            bundle.putParcelable(Consts.SCAN_CODE_BEAN, scanCodeBean);
             switch (identity)
             {
                 //普通用户
@@ -127,10 +133,7 @@ final public class FinshBarCodeHandler
                             //todo 第一次扫描药品,第一次扫描其他
                             if(InputBarCodeWay==0)
                             {
-                                Log.i(TAG,"到这里吗？");
-                                Bundle bundle=new Bundle();
-                                bundle.putString(Consts.SERIALNUMBERVALUEKEY,serialNumberValue);
-                                bundle.putParcelable(Consts.SCAN_CODE_BEAN, scanCodeBean);
+                                Log.i(TAG, "到这里吗？");
                                 FragmentGetCash fragmentGetCash=new FragmentGetCash();
                                 fragmentGetCash.setArguments(bundle);
                                 ((MainActivity) mContext).changeFragment(fragmentGetCash, true);
@@ -151,21 +154,25 @@ final public class FinshBarCodeHandler
                         if (scanCodeBean.isHasAdded() == false)
                         {
                             //todo 第一次扫描明信片
+                            intent=new Intent(mContext, BlessingActivity.class);
                         } else if (scanCodeBean.isHasAdded() == true)
                         {
                             // TODO: 2015/10/7 第二次扫描明信片
+                            FragmentListen fragmentListen=new FragmentListen();
+                            fragmentListen.setArguments(bundle);
+                            ((MainActivity) mContext).changeFragment(fragmentListen, true);
+                            return;
                         }
                     }
-                    Bundle bundle = new Bundle();
-                    bundle.putBoolean(Consts.GET_DIS_COUNT, true);
-                    bundle.putString(Consts.SERIALNUMBERVALUEKEY, serialNumberValue);
-                    bundle.putParcelable(Consts.SCAN_CODE_BEAN, scanCodeBean);
                     intent.putExtras(bundle);
                     mContext.startActivity(intent);
                     break;
                 //游客
                 case 2:
                     //todo 跳转界面
+                    FragmentListen fragmentListen=new FragmentListen();
+                    fragmentListen.setArguments(bundle);
+                    ((MainActivity) mContext).changeFragment(fragmentListen, true);
                     break;
             }
             // 二维码扫描时，要销毁该Activity实例

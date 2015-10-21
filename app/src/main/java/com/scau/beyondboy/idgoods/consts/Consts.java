@@ -51,5 +51,13 @@ public class Consts
     public static final String FINISHREGISTER = "finishregister";
     public static final String MEDIA_BEAN = "MediaBean";
     public static final String FRAGMENT_PLAY = "FragmentPlay";
+    public static final String UPLOAD_TOKEN = HOST+"/ConfigController/qiniuUploadToken";
+    public static final String SAVE_RADIO = HOST+"/GoodsController/saveRadio";
+    public static final String RADIO_KEY = "radio";
+    public static final String GET_COLLECT = HOST+"/GoodsController/getCollect";
+    public static final String GET_COLLECT_INFO = HOST+"/GoodsController/getCollectInfo";
+    public static final String COLLECT_BEAN = "CollectBean";
+    public static final String COLLECT_INFO = "CollectInfo";
+    public static final String DELETE_COLLECT = HOST+"/GoodsController/deleteCollect";
 }
 

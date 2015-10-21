@@ -18,6 +18,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.scau.beyondboy.idgoods.CustomScannerActivity;
 import com.scau.beyondboy.idgoods.R;
 import com.scau.beyondboy.idgoods.handler.FinshBarCodeHandler;
+import com.scau.beyondboy.idgoods.utils.ShareUtils;
 import com.scau.beyondboy.idgoods.utils.StringUtils;
 
 import butterknife.Bind;
@@ -75,6 +76,7 @@ public class FragmentHome extends Fragment
             }
             else
             {
+                ShareUtils.putSerialNumberValue(getActivity(),serialNumber);
                 FinshBarCodeHandler.init(serialNumber,getActivity(),0);
                 //二维码扫描处理
                 FinshBarCodeHandler.finishScanHandler();

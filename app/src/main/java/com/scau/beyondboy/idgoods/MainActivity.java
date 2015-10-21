@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.scau.beyondboy.idgoods.consts.Consts;
+import com.scau.beyondboy.idgoods.fragment.FragmentCollect;
 import com.scau.beyondboy.idgoods.fragment.FragmentGetCash;
 import com.scau.beyondboy.idgoods.fragment.FragmentHome;
 import com.scau.beyondboy.idgoods.fragment.FragmentLogin;
@@ -161,7 +162,8 @@ public class MainActivity extends BaseActivity
                 }
                 break;
             case R.id.mycollect:
-                startActivity(new Intent(this,BlessingActivity.class));
+                //startActivity(new Intent(this,BlessingActivity.class));
+                changeFragment(new FragmentCollect(),true);
                 break;
         }
     }

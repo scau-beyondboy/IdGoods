@@ -19,6 +19,8 @@ public class ShareUtils
     public static final String INVITE_CODE_VALUE = "inviteCodeValue";
     public static final String ACCOUNT = "account";
     private static final String TAG = ShareUtils.class.getName();
+    public static final String IMPORTINFOFILE = "importinfo";
+    public static final String NUMBER_VALUE = "serialNumberValue";
 
     public static  void putUserId(Context context,String userId)
     {
@@ -45,7 +47,7 @@ public class ShareUtils
         putUserId(context, userBean.getUserId());
         putInviteCodeValue(context, userBean.getInviteCodeValue());
         putAccount(context, userBean.getAccount());
-        putPassword(context,password);
+        putPassword(context, password);
     }
     public static String getAccount(Context context)
     {
@@ -62,5 +64,13 @@ public class ShareUtils
     public static void clearTempDate(Context context)
     {
         context.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).edit().clear().apply();
+    }
+    public static String getSerialNumberValue(Context context)
+    {
+        return context.getSharedPreferences(IMPORTINFOFILE,Context.MODE_PRIVATE).getString(NUMBER_VALUE,null);
+    }
+    public static  void putSerialNumberValue(Context context,String serialNumberValue)
+    {
+        context.getSharedPreferences(IMPORTINFOFILE,Context.MODE_PRIVATE).edit().putString(NUMBER_VALUE, serialNumberValue).apply();
     }
 }

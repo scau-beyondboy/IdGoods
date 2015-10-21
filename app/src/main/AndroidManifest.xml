@@ -108,5 +108,11 @@
       android:screenOrientation="portrait"
       >
     </activity>
+    <activity
+      android:name=".ListenActivity"
+      android:label="@string/title_activity_selecte_pay"
+      android:screenOrientation="portrait"
+      >
+    </activity>
   </application>
 </manifest>

@@ -31,4 +31,5 @@ dependencies {
     compile 'org.litepal.android:core:1.2.1'
     compile project(':zxing')
     compile 'com.qiniu:qiniu-android-sdk:7.0.+'
+    compile 'com.jakewharton:disklrucache:2.0.2'
 }

@@ -6,5 +6,7 @@
     <mapping class="com.scau.beyondboy.idgoods.model.UserBean"/>
     <mapping class="com.scau.beyondboy.idgoods.model.ProductBean"/>
     <mapping class="com.scau.beyondboy.idgoods.model.TimeProductBean"/>
+    <mapping class="com.scau.beyondboy.idgoods.model.TimeCollectBean"/>
+    <mapping class="com.scau.beyondboy.idgoods.model.CollectBean"/>
   </list>
 </litepal>

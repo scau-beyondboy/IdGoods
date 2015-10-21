@@ -11,6 +11,7 @@ import com.journeyapps.barcodescanner.BarcodeCallback;
 import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.CompoundBarcodeView;
 import com.scau.beyondboy.idgoods.handler.FinshBarCodeHandler;
+import com.scau.beyondboy.idgoods.utils.ShareUtils;
 
 import java.util.List;
 
@@ -39,8 +40,11 @@ public class CustomScannerActivity extends BaseActivity implements CompoundBarco
         {
             if (result.getText() != null)
             {
+                //防止多次扫描
+                barcodeScannerView.pause();
                 barcodeScannerView.setStatusText(result.getText());
                 serialNumberValue=result.getText().toString();
+                ShareUtils.putSerialNumberValue(CustomScannerActivity.this,serialNumberValue);//// TODO: 2015/10/20
                 FinshBarCodeHandler.init(serialNumberValue,CustomScannerActivity.this,1);
                 FinshBarCodeHandler.finishScanHandler();
             }

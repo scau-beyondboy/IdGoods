@@ -22,8 +22,10 @@ import com.scau.beyondboy.idgoods.ProductDetailActivity;
 import com.scau.beyondboy.idgoods.R;
 import com.scau.beyondboy.idgoods.consts.Consts;
 import com.scau.beyondboy.idgoods.manager.ThreadManager;
+import com.scau.beyondboy.idgoods.model.CollectBean;
 import com.scau.beyondboy.idgoods.model.ProductBean;
 import com.scau.beyondboy.idgoods.model.ResponseObject;
+import com.scau.beyondboy.idgoods.model.TimeCollectBean;
 import com.scau.beyondboy.idgoods.model.TimeProductBean;
 import com.scau.beyondboy.idgoods.utils.LoadImageUtils;
 import com.scau.beyondboy.idgoods.utils.NetworkUtils;
@@ -46,19 +48,18 @@ import butterknife.OnItemClick;
 /**
  * Author:beyondboy
  * Gmail:xuguoli.scau@gmail.com
- * Date: 2015-09-20
- * Time: 15:10
- * 我的产品界面
+ * Date: 2015-10-21
+ * Time: 00:28
  */
-public class FragmentProduct extends Fragment
+public class FragmentCollect extends Fragment
 {
-    private static final String TAG = FragmentProduct.class.getName();
+    private static final String TAG = FragmentCollect.class.getName();
     private MainActivity mMainActivity;
-    @Bind(R.id.product_slidelistview)
-    SlideListView mProductListView;
-    private List<Object> mProductBeanList=new LinkedList<>();
-    /**保存时间对应的产品个数*/
-    private Map<String,Integer> mDateCountProduct=new LinkedHashMap<>();
+    @Bind(R.id.collect_slidelistview)
+    SlideListView mCollectListView;
+    private List<Object> mCollectBeanList =new LinkedList<>();
+    /**保存时间对应的收藏个数*/
+    private Map<String,Integer> mDateCountCollect =new LinkedHashMap<>();
     @Override
     public void onAttach(Context context)
     {
@@ -69,7 +70,7 @@ public class FragmentProduct extends Fragment
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view=inflater.inflate(R.layout.myproduct,container,false);
+        View view=inflater.inflate(R.layout.mycollect,container,false);
         ButterKnife.bind(this, view);
         mMainActivity.mSearchView.setVisibility(View.VISIBLE);
         loadDate();
@@ -84,10 +85,10 @@ public class FragmentProduct extends Fragment
     }
 
     /**解析json*/
-    private List<TimeProductBean> parseProductDataJson(String productDataJson)
+    private List<TimeCollectBean> parseCollectDataJson(String productDataJson)
     {
         Gson gson=new Gson();
-        ResponseObject<List<TimeProductBean>> responseObject=gson.fromJson(productDataJson, new TypeToken<ResponseObject<List<TimeProductBean>>>(){}.getType());
+        ResponseObject<List<TimeCollectBean>> responseObject=gson.fromJson(productDataJson, new TypeToken<ResponseObject<List<TimeCollectBean>>>(){}.getType());
         return responseObject.getData();
     }
 
@@ -98,87 +99,86 @@ public class FragmentProduct extends Fragment
     {
         if(NetworkUtils.isNetworkReachable(getActivity()))
         {
-            OkHttpNetWorkUtil.postAsyn(Consts.GET_PRODUCT, new OkHttpNetWorkUtil.ResultCallback<String>()
+            OkHttpNetWorkUtil.postAsyn(Consts.GET_COLLECT, new OkHttpNetWorkUtil.ResultCallback<String>()
             {
 
                 @Override
                 public void onError(Request request, Exception e)
                 {
-                    Toast.makeText(getContext(),"有异常抛出",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "有异常抛出", Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "错误", e);
                 }
 
                 @Override
                 public void onResponse(String response)
                 {
-                    List<TimeProductBean> timeProductBeanList = parseProductDataJson(response);
-                    for (TimeProductBean timeProductBean : timeProductBeanList)
+                    List<TimeCollectBean> timeCollectBeanList = parseCollectDataJson(response);
+                    for (TimeCollectBean timeCollecttBean : timeCollectBeanList)
                     {
                         //存入数据库时间，由于数据库识别不了中文，转成全英的
-                        String dateTimedb=timeProductBean.getDateTime().replaceAll("[\u4e00-\u9fa5]+","/");
-                        dateTimedb=dateTimedb.substring(0,dateTimedb.length()-1);
-                        TimeProductBean timeProductBeandb;
-                        List<TimeProductBean> timeProductBeanListdb=DataSupport.where("datetime =?",dateTimedb).find(TimeProductBean.class);
-                        if(timeProductBeanListdb==null||timeProductBeanListdb.size()==0)
+                        String dateTimedb = timeCollecttBean.getDateTime().replaceAll("[\u4e00-\u9fa5]+", "/");
+                        dateTimedb = dateTimedb.substring(0, dateTimedb.length() - 1);
+                        TimeCollectBean timeCollectBeandb;
+                        List<TimeCollectBean> timeCollectBeanListdb = DataSupport.where("datetime =?", dateTimedb).find(TimeCollectBean.class);
+                        if (timeCollectBeanListdb == null || timeCollectBeanListdb.size() == 0)
                         {
-                            timeProductBeandb=new TimeProductBean();
+                            timeCollectBeandb = new TimeCollectBean();
                             //保存到数据库
-                            timeProductBeandb.setDateTime(dateTimedb);
-                        }
-                        else
+                            timeCollectBeandb.setDateTime(dateTimedb);
+                        } else
                         {
                             //返回原来数据
-                            timeProductBeandb=DataSupport.where("datetime =?",dateTimedb).find(TimeProductBean.class).get(0);
+                            timeCollectBeandb = DataSupport.where("datetime =?", dateTimedb).find(TimeCollectBean.class).get(0);
                         }
-                        mProductBeanList.add(timeProductBean.getDateTime());
-                        for(ProductBean productBean:timeProductBean.getBeanList())
+                        mCollectBeanList.add(timeCollecttBean.getDateTime());
+                        for (CollectBean collectBean : timeCollecttBean.getBeanList())
                         {
-                            productBean.setDateTime(timeProductBean.getDateTime());
+                            collectBean.setDateTime(timeCollecttBean.getDateTime());
                             //添加数据库中
-                            if(DataSupport.where("serialnumber=? and name=?",productBean.getSerialNumber(),productBean.getName()).find(ProductBean.class).size()==0)
+                            if (DataSupport.where("serialnumbervalue=? and name=?", collectBean.getSerialNumberValue(), collectBean.getName()).find(CollectBean.class).size() == 0)
                             {
-                                productBean.save();
+                                collectBean.save();
                             }
                             //添加不重复到数据库中
-                            timeProductBeandb.getBeanList().add(productBean);
-                            mProductBeanList.add(productBean);
+                            timeCollectBeandb.getBeanList().add(collectBean);
+                            mCollectBeanList.add(collectBean);
                         }
                         //提交到数据库中
-                        timeProductBeandb.save();
-                        mDateCountProduct.put(timeProductBean.getDateTime(),timeProductBean.getBeanList().size());
+                        timeCollectBeandb.save();
+                        mDateCountCollect.put(timeCollecttBean.getDateTime(), timeCollecttBean.getBeanList().size());
                     }
-                    mProductListView.setAdapter(new ProductAdapter());
+                    mCollectListView.setAdapter(new CollectAdapter());
                 }
-            }, new OkHttpNetWorkUtil.Param(Consts.USERID_KEY, Consts.TESTUSERID));
+            }, new OkHttpNetWorkUtil.Param(Consts.CUSTOMERID_KEY, Consts.TESTUSERID));
         }
         else
         {
-            List<TimeProductBean> timeProductBeanList=DataSupport.findAll(TimeProductBean.class,true);
-            for (TimeProductBean timeProductBean : timeProductBeanList)
+            List<TimeCollectBean> timeCollectBeanList=DataSupport.findAll(TimeCollectBean.class,true);
+            for (TimeCollectBean timeCollectBean : timeCollectBeanList)
             {
-                String dateTimedb=timeProductBean.getDateTime();
+                String dateTimedb=timeCollectBean.getDateTime();
                 String[] dateArray=dateTimedb.split("/");
                 if(dateArray!=null&&dateArray.length!=0)
                 {
                     dateTimedb=dateArray[0]+"年"+dateArray[1]+"月"+dateArray[2]+"日";
                 }
-                mProductBeanList.add(dateTimedb);
-                for(ProductBean productBean:timeProductBean.getBeanList())
+                mCollectBeanList.add(dateTimedb);
+                for(CollectBean collectBean:timeCollectBean.getBeanList())
                 {
-                    productBean.setDateTime(dateTimedb);
-                    mProductBeanList.add(productBean);
+                    collectBean.setDateTime(dateTimedb);
+                    mCollectBeanList.add(collectBean);
                 }
-                mDateCountProduct.put(dateTimedb,timeProductBean.getBeanList().size());
+                mDateCountCollect.put(dateTimedb, timeCollectBean.getBeanList().size());
             }
-            mProductListView.setAdapter(new ProductAdapter());
+            mCollectListView.setAdapter(new CollectAdapter());
         }
     }
 
-    private class ProductAdapter extends ArrayAdapter<Object>
+    private class CollectAdapter extends ArrayAdapter<Object>
     {
-        public ProductAdapter()
+        public CollectAdapter()
         {
-            super(getActivity(),0,mProductBeanList);
+            super(getActivity(),0, mCollectBeanList);
         }
 
         @Override
@@ -190,7 +190,7 @@ public class FragmentProduct extends Fragment
         @Override
         public Object getItem(int position)
         {
-            return mProductBeanList.get(position);
+            return mCollectBeanList.get(position);
         }
 
         @Override
@@ -209,12 +209,12 @@ public class FragmentProduct extends Fragment
         @Override
         public View getView(final int position, View convertView, ViewGroup parent)
         {
-            if(mProductBeanList.get(position) instanceof ProductBean)
-           {
+            if(mCollectBeanList.get(position) instanceof ProductBean)
+            {
                 Holder2 holder;
                 if(convertView==null)
                 {
-                    convertView=LayoutInflater.from(parent.getContext()).inflate(R.layout.myproduct_list_item2,parent,false);
+                    convertView=LayoutInflater.from(parent.getContext()).inflate(R.layout.mycollect_list_item2,parent,false);
                     holder=new Holder2();
                     ButterKnife.bind(holder,convertView);
                     convertView.setTag(holder);
@@ -223,33 +223,33 @@ public class FragmentProduct extends Fragment
                 {
                     holder=(Holder2)convertView.getTag();
                 }
-                final ProductBean productBean=(ProductBean)mProductBeanList.get(position);
-                LoadImageUtils.getInstance().loadImage(holder.headerImage, productBean.getAdvertisementPhoto(), parent.getContext());
-                holder.productName.setText(productBean.getName()
+                final CollectBean collectBean=(CollectBean) mCollectBeanList.get(position);
+                LoadImageUtils.getInstance().loadImage(holder.headerImage, collectBean.getAdvertisementPhoto(), parent.getContext());
+                holder.collectName.setText(collectBean.getName()
                 );
-                holder.adverseSerialNumber.setText(productBean.getSerialNumber());
+                holder.adverseSerialNumber.setText(collectBean.getSerialNumberValue());
                 //点击删除
                 holder.deleteBn.setOnClickListener(new View.OnClickListener()
                 {
                     @Override
                     public void onClick(View v)
                     {
-                        if(mProductListView.isScrollFinished())
+                        if(mCollectListView.isScrollFinished())
                         {
                             Log.i(TAG, "位置：  " + position);
-                            int count=mDateCountProduct.get(productBean.getDateTime())-1;
+                            int count= mDateCountCollect.get(collectBean.getDateTime())-1;
                             if(position>=0)
-                                mProductBeanList.remove(position);
+                                mCollectBeanList.remove(position);
                             //如果对应时间没有产品，则删除时间
                             if(count==0)
                             {
-                                mProductBeanList.remove(productBean.getDateTime());
+                                mCollectBeanList.remove(collectBean.getDateTime());
                                 //删除数据库对应的时间
-                                DataSupport.deleteAll(TimeProductBean.class, "datetime=?",productBean.getDateTime());
+                                DataSupport.deleteAll(TimeProductBean.class, "datetime=?", collectBean.getDateTime());
 
                             }
-                            mDateCountProduct.put(productBean.getDateTime(),count);
-                            OkHttpNetWorkUtil.postAsyn(Consts.DELETE_PRODUCT, new OkHttpNetWorkUtil.ResultCallback<String>()
+                            mDateCountCollect.put(collectBean.getDateTime(), count);
+                            OkHttpNetWorkUtil.postAsyn(Consts.DELETE_COLLECT, new OkHttpNetWorkUtil.ResultCallback<String>()
                             {
                                 @Override
                                 public void onError(Request request, Exception e)
@@ -262,21 +262,21 @@ public class FragmentProduct extends Fragment
                                 public void onResponse(String response)
                                 {
                                     //删除数据库对应的产品
-                                    DataSupport.deleteAll(ProductBean.class, "serialnumber=? and name=?", productBean.getSerialNumber(), productBean.getName());
+                                    DataSupport.deleteAll(ProductBean.class, "serialnumber=? and name=?", collectBean.getSerialNumberValue(), collectBean.getName());
                                     displayToast("删除成功");
                                 }
-                            },new OkHttpNetWorkUtil.Param(Consts.USERID_KEY, ShareUtils.getUserId(getActivity())),new OkHttpNetWorkUtil.Param(Consts.SERIALNUMBERVALUEKEY,productBean.getSerialNumber()));
+                            },new OkHttpNetWorkUtil.Param(Consts.CUSTOMERID_KEY, ShareUtils.getUserId(getActivity())),new OkHttpNetWorkUtil.Param(Consts.SERIALNUMBERVALUEKEY,collectBean.getSerialNumberValue()));
                             notifyDataSetChanged();
                         }
                     }
                 });
-           }
-            else if(mProductBeanList.get(position) instanceof String )
+            }
+            else if(mCollectBeanList.get(position) instanceof String )
             {
                 Holder1 holder;
                 if(convertView==null)
                 {
-                    convertView=LayoutInflater.from(parent.getContext()).inflate(R.layout.myproduct_list_item1,parent,false);
+                    convertView=LayoutInflater.from(parent.getContext()).inflate(R.layout.mycollect_list_item1,parent,false);
                     holder=new Holder1();
                     ButterKnife.bind(holder,convertView);
                     convertView.setTag(holder);
@@ -285,7 +285,7 @@ public class FragmentProduct extends Fragment
                 {
                     holder=(Holder1)convertView.getTag();
                 }
-                holder.dateTextView.setText((String)mProductBeanList.get(position));
+                holder.dateTextView.setText((String) mCollectBeanList.get(position));
             }
             return convertView;
         }
@@ -301,24 +301,24 @@ public class FragmentProduct extends Fragment
     {
         @Bind(R.id.header_image)
         ImageView headerImage;
-        @Bind(R.id.product_name)
-        TextView productName;
+        @Bind(R.id.collect_name)
+        TextView collectName;
         @Bind(R.id.adverse_serialnumber)
         TextView adverseSerialNumber;
         @Bind(R.id.item_delete)
         Button deleteBn;
     }
 
-    @OnItemClick(R.id.product_slidelistview)
+    @OnItemClick(R.id.collect_slidelistview)
     public void onItemClick(int position)
     {
-        if(mProductBeanList.get(position) instanceof ProductBean)
+        if(mCollectBeanList.get(position) instanceof ProductBean)
         {
             Log.i(TAG,"点击");
             Intent intent=new Intent();
             Bundle bundle=new Bundle();
-            bundle.putParcelable(Consts.PRODUCT_BEAN,(ProductBean)mProductBeanList.get(position));
-           // intent.putExtra(Consts.SERIALNUMBERVALUEKEY,((ProductBean)mProductBeanList.get(position)).getSerialNumber());
+            bundle.putParcelable(Consts.COLLECT_BEAN,(ProductBean) mCollectBeanList.get(position));
+            // intent.putExtra(Consts.SERIALNUMBERVALUEKEY,((ProductBean)mCollectBeanList.get(position)).getSerialNumber());
             intent.putExtras(bundle);
             intent.setClass(getActivity(), ProductDetailActivity.class);
             startActivity(intent);
