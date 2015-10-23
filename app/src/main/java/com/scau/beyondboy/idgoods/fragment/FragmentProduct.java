@@ -149,7 +149,7 @@ public class FragmentProduct extends Fragment
                     }
                     mProductListView.setAdapter(new ProductAdapter());
                 }
-            }, new OkHttpNetWorkUtil.Param(Consts.USERID_KEY, Consts.TESTUSERID));
+            }, new OkHttpNetWorkUtil.Param(Consts.USERID_KEY, ShareUtils.getUserId(mMainActivity)));
         }
         else
         {

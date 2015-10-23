@@ -516,7 +516,7 @@ public class OkHttpNetWorkUtil
      * 获取从网络拉取的文件名
      * @param path 网络地址
      */
-    private String getFileName(String path)
+    private static String getFileName(String path)
     {
         int separatorIndex = path.lastIndexOf("/");
         return (separatorIndex < 0) ? path : path.substring(separatorIndex + 1, path.length());

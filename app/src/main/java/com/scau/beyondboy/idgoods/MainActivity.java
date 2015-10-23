@@ -20,6 +20,7 @@ import com.scau.beyondboy.idgoods.consts.Consts;
 import com.scau.beyondboy.idgoods.fragment.FragmentCollect;
 import com.scau.beyondboy.idgoods.fragment.FragmentGetCash;
 import com.scau.beyondboy.idgoods.fragment.FragmentHome;
+import com.scau.beyondboy.idgoods.fragment.FragmentListen;
 import com.scau.beyondboy.idgoods.fragment.FragmentLogin;
 import com.scau.beyondboy.idgoods.fragment.FragmentModifyPassword;
 import com.scau.beyondboy.idgoods.fragment.FragmentPlay;
@@ -162,8 +163,14 @@ public class MainActivity extends BaseActivity
                 }
                 break;
             case R.id.mycollect:
-                //startActivity(new Intent(this,BlessingActivity.class));
-                changeFragment(new FragmentCollect(),true);
+                if(ShareUtils.getAccount(this)==null&&ShareUtils.getPassword(this)==null)
+                {
+                    displayToast("请登录你的账号");
+                }
+                else
+                {
+                    changeFragment(new FragmentCollect(), true);
+                }
                 break;
         }
     }
@@ -189,6 +196,12 @@ public class MainActivity extends BaseActivity
             FragmentPlay fragmentPlay=new FragmentPlay();
             fragmentPlay.setArguments(intent.getExtras());
             changeFragment(fragmentPlay,true);
+        }
+        else if(intent.getBooleanExtra(Consts.FRAGMENT_LISTEN,false))
+        {
+            FragmentListen fragmentListen=new FragmentListen();
+            fragmentListen.setArguments(intent.getExtras());
+            changeFragment(fragmentListen, true);
         }
     }
 

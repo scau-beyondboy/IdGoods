@@ -59,5 +59,8 @@ public class Consts
     public static final String COLLECT_BEAN = "CollectBean";
     public static final String COLLECT_INFO = "CollectInfo";
     public static final String DELETE_COLLECT = HOST+"/GoodsController/deleteCollect";
+    public static final String ADD_COLLECT = HOST+"/GoodsController/addCollect";
+    public static final String FRAGMENT_LISTEN = "FragmentListen";
+    public static final String QINIU = "http://7xlw46.com1.z0.glb.clouddn.com/";
 }
 

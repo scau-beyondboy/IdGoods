@@ -2,6 +2,7 @@ package com.scau.beyondboy.idgoods.model;
 
 import org.litepal.crud.DataSupport;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -15,9 +16,16 @@ public class TimeCollectBean extends DataSupport
 {
     Long currentDayStartTime;
     Long getCurrentDayEndTime;
-    public String dateTime;
-    public Set<CollectBean> beanList;
+    private String dateTime;
+    private Set<CollectBean> beanList;
 
+    public TimeCollectBean()
+    {
+        if(beanList==null)
+        {
+            beanList=new LinkedHashSet<>();
+        }
+    }
     public Long getCurrentDayStartTime()
     {
         return currentDayStartTime;

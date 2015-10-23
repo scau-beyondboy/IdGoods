@@ -16,9 +16,9 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.scau.beyondboy.idgoods.ListenActivity;
 import com.scau.beyondboy.idgoods.MainActivity;
 import com.scau.beyondboy.idgoods.MyApplication;
-import com.scau.beyondboy.idgoods.ProductDetailActivity;
 import com.scau.beyondboy.idgoods.R;
 import com.scau.beyondboy.idgoods.consts.Consts;
 import com.scau.beyondboy.idgoods.manager.ThreadManager;
@@ -149,7 +149,7 @@ public class FragmentCollect extends Fragment
                     }
                     mCollectListView.setAdapter(new CollectAdapter());
                 }
-            }, new OkHttpNetWorkUtil.Param(Consts.CUSTOMERID_KEY, Consts.TESTUSERID));
+            }, new OkHttpNetWorkUtil.Param(Consts.CUSTOMERID_KEY, ShareUtils.getUserId(mMainActivity)));
         }
         else
         {
@@ -209,7 +209,7 @@ public class FragmentCollect extends Fragment
         @Override
         public View getView(final int position, View convertView, ViewGroup parent)
         {
-            if(mCollectBeanList.get(position) instanceof ProductBean)
+            if(mCollectBeanList.get(position) instanceof CollectBean)
             {
                 Holder2 holder;
                 if(convertView==null)
@@ -309,21 +309,6 @@ public class FragmentCollect extends Fragment
         Button deleteBn;
     }
 
-    @OnItemClick(R.id.collect_slidelistview)
-    public void onItemClick(int position)
-    {
-        if(mCollectBeanList.get(position) instanceof ProductBean)
-        {
-            Log.i(TAG,"点击");
-            Intent intent=new Intent();
-            Bundle bundle=new Bundle();
-            bundle.putParcelable(Consts.COLLECT_BEAN,(ProductBean) mCollectBeanList.get(position));
-            // intent.putExtra(Consts.SERIALNUMBERVALUEKEY,((ProductBean)mCollectBeanList.get(position)).getSerialNumber());
-            intent.putExtras(bundle);
-            intent.setClass(getActivity(), ProductDetailActivity.class);
-            startActivity(intent);
-        }
-    }
 
     @Override
     public void onDestroyView()
@@ -336,5 +321,21 @@ public class FragmentCollect extends Fragment
     private void displayToast(String warnning)
     {
         Toast.makeText(getActivity(),warnning,Toast.LENGTH_SHORT).show();
+    }
+
+    @OnItemClick(R.id.collect_slidelistview)
+    public void onItemClick(int position)
+    {
+        if(mCollectBeanList.get(position) instanceof CollectBean)
+        {
+            Log.i(TAG,"点击");
+            Intent intent=new Intent();
+            Bundle bundle=new Bundle();
+            bundle.putParcelable(Consts.COLLECT_BEAN,(CollectBean)mCollectBeanList.get(position));
+            // intent.putExtra(Consts.SERIALNUMBERVALUEKEY,((ProductBean)mProductBeanList.get(position)).getSerialNumber());
+            intent.putExtras(bundle);
+            intent.setClass(getActivity(), ListenActivity.class);
+            startActivity(intent);
+        }
     }
 }

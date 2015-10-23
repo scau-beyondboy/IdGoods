@@ -1,24 +1,34 @@
 package com.scau.beyondboy.idgoods;
 
-import android.media.AudioFormat;
-import android.media.AudioManager;
-import android.media.AudioTrack;
-import android.os.Build;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.jakewharton.disklrucache.DiskLruCache;
+import com.scau.beyondboy.idgoods.consts.Consts;
+import com.scau.beyondboy.idgoods.manager.ThreadManager;
+import com.scau.beyondboy.idgoods.model.CollectBean;
+import com.scau.beyondboy.idgoods.model.CollectInfo;
+import com.scau.beyondboy.idgoods.model.ResponseObject;
+import com.scau.beyondboy.idgoods.model.ScanCodeBean;
 import com.scau.beyondboy.idgoods.utils.OkHttpNetWorkUtil;
 import com.scau.beyondboy.idgoods.utils.StorageUtils;
 import com.scau.beyondboy.idgoods.utils.StringUtils;
 import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -27,7 +37,6 @@ import java.util.concurrent.ExecutorService;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import okio.Buffer;
 
 /**
  * Author:beyondboy
@@ -38,7 +47,7 @@ import okio.Buffer;
  */
 public class ListenActivity extends AppCompatActivity
 {
-    public static final int CACHEMAXSIZE = 1024 * 1024 * 100;
+    private static final String TAG = ListenActivity.class.getName();
     @Bind(R.id.seekbar)
     SeekBar mSeekBar;
     @Bind(R.id.play)
@@ -50,28 +59,25 @@ public class ListenActivity extends AppCompatActivity
     @Bind(R.id.current_date)
     TextView currentDate;
     private String url;
-    private AudioTrack mAudioTrack;
+    private Handler mHandler=new Handler();
     private byte[] buffer;
     private int bufferSize=2048;
     private boolean isPlay=false;
     private boolean isFinish=true;
+    private boolean isFirstPlay=false;
     private ExecutorService mExecutorService;
+    private boolean isFistLoad=false;
     private String date;
     private long totalTime;
+    private String totalTimeStr;
     private static DiskLruCache sDiskLruCache;
     private InputStream mInputStream;
     private PlayRuannble mPlayRuannble;
-    private Buffer okBuffer;
-    /**
-     * 采样16位
-     */
-    private int mAudioformat = AudioFormat.ENCODING_PCM_16BIT;
-    /**
-     * 双声道
-     */
-    private  short mChannelInMono = AudioFormat.CHANNEL_OUT_MONO;
-    /**采样率数值*/
-    private static int mSampleRates = 8000;
+  //  private static ReentrantLock sReentrantLock = new ReentrantLock();
+    //private static Condition sCondition=sReentrantLock.newCondition();
+    private MediaPlayer player;
+    //private Timer mTimer;
+    Uri uri;
     static
     {
         try
@@ -82,45 +88,197 @@ public class ListenActivity extends AppCompatActivity
             e.printStackTrace();
         }
     }
+
+    private ScanCodeBean mScanCodeBean;
+    private CollectBean mCollectBean;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    protected void onStart()
+    {
+        super.onStart();
+    }
+
+    @Override
+    protected void onCreate(final Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listen);
         ButterKnife.bind(this);
+        date=getResources().getString(R.string.play_date);
+        mScanCodeBean = getIntent().getParcelableExtra(Consts.SCAN_CODE_BEAN);
+        Log.i(TAG,"空吗："+mScanCodeBean);
+        if(mScanCodeBean!=null)
+        {
+            nickName.setText(mScanCodeBean.getAdversementName());
+            url=mScanCodeBean.getAddress();
+            uri=Uri.parse(url);
+        }
+        else
+        {
+            mCollectBean = getIntent().getParcelableExtra(Consts.COLLECT_BEAN);
+            nickName.setText(mCollectBean.getAdvertisementName());
+            /*OkHttpNetWorkUtil.postAsyn(Consts.GET_COLLECT_INFO, new OkHttpNetWorkUtil.ResultCallback<ResponseObject<Object>>()
+            {
+                @Override
+                public void onError(Request request, Exception e)
+                {
+                    e.printStackTrace();
+                    displayToast("错误");
+                }
+
+                @Override
+                public void onResponse(ResponseObject<Object> response)
+                {
+                    try
+                    {
+                        Log.i(TAG, "返回内容:   " + response);
+                        CollectInfo collectInfo = parseCollectInfoDataJson(response);
+                        if (collectInfo != null)
+                        {
+                            Log.i(TAG, "这里吗");
+                            url = collectInfo.getRadioAddress();
+                        }
+                    } catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            });*/
+            new Thread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    Gson gson=new Gson();
+                    try
+                    {
+                        ResponseObject responseObject=gson.fromJson(OkHttpNetWorkUtil.postString(Consts.GET_COLLECT_INFO, new OkHttpNetWorkUtil.Param(Consts.SERIALNUMBERVALUEKEY, mCollectBean.getSerialNumberValue())), ResponseObject.class);
+                        Log.i(TAG, "返回内容:   " + responseObject);
+                        CollectInfo collectInfo = parseCollectInfoDataJson(responseObject);
+                        if (collectInfo != null)
+                        {
+                            Log.i(TAG, "这里吗");
+                            url = collectInfo.getRadioAddress();
+                        }
+                    } catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+            //return;
+        }
+        while (url==null);
+        uri=Uri.parse(url);
+        init();
+        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
+        {
+            @Override
+            public void onCompletion(MediaPlayer mp)
+            {
+                //播放完时候
+                mSeekBar.setProgress(100);
+                play.setSelected(false);
+                play.setText("回放录音");
+                isFinish = true;
+                isPlay = false;
+                currentDate.setText(totalTimeStr);
+            }
+        });
+    }
+
+    @Override
+    public void finishAffinity()
+    {
+        super.finishAffinity();
     }
 
     @OnClick(R.id.play)
     public void play()
     {
+        /*if(!isFistLoad)
+        {
+            OkHttpNetWorkUtil.postAsyn(Consts.GET_COLLECT_INFO, new OkHttpNetWorkUtil.ResultCallback<ResponseObject<Object>>()
+            {
+                @Override
+                public void onError(Request request, Exception e)
+                {
+                    e.printStackTrace();
+                    displayToast("错误");
+                }
+
+                @Override
+                public void onResponse(ResponseObject<Object> response)
+                {
+                    try
+                    {
+                        Log.i(TAG, "返回内容:   " + response);
+                        CollectInfo collectInfo = parseCollectInfoDataJson(response);
+                        if (collectInfo != null)
+                        {
+                            Log.i(TAG, "这里吗");
+                            url = collectInfo.getRadioAddress();
+                        }
+                    } catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                    // sCondition.notifyAll();
+                }
+            }, new OkHttpNetWorkUtil.Param(Consts.SERIALNUMBERVALUEKEY, mCollectBean.getSerialNumberValue()));
+            while (url==null);
+            uri=Uri.parse(url);
+            init();
+            isFistLoad=true;
+            player.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
+            {
+                @Override
+                public void onCompletion(MediaPlayer mp)
+                {
+                    //播放完时候
+                    mSeekBar.setProgress(100);
+                    play.setSelected(false);
+                    play.setText("回放录音");
+                    isFinish = true;
+                    isPlay = false;
+                    currentDate.setText(totalTimeStr);
+                }
+            });
+        }*/
         if(isPlay)
         {
-            mAudioTrack.pause();
+            player.pause();
             isPlay=false;
             play.setSelected(false);
             play.setText("回放录音");
         }
         else
         {
-           /* if(!audioFile.exists())
-            {
-                displayToast("音频文件已删除");
-                return;
-            }*/
             //重复播放
             if(isFinish)
             {
                 try
                 {
                     DiskLruCache.Snapshot snapshot=sDiskLruCache.get(StringUtils.md5(url));
-                    if(snapshot!=null)
+                    if(snapshot!=null&&!isFirstPlay)
                     {
                         mInputStream=snapshot.getInputStream(0);
+                        isFirstPlay=true;
+                        Log.i(TAG,"缓存拉取");
+                        File tempFile=File.createTempFile("tempfile",".wav",getDir("postcardtmp",0));
+                        FileOutputStream out=new FileOutputStream(tempFile);
+                        while ( mInputStream.read(buffer)>0 )
+                        {
+                            out.write(buffer,0,buffer.length);
+                        }
+                        out.close();
+                        player.reset();
+                        player.setDataSource(new FileInputStream(tempFile).getFD());
+                        player.prepare();
                     }
                     else
                     {
-                        repeatPlay(url);
-                        return;
+                        player.seekTo(0);
                     }
                 } catch (IOException e)
                 {
@@ -129,10 +287,27 @@ public class ListenActivity extends AppCompatActivity
                     return;
                 }
             }
+            isFinish=false;
             play.setSelected(true);
             play.setText("暂停");
             isPlay=true;
-            mAudioTrack.play();
+            runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    if(!isFinish&&isPlay&&player!=null)
+                    {
+                        float seconds=player.getCurrentPosition()/1000;
+                        final String minute = seconds / 60 < 10 ? "0" + (int) seconds / 60 : (int) seconds / 60 + "";
+                        final String second = seconds % 60 < 10 ? "0" + (int) seconds % 60 : (int) seconds % 60 + "";
+                        currentDate.setText(String.format(date, String.format("%s:%s", minute, second)));
+                        int progressValue=(int)(seconds/totalTime*100);
+                        mSeekBar.setProgress(progressValue);
+                        mHandler.postDelayed(this, 1000);
+                    }
+                }
+            });
             mExecutorService.submit(createPlayRuannble());
         }
     }
@@ -153,28 +328,28 @@ public class ListenActivity extends AppCompatActivity
 
     private void save()
     {
-        OkHttpNetWorkUtil.getAsyn(url, new OkHttpNetWorkUtil.ResultCallback<Response>()
+        OkHttpNetWorkUtil.downloadAsyn(url, StorageUtils.getCacheDirectory(this).getAbsolutePath(), new OkHttpNetWorkUtil.ResultCallback<String>()
         {
             @Override
             public void onError(Request request, Exception e)
             {
                 e.printStackTrace();
-                displayToast("网络异常");
+                displayToast("出错");
             }
 
             @Override
-            public void onResponse(Response response)
+            public void onResponse(String response)
             {
                 try
                 {
                     //缓存中文件中
-                    DiskLruCache.Editor editor=sDiskLruCache.edit(StringUtils.md5(url));
-                    mInputStream=response.body().byteStream();
-                    if(downloadUrlToStream(mInputStream,editor.newOutputStream(0)))
+                    DiskLruCache.Editor editor = sDiskLruCache.edit(StringUtils.md5(url));
+                    Log.i(TAG, "数据:" + response);
+                    mInputStream =new FileInputStream(new File(response));
+                    if (downloadUrlToStream(mInputStream, editor.newOutputStream(0)))
                     {
                         editor.commit();
-                    }
-                    else
+                    } else
                     {
                         editor.abort();
                     }
@@ -189,19 +364,16 @@ public class ListenActivity extends AppCompatActivity
 
     private void init()
     {
-        bufferSize=AudioTrack.getMinBufferSize(mSampleRates,mChannelInMono,mAudioformat);
+        player=MediaPlayer.create(this, uri);
         buffer=new byte[bufferSize];
-        mAudioTrack=new AudioTrack(AudioManager.STREAM_MUSIC,mSampleRates,mChannelInMono,mAudioformat,bufferSize,AudioTrack.MODE_STREAM);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-        {
-            mAudioTrack.setVolume(1.0f);
-        }
-        else
-        {
-            //noinspection deprecation
-            mAudioTrack.setStereoVolume(1.0f,1.0f);
-        }
-        okBuffer=new Buffer();
+        int  seconds=player.getDuration()/1000;
+        totalTime=player.getDuration()/1000;
+        final String minute = seconds / 60 < 10 ? "0" + (int)seconds / 60 : (int)seconds / 60 + "";
+        final String second = seconds % 60 < 10 ? "0" + (int)seconds % 60 : (int) seconds % 60 + "";
+        total_date.setText(minute+":"+second);
+        totalTimeStr=minute+":"+second;
+        ThreadManager.scoolPoolSize=1;
+        mExecutorService=ThreadManager.createThreadPool();
     }
     private void displayToast(String warnning)
     {
@@ -218,6 +390,7 @@ public class ListenActivity extends AppCompatActivity
                 {
                     mPlayRuannble =new PlayRuannble();
                 }
+
             }
         }
         return mPlayRuannble;
@@ -228,99 +401,8 @@ public class ListenActivity extends AppCompatActivity
         @Override
         public void run()
         {
-            try
-            {
-                while (mInputStream.read(buffer)>=0)
-                {
-                    float seconds=mAudioTrack.getPlaybackHeadPosition() /mAudioTrack.getSampleRate( );
-                    final String minute = seconds / 60 < 10 ? "0" + (int)seconds / 60 : (int)seconds / 60 + "";
-                    final String second = seconds % 60 < 10 ? "0" + (int)seconds % 60 : (int) seconds % 60 + "";
-                    mAudioTrack.write(buffer, 0, buffer.length);
-                    //更新当前播放时间
-                    currentDate.post(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            currentDate.setText(String.format(date, String.format("%s:%s", minute, second)));
-                        }
-                    });
-                    float currentPosition=seconds/totalTime*100;
-                    //更新进度条
-                    mSeekBar.setProgress((int)currentPosition);
-                    //当正在播放，且按暂停时
-                    if(!isFinish&&mAudioTrack.getPlayState()==AudioTrack.PLAYSTATE_PAUSED)
-                    {
-                        runOnUiThread(new Runnable()
-                        {
-                            @Override
-                            public void run()
-                            {
-                                play.setSelected(false);
-                                play.setText("回放录音");
-                            }
-                        });
-                        isPlay=false;
-                        return;
-                    }
-                }
-                //播放完时候
-                mSeekBar.setProgress(100);
-                runOnUiThread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        // currentDate.setText(String.format(date, mMediaBean.getDate()));
-                        play.setSelected(false);
-                        play.setText("回放录音");
-                    }
-                });
-                isFinish=true;
-                isPlay=false;
-                mInputStream.close();
-                mAudioTrack.stop();
-            } catch (Exception e)
-            {
-                e.printStackTrace();
-                displayToast("读取异常");
-            }
+            player.start();
         }
-    }
-
-    /**获取音频流*/
-    private void repeatPlay(String url)
-    {
-        OkHttpNetWorkUtil.getAsyn(url, new OkHttpNetWorkUtil.ResultCallback<Response>()
-        {
-            @Override
-            public void onError(Request request, Exception e)
-            {
-                e.printStackTrace();
-                displayToast("网络异常");
-            }
-
-            @Override
-            public void onResponse(Response response)
-            {
-                try
-                {
-                    mInputStream=response.body().byteStream();
-                    mInputStream.skip(0x2c);
-                    mSeekBar.setProgress(0);
-                    currentDate.setText(String.format(date, "00:00"));
-                    play.setSelected(true);
-                    play.setText("暂停");
-                    isPlay=true;
-                    mAudioTrack.play();
-                    mExecutorService.submit(createPlayRuannble());
-                } catch (IOException e)
-                {
-                    e.printStackTrace();
-                    displayToast("读取异常");
-                }
-            }
-        });
     }
 
     /**保存流到文件中*/
@@ -353,4 +435,37 @@ public class ListenActivity extends AppCompatActivity
             }
         }
     }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        player.stop();
+        player.release();
+        player=null;
+    }
+
+    /**解析json*/
+    private CollectInfo parseCollectInfoDataJson(ResponseObject<Object> responseObject)
+    {
+        try
+        {
+            Gson gson=new Gson();
+            String data=gson.toJson(responseObject.getData());
+            if(responseObject.getResult()==1)
+            {
+                return gson.fromJson(data,CollectInfo.class);
+            }
+            else
+            {
+                displayToast(data);
+                return null;
+            }
+        } catch (JsonSyntaxException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

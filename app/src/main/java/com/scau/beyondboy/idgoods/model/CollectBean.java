@@ -14,6 +14,7 @@ import org.litepal.crud.DataSupport;
  */
 public class CollectBean extends DataSupport implements Parcelable
 {
+    private TimeCollectBean timeCollectBean;
     private String name;
     private String advertisementPhoto;
     private String advertisementName;
@@ -28,6 +29,16 @@ public class CollectBean extends DataSupport implements Parcelable
     public void setDateTime(String dateTime)
     {
         this.dateTime = dateTime;
+    }
+
+    public TimeCollectBean getTimeCollectBean()
+    {
+        return timeCollectBean;
+    }
+
+    public void setTimeCollectBean(TimeCollectBean timeCollectBean)
+    {
+        this.timeCollectBean = timeCollectBean;
     }
 
     public CollectBean()

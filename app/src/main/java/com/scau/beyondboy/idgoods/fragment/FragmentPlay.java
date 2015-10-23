@@ -80,6 +80,7 @@ public class FragmentPlay extends Fragment
     private PlayRuannble mPlayRuannble;
     private MainActivity mActivity;
     private String mToken;
+    private String fileName;
     @Bind(R.id.progressbar)
     CircleProgressBar mProgressBar;
     @Override
@@ -187,6 +188,8 @@ public class FragmentPlay extends Fragment
                             if(uploadBean!=null)
                             {
                                 mToken=uploadBean.getToken();
+                                fileName=uploadBean.getFileName();
+                                fileName+=".wav";
                                 mProgressBar.setVisibility(View.VISIBLE);
                                 upLoading();
                             }
@@ -321,7 +324,7 @@ public class FragmentPlay extends Fragment
     private void upLoading()
     {
         UploadManager manager=new UploadManager();
-        manager.put(audioFile, mMediaBean.getFilePath(), mToken, new UpCompletionHandler()
+        manager.put(audioFile, fileName, mToken, new UpCompletionHandler()
         {
             @Override
             public void complete(String key, ResponseInfo info, JSONObject response)
@@ -344,8 +347,9 @@ public class FragmentPlay extends Fragment
     private void saveRadio()
     {
         ArrayMap<String,String> params=new ArrayMap<>();
-        String fileName=mMediaBean.getFilePath();
-        fileName=fileName.substring(fileName.lastIndexOf("/")+1,fileName.length());
+       // String fileName=mMediaBean.getFilePath();
+        //fileName=fileName.substring(fileName.lastIndexOf("/")+1,fileName.length());
+        fileName=Consts.QINIU+fileName;
         params.put(Consts.RADIO_KEY,fileName);
         params.put(Consts.SERIALNUMBERVALUEKEY,ShareUtils.getSerialNumberValue(mActivity));
         params.put(Consts.CUSTOMERID_KEY,ShareUtils.getUserId(mActivity));
