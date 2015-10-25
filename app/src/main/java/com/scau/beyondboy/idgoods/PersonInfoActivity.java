@@ -1,23 +1,32 @@
 package com.scau.beyondboy.idgoods;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.MainThread;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.scau.beyondboy.idgoods.consts.Consts;
 import com.scau.beyondboy.idgoods.fragment.FragmentDatePicker;
 import com.scau.beyondboy.idgoods.fragment.FragmentSex;
+import com.scau.beyondboy.idgoods.manager.ThreadManager;
+import com.scau.beyondboy.idgoods.model.ResponseObject;
 import com.scau.beyondboy.idgoods.model.UserBean;
+import com.scau.beyondboy.idgoods.utils.OkHttpNetWorkUtil;
+import com.scau.beyondboy.idgoods.utils.ParseJsonUtils;
 import com.scau.beyondboy.idgoods.utils.ShareUtils;
+import com.scau.beyondboy.idgoods.utils.StringUtils;
+import com.scau.beyondboy.idgoods.utils.ToaskUtils;
+import com.squareup.okhttp.Request;
 
 import org.litepal.crud.DataSupport;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -32,6 +41,7 @@ import butterknife.OnClick;
  */
 public class PersonInfoActivity extends BaseActivity
 {
+    //private static final String TAG = PersonInfoActivity.class.getName();
     @Bind(R.id.nickname)
     TextView nickName;
     @Bind(R.id.email)
@@ -46,26 +56,31 @@ public class PersonInfoActivity extends BaseActivity
     private FragmentManager mManager;
     private Date mDate;
     private int whichsex;
+    private boolean isFinished=false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_information);
+        ButterKnife.bind(this);
+        mManager=getSupportFragmentManager();
+        ThreadManager.scoolPoolSize=1;
     }
 
     @Override
-    protected void onResume()
+    protected void onStart()
     {
-        super.onResume();
-        List<UserBean> userBeans= DataSupport.where("account=?", ShareUtils.getAccount(this)).find(UserBean.class);
-        if(userBeans.size()!=0)
-        {
-            mUserBean=userBeans.get(0);
-        }
-        ButterKnife.bind(this);
+        super.onStart();
+    }
+
+    @MainThread
+    private void setInfo(UserBean userBean)
+    {
+        mUserBean=userBean;
         nickName.setText(mUserBean.getNickname());
         email.setText(mUserBean.getEmail());
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日",Locale.CHINA);
         mDate = new Date();
         mDate.setTime(mUserBean.getBirthday());
         birthday.setText(simpleDateFormat.format(mDate));
@@ -76,13 +91,49 @@ public class PersonInfoActivity extends BaseActivity
         else
             sex.setText("女性");
         address.setText(mUserBean.getAddress());
-        mManager=getSupportFragmentManager();
         whichsex=mUserBean.getSex();
+    }
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        //开启线程防止阻塞主界面
+        ThreadManager.addTask(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    final List<UserBean> userBeans = DataSupport.where("account=?", ShareUtils.getAccount()).find(UserBean.class);
+                    if (userBeans.size() != 0)
+                    {
+                        runOnUiThread(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                setInfo(userBeans.get(0));
+                            }
+                        });
+                        isFinished = true;
+                    }
+                } catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @OnClick({R.id.personinfo_back,R.id.nickname_layout,R.id.email_layout,R.id.sex_layout,R.id.birthday_layout,R.id.address_layout})
     public void skipSetting(View view)
     {
+        if(!isFinished)
+        {
+            ToaskUtils.displayToast("个人加载还没完成");
+            return;
+        }
         Intent intent=new Intent();
         switch (view.getId())
         {
@@ -115,10 +166,6 @@ public class PersonInfoActivity extends BaseActivity
         }
     }
 
-    private void displayToast(String warnning)
-    {
-        Toast.makeText(this, warnning, Toast.LENGTH_SHORT).show();
-    }
 
     public void setSex(String chooseSex)
     {
@@ -127,7 +174,7 @@ public class PersonInfoActivity extends BaseActivity
 
     public void setDate(Date date)
     {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日", Locale.CHINA);
         birthday.setText(simpleDateFormat.format(date));
     }
 
@@ -135,5 +182,41 @@ public class PersonInfoActivity extends BaseActivity
     protected void onDestroy()
     {
         super.onDestroy();
+        ThreadManager.release();
+    }
+
+    public static  void changeInfo(final ContentValues values, final String changeKey, final String changeValue)
+    {
+        if(StringUtils.isEmpty(changeValue))
+        {
+            ToaskUtils.displayToast("不能为空");
+        }
+        else
+        {
+            OkHttpNetWorkUtil.postAsyn(Consts.UPDATE_INFO, new OkHttpNetWorkUtil.ResultCallback<ResponseObject<Object>>()
+            {
+                @Override
+                public void onError(Request request, Exception e)
+                {
+                    e.printStackTrace();
+                    ToaskUtils.displayToast("网络异常");
+                }
+
+                @Override
+                public void onResponse(final ResponseObject<Object> response)
+                {
+                    ThreadManager.addTask(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            //更新数据库
+                            DataSupport.updateAll(UserBean.class, values, "account=?", ShareUtils.getAccount());
+                        }
+                    });
+                    ParseJsonUtils.parseDataJson(response, "修改成功");
+                }
+            }, new OkHttpNetWorkUtil.Param(Consts.USERID_KEY, ShareUtils.getUserId()), new OkHttpNetWorkUtil.Param(changeKey,changeValue));
+        }
     }
 }

@@ -106,6 +106,7 @@
       android:name=".PersonInfoActivity"
       android:label="@string/title_activity_selecte_pay"
       android:screenOrientation="portrait"
+      android:launchMode="singleTop"
       >
     </activity>
     <activity

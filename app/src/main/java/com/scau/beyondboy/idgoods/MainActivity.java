@@ -25,6 +25,7 @@ import com.scau.beyondboy.idgoods.fragment.FragmentLogin;
 import com.scau.beyondboy.idgoods.fragment.FragmentModifyPassword;
 import com.scau.beyondboy.idgoods.fragment.FragmentPlay;
 import com.scau.beyondboy.idgoods.fragment.FragmentProduct;
+import com.scau.beyondboy.idgoods.manager.ThreadManager;
 import com.scau.beyondboy.idgoods.model.UserBean;
 import com.scau.beyondboy.idgoods.utils.ShareUtils;
 
@@ -85,24 +86,37 @@ public class MainActivity extends BaseActivity
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         changeFragment(new FragmentHome(), true);
-        if(ShareUtils.getAccount(this)!=null)
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        //开启线程更改头像名
+        ThreadManager.addTask(new Runnable()
         {
-            List<UserBean> userBeans= DataSupport.where("account=?", ShareUtils.getAccount(this)).find(UserBean.class);
-            if(userBeans.size()!=0)
+            @Override
+            public void run()
             {
-                Log.i(TAG,"有Id");
-                mUserBean =userBeans.get(0);
-                userName.setText(mUserBean.getNickname());
+                if(ShareUtils.getAccount(MyApplication.getInstance())!=null)
+                {
+                    List<UserBean> userBeans= DataSupport.where("account=?", ShareUtils.getAccount()).find(UserBean.class);
+                    if(userBeans.size()!=0)
+                    {
+                        mUserBean =userBeans.get(0);
+                        userName.setText(mUserBean.getNickname());
+                    }
+                    else
+                    {
+                        userName.setText("未登陆");
+                    }
+                }
+                else
+                {
+                    userName.setText("未登陆");
+                }
             }
-            else
-            {
-                userName.setText("未登陆");
-            }
-        }
-        else
-        {
-            userName.setText("未登陆");
-        }
+        });
     }
 
     @Override
@@ -156,7 +170,6 @@ public class MainActivity extends BaseActivity
                 {
                     displayToast("请登录你的账号");
                 }
-               // Log.i(TAG,"数据：  "+ShareUtils.getAccount(this)+"      "+ShareUtils.getPassword(this));
                 else
                 {
                     startActivity(new Intent(this,PersonInfoActivity.class));

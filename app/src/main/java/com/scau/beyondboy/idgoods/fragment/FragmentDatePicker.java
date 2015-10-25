@@ -1,12 +1,13 @@
 package com.scau.beyondboy.idgoods.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
@@ -14,10 +15,6 @@ import android.widget.DatePicker;
 import com.scau.beyondboy.idgoods.PersonInfoActivity;
 import com.scau.beyondboy.idgoods.R;
 import com.scau.beyondboy.idgoods.consts.Consts;
-import com.scau.beyondboy.idgoods.model.UserBean;
-import com.scau.beyondboy.idgoods.utils.ShareUtils;
-
-import org.litepal.crud.DataSupport;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -36,13 +33,12 @@ import butterknife.OnClick;
  */
 public class FragmentDatePicker extends DialogFragment
 {
-    private static final String TAG = FragmentDatePicker.class.getName();
+    //private static final String TAG = FragmentDatePicker.class.getName();
     private static FragmentDatePicker sDatePicker;
     private Date mDate;
     @Bind(R.id.datePicker)
     DatePicker datePicker;
     private PersonInfoActivity mActivity;
-    private Dialog mDialog;
 
     public static FragmentDatePicker newInstance(Date date)
     {
@@ -63,16 +59,21 @@ public class FragmentDatePicker extends DialogFragment
         mActivity=(PersonInfoActivity)activity;
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         mDate = (Date) getArguments().getSerializable(Consts.DATE);
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(mDate);
+        if (mDate != null)
+        {
+            calendar.setTime(mDate);
+        }
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
-        View dialogView= LayoutInflater.from(mActivity).inflate(R.layout.dialog_date, null);
+        @SuppressLint("InflateParams")
+        View dialogView= LayoutInflater.from(mActivity).inflate(R.layout.dialog_date,null);
         ButterKnife.bind(this, dialogView);
         datePicker.init(year, month, day, new DatePicker.OnDateChangedListener()
         {
@@ -81,11 +82,9 @@ public class FragmentDatePicker extends DialogFragment
                 mDate = new GregorianCalendar(year, month, day).getTime();
             }
         });
-        Log.i(TAG, "到这里吗？");
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity, R.style.AppCompatAlertDialogStyle);
         builder.setView(dialogView);
-        mDialog = builder.create();
-        return mDialog;
+        return builder.create();
     }
 
     @OnClick({R.id.comfirm,R.id.cancel})
@@ -98,10 +97,9 @@ public class FragmentDatePicker extends DialogFragment
                 break;
             case R.id.comfirm:
                mActivity.setDate(mDate);
-                ContentValues values = new ContentValues();
-                values.put(Consts.BIRTHDAY_KEY,mDate.getTime());
-                //更新数据库
-                DataSupport.updateAll(UserBean.class, values, "account=?", ShareUtils.getAccount(mActivity));
+                final ContentValues values = new ContentValues();
+                values.put(Consts.BIRTHDAY_KEY, mDate.getTime());
+                PersonInfoActivity.changeInfo(values, Consts.BIRTHDAY_KEY, String.valueOf(mDate.getTime()));
                 dismiss();
                 break;
         }

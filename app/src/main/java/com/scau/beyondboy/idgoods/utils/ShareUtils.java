@@ -2,6 +2,7 @@ package com.scau.beyondboy.idgoods.utils;
 
 import android.content.Context;
 
+import com.scau.beyondboy.idgoods.MyApplication;
 import com.scau.beyondboy.idgoods.model.UserBean;
 
 /**
@@ -21,56 +22,110 @@ public class ShareUtils
     private static final String TAG = ShareUtils.class.getName();
     public static final String IMPORTINFOFILE = "importinfo";
     public static final String NUMBER_VALUE = "serialNumberValue";
+    public static final Context appContext= MyApplication.getContext();
 
     public static  void putUserId(Context context,String userId)
     {
-        context.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).edit().putString(USER_ID, userId).apply();
+        appContext.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).edit().putString(USER_ID, userId).apply();
     }
     public static  void putAccount(Context context,String account)
     {
-        context.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).edit().putString(ACCOUNT, account).apply();
+        appContext.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).edit().putString(ACCOUNT, account).apply();
     }
     public static String getUserId(Context context)
     {
-        return context.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).getString(USER_ID,null);
+        return appContext.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).getString(USER_ID,null);
     }
     public static  void putPassword(Context context,String password)
     {
-        context.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).edit().putString(PASSWORD,password).apply();
+        appContext.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).edit().putString(PASSWORD,password).apply();
     }
     public static String getPassword(Context context)
     {
-        return context.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).getString(PASSWORD,null);
+        return appContext.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).getString(PASSWORD,null);
     }
     public static void putUserInfo(Context context,UserBean userBean,String password)
     {
-        putUserId(context, userBean.getUserId());
-        putInviteCodeValue(context, userBean.getInviteCodeValue());
-        putAccount(context, userBean.getAccount());
-        putPassword(context, password);
+        putUserId(appContext, userBean.getUserId());
+        putInviteCodeValue(appContext, userBean.getInviteCodeValue());
+        putAccount(appContext, userBean.getAccount());
+        putPassword(appContext, password);
     }
     public static String getAccount(Context context)
     {
-        return context.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).getString(ACCOUNT,null);
+        return appContext.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).getString(ACCOUNT,null);
     }
     public static  void putInviteCodeValue(Context context,String inviteCodeValue)
     {
-        context.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).edit().putString(INVITE_CODE_VALUE,inviteCodeValue).apply();
+        appContext.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).edit().putString(INVITE_CODE_VALUE,inviteCodeValue).apply();
     }
     public static String getInviteCodeValue(Context context)
     {
-        return context.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).getString(INVITE_CODE_VALUE,null);
+        return appContext.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).getString(INVITE_CODE_VALUE,null);
     }
     public static void clearTempDate(Context context)
     {
-        context.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).edit().clear().apply();
+        appContext.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).edit().clear().apply();
     }
     public static String getSerialNumberValue(Context context)
     {
-        return context.getSharedPreferences(IMPORTINFOFILE,Context.MODE_PRIVATE).getString(NUMBER_VALUE,null);
+        return appContext.getSharedPreferences(IMPORTINFOFILE,Context.MODE_PRIVATE).getString(NUMBER_VALUE,null);
     }
     public static  void putSerialNumberValue(Context context,String serialNumberValue)
     {
-        context.getSharedPreferences(IMPORTINFOFILE,Context.MODE_PRIVATE).edit().putString(NUMBER_VALUE, serialNumberValue).apply();
+        appContext.getSharedPreferences(IMPORTINFOFILE,Context.MODE_PRIVATE).edit().putString(NUMBER_VALUE, serialNumberValue).apply();
+    }
+
+    /**====================================================================================================================================*/
+    public static  void putUserId(String userId)
+    {
+        appContext.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).edit().putString(USER_ID, userId).apply();
+    }
+    public static  void putAccount(String account)
+    {
+        appContext.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).edit().putString(ACCOUNT, account).apply();
+    }
+    public static String getUserId()
+    {
+        return appContext.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).getString(USER_ID,null);
+    }
+    public static  void putPassword(String password)
+    {
+        appContext.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).edit().putString(PASSWORD,password).apply();
+    }
+    public static String getPassword()
+    {
+        return appContext.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).getString(PASSWORD,null);
+    }
+    public static void putUserInfo(UserBean userBean,String password)
+    {
+        putUserId(appContext, userBean.getUserId());
+        putInviteCodeValue(appContext, userBean.getInviteCodeValue());
+        putAccount(appContext, userBean.getAccount());
+        putPassword(appContext, password);
+    }
+    public static String getAccount()
+    {
+        return appContext.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).getString(ACCOUNT,null);
+    }
+    public static  void putInviteCodeValue(String inviteCodeValue)
+    {
+        appContext.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).edit().putString(INVITE_CODE_VALUE,inviteCodeValue).apply();
+    }
+    public static String getInviteCodeValue()
+    {
+        return appContext.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).getString(INVITE_CODE_VALUE,null);
+    }
+    public static void clearTempDate()
+    {
+        appContext.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).edit().clear().apply();
+    }
+    public static String getSerialNumberValue()
+    {
+        return appContext.getSharedPreferences(IMPORTINFOFILE,Context.MODE_PRIVATE).getString(NUMBER_VALUE,null);
+    }
+    public static  void putSerialNumberValue(String serialNumberValue)
+    {
+        appContext.getSharedPreferences(IMPORTINFOFILE,Context.MODE_PRIVATE).edit().putString(NUMBER_VALUE, serialNumberValue).apply();
     }
 }
