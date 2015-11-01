@@ -2,6 +2,7 @@ package com.scau.beyondboy.idgoods;
 
 import android.content.ContentValues;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.scau.beyondboy.idgoods.consts.Consts;
@@ -14,7 +15,7 @@ import butterknife.OnClick;
 /**
  *修改email
  */
-public class ChangeEmailActivity extends BaseActivity
+public class ChangeEmailActivity extends AppCompatActivity
 {
 
     @Bind(R.id.email)
@@ -46,6 +47,6 @@ public class ChangeEmailActivity extends BaseActivity
     {
         ContentValues values = new ContentValues();
         values.put(Consts.EMAIL_KEY,email.getText().toString());
-        PersonInfoActivity.changeInfo(values,Consts.EMAIL_KEY, email.getText().toString());
+        PersonInfoActivity.changeInfo(values,Consts.EMAIL_KEY, email.getText().toString(),this);
     }
 }

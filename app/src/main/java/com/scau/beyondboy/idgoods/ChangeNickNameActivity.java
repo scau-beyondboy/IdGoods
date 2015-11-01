@@ -2,6 +2,7 @@ package com.scau.beyondboy.idgoods;
 
 import android.content.ContentValues;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.scau.beyondboy.idgoods.consts.Consts;
@@ -18,7 +19,7 @@ import butterknife.OnClick;
  * Time: 11:05
  * 修改昵称
  */
-public class ChangeNickNameActivity extends BaseActivity
+public class ChangeNickNameActivity extends AppCompatActivity
 {
     @Bind(R.id.nickname)
     ClearEditText nickname;
@@ -49,6 +50,6 @@ public class ChangeNickNameActivity extends BaseActivity
     {
         ContentValues values = new ContentValues();
         values.put(Consts.NICKNAME_KEY,nickname.getText().toString());
-        PersonInfoActivity.changeInfo(values,Consts.NICKNAME_KEY,nickname.getText().toString());
+        PersonInfoActivity.changeInfo(values,Consts.NICKNAME_KEY,nickname.getText().toString(),this);
     }
 }

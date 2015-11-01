@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.MainThread;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -14,6 +15,7 @@ import com.scau.beyondboy.idgoods.fragment.FragmentSex;
 import com.scau.beyondboy.idgoods.manager.ThreadManager;
 import com.scau.beyondboy.idgoods.model.ResponseObject;
 import com.scau.beyondboy.idgoods.model.UserBean;
+import com.scau.beyondboy.idgoods.utils.NetworkUtils;
 import com.scau.beyondboy.idgoods.utils.OkHttpNetWorkUtil;
 import com.scau.beyondboy.idgoods.utils.ParseJsonUtils;
 import com.scau.beyondboy.idgoods.utils.ShareUtils;
@@ -39,7 +41,7 @@ import butterknife.OnClick;
  * Time: 23:41
  * 设置个人信息
  */
-public class PersonInfoActivity extends BaseActivity
+public class PersonInfoActivity extends AppCompatActivity
 {
     //private static final String TAG = PersonInfoActivity.class.getName();
     @Bind(R.id.nickname)
@@ -185,9 +187,13 @@ public class PersonInfoActivity extends BaseActivity
         ThreadManager.release();
     }
 
-    public static  void changeInfo(final ContentValues values, final String changeKey, final String changeValue)
+    public static  void changeInfo(final ContentValues values, final String changeKey, final String changeValue, final AppCompatActivity activity)
     {
-        if(StringUtils.isEmpty(changeValue))
+        if(!NetworkUtils.isNetworkReachable())
+        {
+            ToaskUtils.displayToast("请设置网络");
+        }
+        else if(StringUtils.isEmpty(changeValue))
         {
             ToaskUtils.displayToast("不能为空");
         }
@@ -212,6 +218,8 @@ public class PersonInfoActivity extends BaseActivity
                         {
                             //更新数据库
                             DataSupport.updateAll(UserBean.class, values, "account=?", ShareUtils.getAccount());
+                            if(activity!=null)
+                                activity.finish();
                         }
                     });
                     ParseJsonUtils.parseDataJson(response, "修改成功");
@@ -219,4 +227,5 @@ public class PersonInfoActivity extends BaseActivity
             }, new OkHttpNetWorkUtil.Param(Consts.USERID_KEY, ShareUtils.getUserId()), new OkHttpNetWorkUtil.Param(changeKey,changeValue));
         }
     }
+
 }

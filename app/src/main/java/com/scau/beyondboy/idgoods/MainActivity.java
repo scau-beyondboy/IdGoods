@@ -1,5 +1,6 @@
 package com.scau.beyondboy.idgoods;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -9,9 +10,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,7 +41,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class MainActivity extends BaseActivity
+public class MainActivity extends AppCompatActivity
 {
     private static final String TAG = MainActivity.class.getName();
     @Bind(R.id.title_content)
@@ -69,12 +72,6 @@ public class MainActivity extends BaseActivity
         {
 
             @Override
-            public void onDrawerClosed(View drawerView)
-            {
-                toggleImageView.setVisibility(View.VISIBLE);
-            }
-
-            @Override
             public void onDrawerSlide(View drawerView, float slideOffset)
             {
                 View content=mDrawerLayout.getChildAt(0);
@@ -83,11 +80,19 @@ public class MainActivity extends BaseActivity
                 //平移主界面内容布局
                 content.setTranslationX(slideDistance);
             }
+
+            @Override
+            public void onDrawerOpened(View drawerView)
+            {
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm.isActive())
+                {
+                    imm.hideSoftInputFromWindow(MainActivity.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);                 }
+            }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         changeFragment(new FragmentHome(), true);
     }
-
     @Override
     protected void onResume()
     {

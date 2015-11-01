@@ -11,7 +11,8 @@
 
   <item android:bottom="8dp" android:right="8dp" android:top="8dp" android:left="8dp" >
     <selector xmlns:android="http://schemas.android.com/apk/res/android">
-      <item android:state_pressed="true">
+      <item
+        android:state_selected="true">
         <shape android:shape="oval" >
           <corners android:radius="5dp"/>
           <solid android:color="@color/gray" />
@@ -19,7 +20,8 @@
         </shape>
       </item>
 
-      <item>
+      <item
+        android:state_selected="false">
         <shape android:shape="oval" >
           <corners android:radius="5dp"/>
           <solid android:color="@color/white" />

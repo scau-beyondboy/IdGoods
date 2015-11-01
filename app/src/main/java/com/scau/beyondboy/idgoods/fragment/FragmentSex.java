@@ -82,7 +82,7 @@ public class FragmentSex extends DialogFragment
                 mActivity.setSex(sexs[whichSex]);
                 final ContentValues values = new ContentValues();
                 values.put(Consts.SEX_KEY, whichSex);
-                PersonInfoActivity.changeInfo(values, Consts.SEX_KEY, String.valueOf(whichSex));
+                PersonInfoActivity.changeInfo(values, Consts.SEX_KEY, String.valueOf(whichSex),null);
                 dismiss();
                 break;
             case R.id.cancel:

@@ -1,10 +1,8 @@
 package com.scau.beyondboy.idgoods;
 
-import android.os.*;
+import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-
-import com.scau.beyondboy.idgoods.utils.ShareUtils;
 
 import java.util.LinkedList;
 
@@ -32,13 +30,13 @@ public class BaseActivity extends AppCompatActivity
     protected void onDestroy()
     {
         super.onDestroy();
-        if(sActivities.size()==1)
+        /*if(sActivities.size()==1)
         {
-            ShareUtils.clearTempDate(this);
-            sActivities.remove(this);
+           // ShareUtils.clearTempDate(this);
+            //sActivities.remove(this);
             Log.i(TAG, "清除临时文件");
         }
         Log.i(TAG,"删除Activity: "+this.toString());
-        sActivities.remove(this);
+        sActivities.remove(this);*/
     }
 }

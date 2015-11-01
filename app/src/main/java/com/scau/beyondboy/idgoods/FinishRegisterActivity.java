@@ -2,6 +2,7 @@ package com.scau.beyondboy.idgoods;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,7 +22,7 @@ import butterknife.OnClick;
  * Time: 21:12
  * 登记完成界面
  */
-public class FinishRegisterActivity extends BaseActivity
+public class FinishRegisterActivity extends AppCompatActivity
 {
     @Bind(R.id.header_image)
     ImageView headerImage;

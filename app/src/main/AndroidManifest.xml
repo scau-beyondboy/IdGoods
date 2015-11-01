@@ -115,5 +115,8 @@
       android:screenOrientation="portrait"
       >
     </activity>
+    <activity android:name=".view.RecordPopupWindow"
+      android:launchMode="singleInstance"
+      android:theme="@style/MyDialogStyleBottom"/>
   </application>
 </manifest>

@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
@@ -24,6 +25,7 @@ public class ThreadManager
     public static int scoolPoolSize=0;
     private static final String TAG = ThreadManager.class.getName();
     private static ExecutorService sExecutorService;
+    private static ExecutorService singalExecutorService;
     /** 总共多少任务（根据CPU个数决定创建活动线程的个数,这样取的好处就是可以让手机承受得住） */
     private static final int count = Runtime.getRuntime().availableProcessors();
     private static ArrayMap<String,Future<?>> futureMap=new ArrayMap<>();
@@ -41,6 +43,14 @@ public class ThreadManager
         return sExecutorService;
     }
 
+    public static ExecutorService createsingal()
+    {
+        if(singalExecutorService==null)
+        {
+            singalExecutorService=Executors.newSingleThreadExecutor();
+        }
+        return singalExecutorService;
+    }
     /**释放线程资源*/
     public static void release()
     {
@@ -48,6 +58,9 @@ public class ThreadManager
         if(sExecutorService!=null)
             sExecutorService.shutdown();
         sExecutorService=null;
+        if (singalExecutorService!=null)
+            singalExecutorService.shutdownNow();
+        singalExecutorService=null;
     }
 
     /**获得FutureTask,并根据对象地址保存其FutureTask*/
@@ -65,6 +78,10 @@ public class ThreadManager
         futureMap.get(objectAdress).cancel(true);
     }
 
+    public static void addSingalExecutorTask(Runnable runnable)
+    {
+        createsingal().submit(runnable);
+    }
     /**终止所有线程*/
     public static void stopAllFuture()
     {

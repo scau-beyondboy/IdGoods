@@ -1,9 +1,10 @@
 package com.scau.beyondboy.idgoods.utils;
 
-import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+
+import com.scau.beyondboy.idgoods.MyApplication;
 
 /**
  * Author:beyondboy
@@ -19,9 +20,9 @@ public class NetworkUtils
      * 检查手机是否有网络
      * 若有则返回true，没有返回false
      */
-    public static boolean isNetworkReachable(Context context)
+    public static boolean isNetworkReachable()
     {
-        ConnectivityManager manager=(ConnectivityManager)context.getSystemService(context.CONNECTIVITY_SERVICE);
+        ConnectivityManager manager=(ConnectivityManager)MyApplication.getContext().getSystemService(MyApplication.getContext().CONNECTIVITY_SERVICE);
         NetworkInfo current=manager.getActiveNetworkInfo();
         if(current==null)
         {

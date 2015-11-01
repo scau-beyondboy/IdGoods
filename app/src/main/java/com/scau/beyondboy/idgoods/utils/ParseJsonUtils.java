@@ -25,4 +25,19 @@ public class ParseJsonUtils
           ToaskUtils.displayToast(data);
       }
   }
+
+    public static <T> T parseDataJson(ResponseObject<Object> responseObject,Class<T> classOfT)
+    {
+        Gson gson=new Gson();
+        String data=gson.toJson(responseObject.getData());
+        if(responseObject.getResult()==1)
+        {
+            return  gson.fromJson(data,classOfT);
+        }
+        else
+        {
+            ToaskUtils.displayToast(data);
+            return null;
+        }
+    }
 }

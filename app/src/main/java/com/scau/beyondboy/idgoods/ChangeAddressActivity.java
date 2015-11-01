@@ -2,6 +2,7 @@ package com.scau.beyondboy.idgoods;
 
 import android.content.ContentValues;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.scau.beyondboy.idgoods.consts.Consts;
@@ -15,7 +16,7 @@ import butterknife.OnClick;
  * 修改地址
  */
 
-public class ChangeAddressActivity extends BaseActivity
+public class ChangeAddressActivity extends AppCompatActivity
 {
     @Bind(R.id.address)
     ClearEditText address;
@@ -46,6 +47,6 @@ public class ChangeAddressActivity extends BaseActivity
     {
         ContentValues values = new ContentValues();
         values.put(Consts.ADDRESS_KEY,address.getText().toString());
-        PersonInfoActivity.changeInfo(values,Consts.ADDRESS_KEY,address.getText().toString());
+        PersonInfoActivity.changeInfo(values,Consts.ADDRESS_KEY,address.getText().toString(),this);
     }
 }

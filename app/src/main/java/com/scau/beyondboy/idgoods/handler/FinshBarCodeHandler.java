@@ -6,20 +6,19 @@ import android.os.Bundle;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.scau.beyondboy.idgoods.BlessingActivity;
 import com.scau.beyondboy.idgoods.FinishRegisterActivity;
-import com.scau.beyondboy.idgoods.fragment.FragmentGetCash;
 import com.scau.beyondboy.idgoods.MainActivity;
 import com.scau.beyondboy.idgoods.Vendibility;
 import com.scau.beyondboy.idgoods.consts.Consts;
-import com.scau.beyondboy.idgoods.fragment.FragmentListen;
 import com.scau.beyondboy.idgoods.model.ResponseObject;
 import com.scau.beyondboy.idgoods.model.ScanCodeBean;
+import com.scau.beyondboy.idgoods.utils.NetWorkHandlerUtils;
 import com.scau.beyondboy.idgoods.utils.OkHttpNetWorkUtil;
+import com.scau.beyondboy.idgoods.utils.ParseJsonUtils;
 import com.scau.beyondboy.idgoods.utils.ShareUtils;
+import com.scau.beyondboy.idgoods.utils.ToaskUtils;
 import com.squareup.okhttp.Request;
 
 /**
@@ -49,23 +48,19 @@ final public class FinshBarCodeHandler
     /**扫完二维码处理*/
     public static void finishScanHandler()
     {
-        Log.i(TAG,"邀请码： "+ShareUtils.getInviteCodeValue(mContext));
         //用户登录
-        if(ShareUtils.getUserId(mContext)!=null&&ShareUtils.getInviteCodeValue(mContext)==null)
+        if(ShareUtils.getUserId()!=null&&ShareUtils.getInviteCodeValue()==null)
         {
-            Log.i(TAG,"用户登录"+ShareUtils.getInviteCodeValue(mContext));
             identity=0;
         }
         //销售员登录
-        else if(ShareUtils.getUserId(mContext)!=null&&ShareUtils.getInviteCodeValue(mContext)!=null)
+        else if(ShareUtils.getUserId()!=null&&ShareUtils.getInviteCodeValue()!=null)
         {
             identity=1;
-            Log.i(TAG,"销售员登录");
         }
-        else if(ShareUtils.getUserId(mContext)==null)
+        else if(ShareUtils.getUserId()==null)
         {
             identity=2;
-            Log.i(TAG,"游客登陆");
         }
         barCodeVerifyHandler(identity);
     }
@@ -80,13 +75,13 @@ final public class FinshBarCodeHandler
             case 0:
                 params=new OkHttpNetWorkUtil.Param[2];
                 url= Consts.CUSTOMER_SCAN;
-                params[0]=new OkHttpNetWorkUtil.Param(Consts.CUSTOMERID_KEY,ShareUtils.getUserId(mContext));
+                params[0]=new OkHttpNetWorkUtil.Param(Consts.CUSTOMERID_KEY,ShareUtils.getUserId());
                 params[1]=new OkHttpNetWorkUtil.Param(Consts.SERIALNUMBERVALUEKEY,serialNumberValue);
                 break;
             case 1:
                 params=new OkHttpNetWorkUtil.Param[2];
                 url=Consts.SELLER_SCAN;
-                params[0]=new OkHttpNetWorkUtil.Param(Consts.SELLERID_KEY,ShareUtils.getUserId(mContext));
+                params[0]=new OkHttpNetWorkUtil.Param(Consts.SELLERID_KEY,ShareUtils.getUserId());
                 params[1]=new OkHttpNetWorkUtil.Param(Consts.SERIALNUMBERVALUEKEY,serialNumberValue);
                 break;
             case 2:
@@ -100,12 +95,26 @@ final public class FinshBarCodeHandler
             public void onError(Request request, Exception e)
             {
                 Log.e(TAG, "程序有异常抛出", e);
-                displayToast("网络异常");
+                ToaskUtils.displayToast("网络异常");
             }
 
             @Override
             public void onResponse(ResponseObject<Object> response)
             {
+                //单独处理销售员扫描成功
+                if(response.getResult()==1&&identity==1)
+                {
+                    Intent intent=new Intent(mContext,Vendibility.class);
+                    Bundle bundle=new Bundle();
+                    bundle.putString(Consts.SERIALNUMBERVALUEKEY, serialNumberValue);
+                    mContext.startActivity(intent);
+                    // 二维码扫描时，要销毁该Activity实例
+                    if(InputBarCodeWay==1)
+                    {
+                        ((AppCompatActivity)mContext).finish();
+                    }
+                    return;
+                }
                 skipHandler(identity, response);
             }
         }, params);
@@ -118,12 +127,10 @@ final public class FinshBarCodeHandler
      */
     public static void skipHandler(int identity,ResponseObject<Object> response)
     {
-        ScanCodeBean scanCodeBean=null;
-        scanCodeBean=parsescanCodeJson(response,identity);
+        ScanCodeBean  scanCodeBean= ParseJsonUtils.parseDataJson(response,ScanCodeBean.class);
         if(scanCodeBean!=null)
         {
             Bundle bundle = new Bundle();
-            //bundle.putBoolean(Consts.GET_DIS_COUNT, true);
             bundle.putString(Consts.SERIALNUMBERVALUEKEY, serialNumberValue);
             bundle.putParcelable(Consts.SCAN_CODE_BEAN, scanCodeBean);
             Intent intent = null;
@@ -133,25 +140,14 @@ final public class FinshBarCodeHandler
                 case 0:
                     if (scanCodeBean.getType() == 0 || scanCodeBean.getType() == 2)
                     {
-                        if (scanCodeBean.isHasAdded() == false)
+                        if (!scanCodeBean.isHasAdded())
                         {
-                            //todo 第一次扫描药品,第一次扫描其他
-                            if(InputBarCodeWay==0)
-                            {
-                                Log.i(TAG, "到这里吗？");
-                                FragmentGetCash fragmentGetCash=new FragmentGetCash();
-                                fragmentGetCash.setArguments(bundle);
-                                ((MainActivity) mContext).changeFragment(fragmentGetCash, true);
-                                return;
-                            }
-                            else
-                            {
-                                bundle.putBoolean(Consts.GET_DIS_COUNT, true);
-                                intent = new Intent(mContext, MainActivity.class);
-                            }
-                        } else if (scanCodeBean.isHasAdded() == true)
+                            //第一次扫描药品,第一次扫描其他
+                            bundle.putBoolean(Consts.GET_DIS_COUNT, true);
+                            intent = new Intent(mContext, MainActivity.class);
+                        } else
                         {
-                            // TODO: 2015/10/7 第二次扫描药品,第二次扫描其他
+                            // 第二次扫描药品,第二次扫描其他
                             intent = new Intent(mContext, FinishRegisterActivity.class);
                         }
                     }
@@ -165,111 +161,35 @@ final public class FinshBarCodeHandler
                         else
                         {
                             //第二次扫描明信片,没加入收藏列表时
-                            if(scanCodeBean.isHasAdded()==false)
+                            if(!scanCodeBean.isHasAdded())
                             {
                                 ArrayMap<String,String> params=new ArrayMap<>(2);
                                 params.put(Consts.CUSTOMERID_KEY,ShareUtils.getUserId(mContext));
-                                params.put(Consts.SERIALNUMBERVALUEKEY,serialNumberValue);
-                                OkHttpNetWorkUtil.postAsyn(Consts.ADD_COLLECT, new OkHttpNetWorkUtil.ResultCallback<ResponseObject<Object>>()
-                                {
-                                    @Override
-                                    public void onError(Request request, Exception e)
-                                    {
-                                        e.printStackTrace();
-                                        displayToast("网络异常");
-                                    }
-
-                                    @Override
-                                    public void onResponse(ResponseObject<Object> response)
-                                    {
-                                        Gson gson = new Gson();
-                                        String data = gson.toJson(response.getData());
-                                        if (response.getResult() == 1)
-                                        {
-                                            displayToast("收藏成功");
-                                        } else
-                                        {
-                                            displayToast(data);
-                                        }
-                                    }
-                                },params);
+                                params.put(Consts.SERIALNUMBERVALUEKEY, serialNumberValue);
+                                NetWorkHandlerUtils.postAsynHandler(Consts.ADD_COLLECT, params, "收藏成功");
                             }
-                            secondScanPostCard(intent,bundle);
-                            return;
-                            // TODO: 2015/10/7
+                            intent=new Intent(mContext,MainActivity.class);
+                            bundle.putBoolean(Consts.FRAGMENT_LISTEN, true);
                         }
                     }
-                    intent.putExtras(bundle);
-                    mContext.startActivity(intent);
                     break;
                 //游客
                 case 2:
-                    //todo 跳转界面
-                    secondScanPostCard(intent, bundle);
-                    return;
+                    //游客扫描明信片
+                    intent=new Intent(mContext,MainActivity.class);
+                    bundle.putBoolean(Consts.FRAGMENT_LISTEN,true);
+                    break;
             }
+            if (intent != null)
+            {
+                intent.putExtras(bundle);
+            }
+            mContext.startActivity(intent);
             // 二维码扫描时，要销毁该Activity实例
             if(InputBarCodeWay==1)
             {
                 ((AppCompatActivity)mContext).finish();
             }
         }
-    }
-
-    /**
-     * 若返回数据出错，则返回空,并显示信息提示用户，否则返回{@link ScanCodeBean}
-     */
-    private static ScanCodeBean parsescanCodeJson(ResponseObject<Object> responseObject,int identity)
-    {
-        Gson gson=new Gson();
-        String data=gson.toJson(responseObject.getData());
-        //销售员扫描成功或其他身份用户扫描不成功
-        if(responseObject.getResult()!=1||(responseObject.getResult()==1&&identity==1))
-        {
-            if(responseObject.getResult()==1)
-            {
-                Log.i(TAG,"销售员扫描成功");
-                Intent intent=new Intent(mContext,Vendibility.class);
-                Bundle bundle=new Bundle();
-                bundle.putString(Consts.SERIALNUMBERVALUEKEY, serialNumberValue);
-                mContext.startActivity(intent);
-                // 二维码扫描时，要销毁该Activity实例
-                if(InputBarCodeWay==1)
-                {
-                    ((AppCompatActivity)mContext).finish();
-                }
-               // ((AppCompatActivity)mContext).finish();
-            }
-            else
-            {
-                displayToast(data);
-            }
-            return null;
-        }
-        else
-        {
-            return gson.fromJson(data,ScanCodeBean.class);
-        }
-    }
-
-    private static void displayToast(String warnning)
-    {
-        Toast.makeText(mContext, warnning, Toast.LENGTH_SHORT).show();
-    }
-
-    /**第二次扫描跳转处理*/
-    private static void secondScanPostCard(Intent intent, Bundle bundle)
-    {
-        if(InputBarCodeWay==0)
-        {
-            FragmentListen fragmentListen=new FragmentListen();
-            fragmentListen.setArguments(bundle);
-            ((MainActivity) mContext).changeFragment(fragmentListen, true);
-            return;
-        }
-        intent=new Intent(mContext,MainActivity.class);
-        intent.putExtra(Consts.FRAGMENT_LISTEN,true);
-        intent.putExtras(bundle);
-        mContext.startActivity(intent);
     }
 }

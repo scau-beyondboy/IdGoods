@@ -11,6 +11,7 @@ import com.journeyapps.barcodescanner.BarcodeCallback;
 import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.CompoundBarcodeView;
 import com.scau.beyondboy.idgoods.handler.FinshBarCodeHandler;
+import com.scau.beyondboy.idgoods.manager.ThreadManager;
 import com.scau.beyondboy.idgoods.utils.ShareUtils;
 
 import java.util.List;
@@ -33,15 +34,16 @@ public class CustomScannerActivity extends BaseActivity implements CompoundBarco
     private CompoundBarcodeView barcodeScannerView;
     private String serialNumberValue;
     private Button switchFlashlightButton;
+    private boolean alreadyScan=false;
     private BarcodeCallback callback = new BarcodeCallback()
     {
         @Override
         public void barcodeResult(BarcodeResult result)
         {
-            if (result.getText() != null)
+            if (result.getText() != null&&!alreadyScan)
             {
+                alreadyScan=true;
                 //防止多次扫描
-                barcodeScannerView.pause();
                 barcodeScannerView.setStatusText(result.getText());
                 serialNumberValue=result.getText().toString();
                 ShareUtils.putSerialNumberValue(CustomScannerActivity.this,serialNumberValue);//// TODO: 2015/10/20
@@ -95,6 +97,8 @@ public class CustomScannerActivity extends BaseActivity implements CompoundBarco
     protected void onDestroy()
     {
         super.onDestroy();
+        barcodeScannerView.destroyDrawingCache();
+        ThreadManager.release();
     }
 
     @Override

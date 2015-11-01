@@ -12,7 +12,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.scau.beyondboy.idgoods.CustomScannerActivity;
@@ -20,6 +19,7 @@ import com.scau.beyondboy.idgoods.R;
 import com.scau.beyondboy.idgoods.handler.FinshBarCodeHandler;
 import com.scau.beyondboy.idgoods.utils.ShareUtils;
 import com.scau.beyondboy.idgoods.utils.StringUtils;
+import com.scau.beyondboy.idgoods.utils.ToaskUtils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -36,7 +36,6 @@ import butterknife.OnEditorAction;
  */
 public class FragmentHome extends Fragment
 {
-    private String toast;
     @Bind(R.id.input_barcode)
     EditText inputTdcodeText;
     @Nullable
@@ -51,13 +50,7 @@ public class FragmentHome extends Fragment
         return view;
     }
 
-   /* public void initTest()
-    {
-        ShareUtils.clearTempDate(getActivity());
-        ShareUtils.putPassword(getActivity(), "123456");
-        ShareUtils.putUserId(getActivity(), "b9255242c2bf403d92280d364de2ab6c");
-        //ShareUtils.putInviteCodeValue(getActivity(),"0A0D688AFE");
-    }*/
+    //开始扫描
     @OnClick(R.id.scan_barcode)
     public void onClick()
     {
@@ -72,11 +65,11 @@ public class FragmentHome extends Fragment
         {
             if(StringUtils.isEmpty(serialNumber))
             {
-                Toast.makeText(getActivity(),"请输入二维码序列号",Toast.LENGTH_SHORT).show();
+                ToaskUtils.displayToast("请输入二维码序列号");
             }
             else
             {
-                ShareUtils.putSerialNumberValue(getActivity(),serialNumber);
+                ShareUtils.putSerialNumberValue(serialNumber);
                 FinshBarCodeHandler.init(serialNumber,getActivity(),0);
                 //二维码扫描处理
                 FinshBarCodeHandler.finishScanHandler();
@@ -98,16 +91,8 @@ public class FragmentHome extends Fragment
         integrator.setCaptureActivity(CustomScannerActivity.class);
         integrator.setBeepEnabled(true);
         integrator.setOrientationLocked(true);
-        integrator.setCameraId(0);  // Use a specific camera of the device
+        integrator.setCameraId(0);
         integrator.initiateScan();
-    }
-    private void displayToast()
-    {
-        if(getActivity() != null && toast != null)
-        {
-            Toast.makeText(getActivity(), toast, Toast.LENGTH_LONG).show();
-            toast = null;
-        }
     }
 
 }

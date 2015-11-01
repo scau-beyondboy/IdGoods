@@ -1,5 +1,8 @@
 package com.scau.beyondboy.idgoods;
 
+import android.support.v4.util.ArrayMap;
+import android.support.v7.app.AppCompatActivity;
+
 import com.scau.beyondboy.idgoods.manager.ThreadManager;
 
 import org.litepal.LitePalApplication;
@@ -16,6 +19,7 @@ public class MyApplication extends LitePalApplication
     private static final String TAG = MyApplication.class.getName();
     private static MyApplication sMyApplication;
     public static ThreadManager sThreadManager=new ThreadManager();
+    public static ArrayMap<String,AppCompatActivity> sActivityMap =new ArrayMap<>(20);
     //多线程安全返回单例
     public static MyApplication getInstance()
     {

@@ -99,7 +99,7 @@ public class FragmentDatePicker extends DialogFragment
                mActivity.setDate(mDate);
                 final ContentValues values = new ContentValues();
                 values.put(Consts.BIRTHDAY_KEY, mDate.getTime());
-                PersonInfoActivity.changeInfo(values, Consts.BIRTHDAY_KEY, String.valueOf(mDate.getTime()));
+                PersonInfoActivity.changeInfo(values, Consts.BIRTHDAY_KEY, String.valueOf(mDate.getTime()),null);
                 dismiss();
                 break;
         }

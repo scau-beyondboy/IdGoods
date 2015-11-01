@@ -97,7 +97,7 @@ public class FragmentCollect extends Fragment
      */
     private void loadDate()
     {
-        if(NetworkUtils.isNetworkReachable(getActivity()))
+        if(NetworkUtils.isNetworkReachable())
         {
             OkHttpNetWorkUtil.postAsyn(Consts.GET_COLLECT, new OkHttpNetWorkUtil.ResultCallback<String>()
             {

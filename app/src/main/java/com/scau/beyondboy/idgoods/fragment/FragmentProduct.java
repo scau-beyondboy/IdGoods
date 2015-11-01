@@ -96,7 +96,7 @@ public class FragmentProduct extends Fragment
      */
     private void loadDate()
     {
-        if(NetworkUtils.isNetworkReachable(getActivity()))
+        if(NetworkUtils.isNetworkReachable())
         {
             OkHttpNetWorkUtil.postAsyn(Consts.GET_PRODUCT, new OkHttpNetWorkUtil.ResultCallback<String>()
             {
