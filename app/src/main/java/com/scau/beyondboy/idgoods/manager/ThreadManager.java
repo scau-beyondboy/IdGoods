@@ -61,6 +61,8 @@ public class ThreadManager
         if (singalExecutorService!=null)
             singalExecutorService.shutdownNow();
         singalExecutorService=null;
+        stopAllFuture();
+        futureMap.clear();
     }
 
     /**获得FutureTask,并根据对象地址保存其FutureTask*/
@@ -68,26 +70,35 @@ public class ThreadManager
     {
         sExecutorService=createThreadPool();
         Future<T> future=sExecutorService.submit(task);
-        futureMap.put(task.toString(),future);
+        futureMap.put(task.toString(), future);
         return future;
     }
 
     /**终止单个线程*/
     public static void stopFuture(String objectAdress)
     {
-        futureMap.get(objectAdress).cancel(true);
+        if(futureMap.get(objectAdress)!=null)
+        {
+            futureMap.get(objectAdress).cancel(true);
+            futureMap.remove(objectAdress);
+
+        }
     }
 
     public static void addSingalExecutorTask(Runnable runnable)
     {
-        createsingal().submit(runnable);
+        futureMap.put(runnable.toString(),createsingal().submit(runnable));
     }
     /**终止所有线程*/
     public static void stopAllFuture()
     {
         for(String address: futureMap.keySet())
         {
-            futureMap.get(address).cancel(true);
+            if(futureMap.get(address)!=null)
+            {
+                futureMap.get(address).cancel(true);
+                futureMap.remove(address);
+            }
         }
     }
 

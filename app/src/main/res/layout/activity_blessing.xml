@@ -20,13 +20,18 @@
       android:textSize="25sp"
       />
   </RelativeLayout>
-  <ImageView
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/postcard"
+    >
+    <!--<ImageView
     android:id="@+id/blessing_image"
     android:layout_width="match_parent"
     android:layout_weight="1"
     android:layout_height="0dp"
     android:background="@drawable/postcard"
-    />
+    />-->
   <!--<TextView-->
   <!--android:id="@+id/nickname"-->
   <!--android:textSize="25sp"-->
@@ -38,16 +43,25 @@
   <!--android:layout_width="wrap_content"-->
   <!--android:layout_height="wrap_content"-->
   <!--/>-->
+    <com.scau.beyondboy.idgoods.view.CircleProgressBar
+      android:id="@+id/progressbar"
+      android:layout_centerHorizontal="true"
+      android:layout_margin="40dp"
+      android:layout_width="100dp"
+      android:visibility="invisible"
+      android:layout_height="100dp"
+      />
   <Button
     android:id="@+id/voice_blessing"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="bottom"
     android:background="@android:color/black"
     android:gravity="center"
     android:padding="10dp"
     android:text="语音祝福"
+    android:layout_alignParentBottom="true"
     android:textColor="@android:color/white"
     android:textSize="25sp"
     />
+  </RelativeLayout>
 </LinearLayout>

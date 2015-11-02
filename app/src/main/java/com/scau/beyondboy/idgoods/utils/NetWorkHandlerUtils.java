@@ -14,6 +14,8 @@ import java.util.Map;
  */
 public final class NetWorkHandlerUtils
 {
+    private static final String TAG = NetWorkHandlerUtils.class.getName();
+
     /**post异步处理*/
     public static void postAsynHandler(String url, Map<String, String> params, final String successMessage)
     {
@@ -35,6 +37,45 @@ public final class NetWorkHandlerUtils
             public void onResponse(ResponseObject<Object> response)
             {
                ParseJsonUtils.parseDataJson(response,successMessage);
+            }
+        }, params);
+    }
+
+    public interface PostCallback
+    {
+        void success(Object result);
+    }
+
+    /**post异步处理*/
+    public static<T> void postAsynHandler(String url, Map<String, String> params, final String successMessage,final String failMessage,final PostCallback postCallback, final Class<T> tClass)
+    {
+        if(!NetworkUtils.isNetworkReachable())
+        {
+            ToaskUtils.displayToast("没有网络");
+            return;
+        }
+        OkHttpNetWorkUtil.postAsyn(url, new OkHttpNetWorkUtil.ResultCallback<ResponseObject<Object>>()
+        {
+            @Override
+            public void onError(Request request, Exception e)
+            {
+                e.printStackTrace();
+                ToaskUtils.displayToast("网络异常");
+            }
+
+            @Override
+            public void onResponse(ResponseObject<Object> response)
+            {
+                if(response.getResult()==1)
+                {
+                    T result=ParseJsonUtils.parseDataJson(response,tClass);
+                    if(postCallback!=null)
+                        postCallback.success(result);
+                }
+                else
+                {
+                    ToaskUtils.displayToast(failMessage);
+                }
             }
         }, params);
     }

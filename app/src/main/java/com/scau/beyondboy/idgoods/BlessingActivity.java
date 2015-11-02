@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
+import com.scau.beyondboy.idgoods.view.CircleProgressBar;
 import com.scau.beyondboy.idgoods.view.RecordPopupWindow;
 
 import butterknife.Bind;
@@ -23,13 +24,16 @@ public class BlessingActivity extends AppCompatActivity
 {
     @Bind(R.id.voice_blessing)
     Button voiceBlessing;
+    @Bind(R.id.progressbar)
+    public CircleProgressBar mProgressbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blessing);
         ButterKnife.bind(this);
-        MyApplication.sActivityMap.put("BlessingActivity",this);
+        MyApplication.sActivityMap.put("BlessingActivity", this);
     }
 
     @OnClick({R.id.blessing_back,R.id.voice_blessing})

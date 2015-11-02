@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -29,12 +30,24 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.qiniu.android.http.ResponseInfo;
+import com.qiniu.android.storage.UpCompletionHandler;
+import com.qiniu.android.storage.UpProgressHandler;
+import com.qiniu.android.storage.UploadManager;
+import com.qiniu.android.storage.UploadOptions;
+import com.scau.beyondboy.idgoods.BlessingActivity;
 import com.scau.beyondboy.idgoods.MyApplication;
 import com.scau.beyondboy.idgoods.R;
+import com.scau.beyondboy.idgoods.consts.Consts;
 import com.scau.beyondboy.idgoods.manager.ThreadManager;
+import com.scau.beyondboy.idgoods.model.UploadBean;
+import com.scau.beyondboy.idgoods.utils.NetWorkHandlerUtils;
+import com.scau.beyondboy.idgoods.utils.ShareUtils;
 import com.scau.beyondboy.idgoods.utils.StorageUtils;
 import com.scau.beyondboy.idgoods.utils.TimeUtils;
 import com.scau.beyondboy.idgoods.utils.ToaskUtils;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,6 +59,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import butterknife.Bind;
@@ -124,13 +138,10 @@ public class RecordPopupWindow extends AppCompatActivity
      */
     private int bufferSize;
     private AudioRecord audioRecorder;
-    private final short RATEX = 8;
-    private final short RATEY = 40;
+    private final short RATEX = 6;
     private int oldX;
     private int oldY;
     private int countDate = 0;
-    private String second;
-    private String minute;
     private MyHandler mHandler;
     private RandomAccessFile randomAccessWriter;
     private RecordRunable mRecordRunable;
@@ -151,8 +162,10 @@ public class RecordPopupWindow extends AppCompatActivity
      * 录音计时器
      */
     private Timer mTimer;
-    private int mChannelOutMono;
     private File audioFile;
+    private String mToken;
+    private String fileName;
+    private BlessingActivity mBlessingActivity;
 
 
     @Override
@@ -221,7 +234,7 @@ public class RecordPopupWindow extends AppCompatActivity
     private void init()
     {
         mHandler = new MyHandler(this);
-        mTimer = new Timer();
+        mBlessingActivity=(BlessingActivity)MyApplication.sActivityMap.get("BlessingActivity");
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setColor(Color.GRAY);
@@ -235,25 +248,13 @@ public class RecordPopupWindow extends AppCompatActivity
             bufferSize = AudioRecord.getMinBufferSize(mSamplerateinhz, mChannelInMono, mAudioformat);
             framePeriod = bufferSize / (2 * bSamples * mChannels / 8);
         }
-        audioRecorder = new AudioRecord(MediaRecorder.AudioSource.DEFAULT, mSamplerateinhz, mChannelInMono, mAudioformat, bufferSize);
-        prepare();
-        //准备录音
-        state.set(0);
-        //设置音频输出帧数
-        audioRecorder.setPositionNotificationPeriod(framePeriod);
-        audioRecorder.setRecordPositionUpdateListener(new AudioRecord.OnRecordPositionUpdateListener()
+        //开启线程
+        ThreadManager.addSingalExecutorTask(new Runnable()
         {
             @Override
-            public void onMarkerReached(AudioRecord recorder)
+            public void run()
             {
-
-            }
-
-            @Override
-            public void onPeriodicNotification(AudioRecord recorder)
-            {
-                if (state.get() == 1)
-                    ThreadManager.addTask(createRecordRunable());
+                prepareRecord();
             }
         });
     }
@@ -275,6 +276,7 @@ public class RecordPopupWindow extends AppCompatActivity
                     {
                         //音频振幅
                         short cursample = getShort(buffer[i * 2 * RATEX], buffer[i * 2 * RATEX + 1]);
+                        short RATEY = 40;
                         temBuf[i] = (short) (cursample / RATEY + baseLine);
                     }
                     //存储振幅
@@ -336,10 +338,30 @@ public class RecordPopupWindow extends AppCompatActivity
      * 采样数据
      * 为了能使PCM转换wav格式音频文件需做下面的准备工作
      */
-    private void prepare()
+    private void prepareRecord()
     {
         try
         {
+            if(audioRecorder==null)
+            {
+                audioRecorder = new AudioRecord(MediaRecorder.AudioSource.DEFAULT, mSamplerateinhz, mChannelInMono, mAudioformat, bufferSize);
+                //设置音频输出帧数
+                audioRecorder.setPositionNotificationPeriod(framePeriod);
+                audioRecorder.setRecordPositionUpdateListener(new AudioRecord.OnRecordPositionUpdateListener()
+                {
+                    @Override
+                    public void onMarkerReached(AudioRecord recorder)
+                    {
+
+                    }
+                    @Override
+                    public void onPeriodicNotification(AudioRecord recorder)
+                    {
+                        if (state.get() == 1&&audioRecorder!=null)
+                            ThreadManager.addTask(createRecordRunable());
+                    }
+                });
+            }
             Date date = new Date();
             File file = StorageUtils.getIndividualCacheDirectory(RecordPopupWindow.this, "music");
             //文件目录
@@ -362,6 +384,8 @@ public class RecordPopupWindow extends AppCompatActivity
             randomAccessWriter.writeBytes("data");
             randomAccessWriter.writeInt(0);
             buffer = new byte[framePeriod * bSamples / 8 * mChannels];
+            //准备录音
+            state.set(0);
         } catch (IOException e)
         {
             e.printStackTrace();
@@ -373,10 +397,19 @@ public class RecordPopupWindow extends AppCompatActivity
     protected void onDestroy()
     {
         super.onDestroy();
-        MyApplication.sActivityMap.get("BlessingActivity").finish();
+        mBlessingActivity.finish();
+        if(mAudioTrack!=null)
+        {
+            mAudioTrack.stop();
+            mAudioTrack.release();
+        }
+        if(audioRecorder!=null)
+        {
+            audioRecorder.stop();
+            audioRecorder.release();
+        }
         ThreadManager.release();
-        mAudioTrack.stop();
-        mAudioTrack.release();
+        MyApplication.sActivityMap.clear();
     }
 
     /**
@@ -427,9 +460,12 @@ public class RecordPopupWindow extends AppCompatActivity
             {
                 try
                 {
-                    short[] temBuf = inBuf.take();
-                    SimpleDraw(X_index, temBuf, RATEX, baseLine);
-                    X_index += temBuf.length;
+                    short[] temBuf = inBuf.poll(100, TimeUnit.MILLISECONDS);
+                    if(temBuf!=null&&temBuf.length!=0)
+                    {
+                        SimpleDraw(X_index, temBuf, RATEX, baseLine);
+                        X_index += temBuf.length;
+                    }
                     if (X_index > oscillograph.getWidth())
                     {
                         X_index = 0;
@@ -437,7 +473,7 @@ public class RecordPopupWindow extends AppCompatActivity
                 } catch (InterruptedException e)
                 {
                     e.printStackTrace();
-                    break;
+                    Log.i(TAG,"中断退出线程");
                 }
             }
         }
@@ -501,6 +537,10 @@ public class RecordPopupWindow extends AppCompatActivity
             {
                 audioRecorder.stop();
                 audioRecorder.release();
+                audioRecorder=null;
+                oscillograph.destroyDrawingCache();
+                //暂停掉画图线程
+                ThreadManager.stopFuture(createRecordRunable().toString());
             }
             if (randomAccessWriter != null)
             {
@@ -525,13 +565,21 @@ public class RecordPopupWindow extends AppCompatActivity
     @OnLongClick(R.id.voice_blessing)
     public boolean recordStart()
     {
-        if(state.get()==0||state.get() == 7)
+        if(state.get()!=0)
+        {
+            if(state.get()==8||state.get()==-1)
+                ToaskUtils.displayToast("录音准备正在初始化");
+            return false;
+        }
+        //当状态为0时
+        else
         {
             try
             {
                 //录音
                 randomAccessWriter.seek(0xc);
                 //计录音时间
+                mTimer = new Timer();
                 mTimer.schedule(new TimerTask()
                 {
                     @Override
@@ -550,7 +598,6 @@ public class RecordPopupWindow extends AppCompatActivity
             }
             return true;
         }
-        return false;
     }
 
     @OnTouch(R.id.voice_blessing)
@@ -565,6 +612,7 @@ public class RecordPopupWindow extends AppCompatActivity
                     stop();
                     state.set(4);
                     preparePlay();
+                    Log.i(TAG,"录完音");
                     break;
             }
             return true;
@@ -581,7 +629,6 @@ public class RecordPopupWindow extends AppCompatActivity
             mAudioTrack.pause();
             voiceBlessing.setSelected(false);
             voiceBlessing.setText("回放录音");
-            Log.i(TAG,"暂停" );
         }
         else if(state.get()==4||state.get()==6||state.get()==7)
         {
@@ -598,7 +645,6 @@ public class RecordPopupWindow extends AppCompatActivity
                 {
                     mInputStream = new FileInputStream(audioFile);
                     seekbar.setProgress(0);
-                    mAudioTrack.setPlaybackHeadPosition(0);
                     ThreadManager.addSingalExecutorTask(createPlayRuannble());
                 } catch (Exception e)
                 {
@@ -623,26 +669,33 @@ public class RecordPopupWindow extends AppCompatActivity
     private void preparePlay()
     {
         mTimer.cancel();
+        mTimer.purge();
         delete.setVisibility(View.VISIBLE);
         uploading.setVisibility(View.VISIBLE);
+        delete.setEnabled(true);
+        uploading.setEnabled(true);
         draw();
         oscillograph.setVisibility(View.INVISIBLE);
         seekbar.setVisibility(View.VISIBLE);
-        mChannelOutMono = AudioFormat.CHANNEL_OUT_MONO;
-        mAudioTrack=new AudioTrack(AudioManager.STREAM_MUSIC,mSamplerateinhz, mChannelOutMono,mAudioformat,bufferSize,AudioTrack.MODE_STREAM);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        if(mAudioTrack==null)
         {
-            mAudioTrack.setVolume(1.0f);
-        }
-        else
-        {
-            //noinspection deprecation
-            mAudioTrack.setStereoVolume(1.0f,1.0f);
+            int channelOutMono = AudioFormat.CHANNEL_OUT_MONO;
+            mAudioTrack=new AudioTrack(AudioManager.STREAM_MUSIC,mSamplerateinhz, channelOutMono,mAudioformat,bufferSize,AudioTrack.MODE_STREAM);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            {
+                mAudioTrack.setVolume(1.0f);
+            }
+            else
+            {
+                //noinspection deprecation
+                mAudioTrack.setStereoVolume(1.0f,1.0f);
+            }
         }
         voiceBlessing.setText("回放录音");
         voiceBlessing.setSelected(false);
         audioFile = new File(filePath);
         seekbar.setMax(countDate);
+        seekbar.setProgress(0);
         date.setText(TimeUtils.converTommss(countDate));
     }
     private class PlayRuannble implements Runnable
@@ -653,7 +706,7 @@ public class RecordPopupWindow extends AppCompatActivity
             try
             {
                 int readByte;
-                while ((readByte=mInputStream.read(buffer,0,buffer.length))>=0)
+                while (state.get()!=8&&(readByte=mInputStream.read(buffer,0,buffer.length))>=0)
                 {
                     int seconds=Math.round(mAudioTrack.getPlaybackHeadPosition() /mAudioTrack.getSampleRate( ));
                     seekbar.setProgress(seconds);
@@ -674,10 +727,6 @@ public class RecordPopupWindow extends AppCompatActivity
                         mSemaphore.acquire();
                     }
                 }
-                mInputStream.close();
-                mAudioTrack.pause();
-                mAudioTrack.flush();
-                mAudioTrack.stop();
                 //播放完时候
                 seekbar.setProgress(countDate);
                 runOnUiThread(new Runnable()
@@ -689,7 +738,12 @@ public class RecordPopupWindow extends AppCompatActivity
                         voiceBlessing.setText("回放录音");
                     }
                 });
+                mInputStream.close();
+                mAudioTrack.pause();
+                mAudioTrack.flush();
+                mAudioTrack.stop();
                 state.set(7);
+                //Log.i(TAG,"播放结束");
             } catch (Exception e)
             {
                 e.printStackTrace();
@@ -711,5 +765,101 @@ public class RecordPopupWindow extends AppCompatActivity
             }
         }
         return mPlayRuannble;
+    }
+
+    @OnClick({R.id.delete,R.id.uploading})
+    public void onClick(View view)
+    {
+        switch (view.getId())
+        {
+            case R.id.delete:
+                if(state.get()==6)
+                    mSemaphore.release();
+                ThreadManager.stopFuture(createPlayRuannble().toString());
+                if(state.get()!=7)
+                {
+                    mAudioTrack.pause();
+                    mAudioTrack.flush();
+                    mAudioTrack.stop();
+                }
+                //noinspection ResultOfMethodCallIgnored
+                audioFile.delete();
+                state.set(8);
+                voiceBlessing.setSelected(false);
+                voiceBlessing.setText("长按说话");
+                seekbar.setVisibility(View.INVISIBLE);
+                oscillograph.setVisibility(View.VISIBLE);
+                uploading.setEnabled(false);
+                delete.setEnabled(false);
+                date.setText(TimeUtils.converTommss(0));
+                countDate=0;
+                ThreadManager.addSingalExecutorTask(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        prepareRecord();
+                    }
+                });
+                break;
+            case R.id.uploading:
+                getToken();
+                break;
+        }
+    }
+
+    private void getToken()
+    {
+        mBlessingActivity = (BlessingActivity) MyApplication.sActivityMap.get("BlessingActivity");
+        NetWorkHandlerUtils.postAsynHandler(Consts.UPLOAD_TOKEN, null, null,"已上传过该文件",new NetWorkHandlerUtils.PostCallback()
+        {
+            @Override
+            public void success(Object result)
+            {
+                if(result instanceof UploadBean)
+                {
+                    UploadBean uploadBean=(UploadBean)result;
+                    mToken =uploadBean.getToken();
+                    fileName =uploadBean.getFileName();
+                    //Log.i(TAG,"数据：  "+uploadBean.getToken());
+                    fileName +=".wav";
+                    mBlessingActivity.mProgressbar.setVisibility(View.VISIBLE);
+                    upLoading();
+                }
+            }
+        }, UploadBean.class);
+    }
+
+    /**上传文件操作*/
+    private void upLoading()
+    {
+        UploadManager manager=new UploadManager();
+        manager.put(audioFile, fileName, mToken, new UpCompletionHandler()
+        {
+            @Override
+            public void complete(String key, ResponseInfo info, JSONObject response)
+            {
+                mBlessingActivity.mProgressbar.setVisibility(View.INVISIBLE);
+                saveRadio();
+            }
+        }, new UploadOptions(null, null, false, new UpProgressHandler()
+        {
+            @Override
+            public void progress(String key, double percent)
+            {
+                int progress = (int) (percent * 100);
+                mBlessingActivity.mProgressbar.setProgress(progress);
+            }
+        }, null));
+    }
+
+    private void saveRadio()
+    {
+        ArrayMap<String,String> params=new ArrayMap<>();
+        fileName=Consts.QINIU+fileName;
+        params.put(Consts.RADIO_KEY,fileName);
+        params.put(Consts.SERIALNUMBERVALUEKEY, ShareUtils.getSerialNumberValue());
+        params.put(Consts.CUSTOMERID_KEY, ShareUtils.getUserId());
+        NetWorkHandlerUtils.postAsynHandler(Consts.SAVE_RADIO, params, "上传成功");
     }
 }

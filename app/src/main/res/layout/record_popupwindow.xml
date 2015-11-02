@@ -35,7 +35,7 @@
     android:textColor="@drawable/textcolorselector"
     android:layout_alignParentBottom="true"
     android:visibility="invisible"
-    android:background="@drawable/bg_special_disease_circle"
+    android:background="@drawable/bg_button_circle_style1"
     android:text="上传"
     />
   <Button
@@ -44,10 +44,10 @@
     android:layout_height="90dp"
     android:textSize="25sp"
     android:layout_marginLeft="20dp"
-    android:textColor="@android:color/holo_red_dark"
+    android:textColor="@drawable/delete_button_selector"
     android:layout_alignParentBottom="true"
     android:visibility="invisible"
-    android:background="@drawable/bg_special_disease_circle"
+    android:background="@drawable/bg_button_circle_style1"
     android:text="删除"
     />
   <SeekBar

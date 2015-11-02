@@ -12,7 +12,9 @@ import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.CompoundBarcodeView;
 import com.scau.beyondboy.idgoods.handler.FinshBarCodeHandler;
 import com.scau.beyondboy.idgoods.manager.ThreadManager;
+import com.scau.beyondboy.idgoods.utils.NetworkUtils;
 import com.scau.beyondboy.idgoods.utils.ShareUtils;
+import com.scau.beyondboy.idgoods.utils.ToaskUtils;
 
 import java.util.List;
 
@@ -42,9 +44,14 @@ public class CustomScannerActivity extends BaseActivity implements CompoundBarco
         {
             if (result.getText() != null&&!alreadyScan)
             {
-                alreadyScan=true;
                 //防止多次扫描
                 barcodeScannerView.setStatusText(result.getText());
+                if(!NetworkUtils.isNetworkReachable())
+                {
+                    ToaskUtils.displayToast("没有网络");
+                    return;
+                }
+                alreadyScan=true;
                 serialNumberValue=result.getText().toString();
                 ShareUtils.putSerialNumberValue(CustomScannerActivity.this,serialNumberValue);//// TODO: 2015/10/20
                 FinshBarCodeHandler.init(serialNumberValue,CustomScannerActivity.this,1);
