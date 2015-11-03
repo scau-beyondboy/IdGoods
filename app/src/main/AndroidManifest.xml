@@ -118,5 +118,11 @@
     <activity android:name=".view.RecordPopupWindow"
       android:launchMode="singleInstance"
       android:theme="@style/MyDialogStyleBottom"/>
+    <activity android:name=".view.ListenBlessPopupWindow"
+      android:launchMode="singleInstance"
+      android:theme="@style/MyDialogStyleBottom"/>
+    <activity android:name=".ListenBlessActivity"
+      android:launchMode="singleInstance"
+      />
   </application>
 </manifest>

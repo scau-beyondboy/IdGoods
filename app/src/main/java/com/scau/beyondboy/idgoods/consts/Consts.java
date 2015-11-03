@@ -62,5 +62,6 @@ public class Consts
     public static final String ADD_COLLECT = HOST+"/GoodsController/addCollect";
     public static final String FRAGMENT_LISTEN = "FragmentListen";
     public static final String QINIU = "http://7xlw46.com1.z0.glb.clouddn.com/";
+    public static final String RECEIVEBLESS = "receivebless";
 }
 

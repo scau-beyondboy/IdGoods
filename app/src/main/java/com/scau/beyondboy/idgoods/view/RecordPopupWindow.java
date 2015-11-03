@@ -834,6 +834,7 @@ public class RecordPopupWindow extends AppCompatActivity
     private void upLoading()
     {
         UploadManager manager=new UploadManager();
+        Log.i(TAG,"文件长度：  "+audioFile.length());
         manager.put(audioFile, fileName, mToken, new UpCompletionHandler()
         {
             @Override

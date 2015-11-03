@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.scau.beyondboy.idgoods.BlessingActivity;
 import com.scau.beyondboy.idgoods.FinishRegisterActivity;
+import com.scau.beyondboy.idgoods.ListenBlessActivity;
 import com.scau.beyondboy.idgoods.MainActivity;
 import com.scau.beyondboy.idgoods.Vendibility;
 import com.scau.beyondboy.idgoods.consts.Consts;
@@ -164,20 +165,20 @@ final public class FinshBarCodeHandler
                             if(!scanCodeBean.isHasAdded())
                             {
                                 ArrayMap<String,String> params=new ArrayMap<>(2);
-                                params.put(Consts.CUSTOMERID_KEY,ShareUtils.getUserId(mContext));
+                                params.put(Consts.CUSTOMERID_KEY,ShareUtils.getUserId());
                                 params.put(Consts.SERIALNUMBERVALUEKEY, serialNumberValue);
                                 NetWorkHandlerUtils.postAsynHandler(Consts.ADD_COLLECT, params, "收藏成功");
                             }
-                            intent=new Intent(mContext,MainActivity.class);
-                            bundle.putBoolean(Consts.FRAGMENT_LISTEN, true);
+                            intent=new Intent(mContext,ListenBlessActivity.class);
+                            //bundle.putBoolean(Consts.FRAGMENT_LISTEN, true);
                         }
                     }
                     break;
                 //游客
                 case 2:
                     //游客扫描明信片
-                    intent=new Intent(mContext,MainActivity.class);
-                    bundle.putBoolean(Consts.FRAGMENT_LISTEN,true);
+                    intent=new Intent(mContext,ListenBlessActivity.class);
+                   // bundle.putBoolean(Consts.FRAGMENT_LISTEN,true);
                     break;
             }
             if (intent != null)

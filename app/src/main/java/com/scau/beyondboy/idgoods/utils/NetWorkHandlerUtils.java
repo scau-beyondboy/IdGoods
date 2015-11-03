@@ -41,9 +41,9 @@ public final class NetWorkHandlerUtils
         }, params);
     }
 
-    public interface PostCallback
+    public interface PostCallback<T>
     {
-        void success(Object result);
+        void success(T result);
     }
 
     /**post异步处理*/
@@ -78,5 +78,31 @@ public final class NetWorkHandlerUtils
                 }
             }
         }, params);
+    }
+
+    /**文件下载处理*/
+    public static void downloadFileHandler(final String url, final String destFileDir,final PostCallback postCallback)
+    {
+        if(!NetworkUtils.isNetworkReachable())
+        {
+            ToaskUtils.displayToast("没有网络");
+            return;
+        }
+        OkHttpNetWorkUtil.downloadAsyn(url, destFileDir, new OkHttpNetWorkUtil.ResultCallback<String>()
+        {
+            @Override
+            public void onError(Request request, Exception e)
+            {
+                ToaskUtils.displayToast("下载音频文件出错");
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(String filePath)
+            {
+                if(postCallback!=null)
+                    postCallback.success(filePath);
+            }
+        });
     }
 }

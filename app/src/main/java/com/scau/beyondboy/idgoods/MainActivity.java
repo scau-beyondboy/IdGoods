@@ -23,7 +23,6 @@ import com.scau.beyondboy.idgoods.consts.Consts;
 import com.scau.beyondboy.idgoods.fragment.FragmentCollect;
 import com.scau.beyondboy.idgoods.fragment.FragmentGetCash;
 import com.scau.beyondboy.idgoods.fragment.FragmentHome;
-import com.scau.beyondboy.idgoods.fragment.FragmentListen;
 import com.scau.beyondboy.idgoods.fragment.FragmentLogin;
 import com.scau.beyondboy.idgoods.fragment.FragmentModifyPassword;
 import com.scau.beyondboy.idgoods.fragment.FragmentPlay;
@@ -217,9 +216,9 @@ public class MainActivity extends AppCompatActivity
         }
         else if(intent.getBooleanExtra(Consts.FRAGMENT_LISTEN,false))
         {
-            FragmentListen fragmentListen=new FragmentListen();
+           /* ListenBlessActivity fragmentListen=new ListenBlessActivity();
             fragmentListen.setArguments(intent.getExtras());
-            changeFragment(fragmentListen, true);
+            changeFragment(fragmentListen, true);*/
         }
     }
 

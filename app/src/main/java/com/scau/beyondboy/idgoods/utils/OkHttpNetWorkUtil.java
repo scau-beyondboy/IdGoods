@@ -10,6 +10,8 @@ import android.widget.ImageView;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.$Gson$Types;
+import com.jakewharton.disklrucache.DiskLruCache;
+import com.scau.beyondboy.idgoods.MyApplication;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.FormEncodingBuilder;
@@ -20,11 +22,13 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
+import com.squareup.okhttp.internal.Util;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.CookieManager;
@@ -46,7 +50,8 @@ public class OkHttpNetWorkUtil
 {
     private static final String TAG = OkHttpNetWorkUtil.class.getName();
     private static OkHttpNetWorkUtil mInstance;
-    private OkHttpClient mOkHttpClient;
+    private static OkHttpClient mOkHttpClient;
+    private static DiskLruCache sDiskLruCache;
     private Handler mDelivery;
     private Gson mGson;
 
@@ -197,6 +202,36 @@ public class OkHttpNetWorkUtil
         getInstance()._displayImage(view, url, -1);
     }
 
+    /**设置缓存*/
+    public static void setCache(final  File destFileDir,long cacheSize)
+    {
+        try
+        {
+            sDiskLruCache=DiskLruCache.open(StorageUtils.getIndividualCacheDirectory(MyApplication.getInstance(), "postcard"), 1, 1, 100 * 1024 * 1024);
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    /**取消缓存*/
+    public static void cancelCache()
+    {
+        sDiskLruCache=null;
+    }
+
+    /**手动删除缓存文件*/
+    public static void removeCacheFile(String fileName)
+    {
+        try
+        {
+            if(sDiskLruCache!=null)
+                sDiskLruCache.remove(fileName);
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
     /**
      * @see #_downloadAsyn(String, String, ResultCallback)
      */
@@ -372,7 +407,7 @@ public class OkHttpNetWorkUtil
         deliveryResult(callback, request);
     }
     /**
-     * 异步下载文件
+     * 异步下载文件,并缓存到磁盘当中
      * @param url 网络地址
      * @param destFileDir 本地文件存储的文件夹
      * @param callback 响应结果回调
@@ -400,15 +435,18 @@ public class OkHttpNetWorkUtil
                 try
                 {
                     is = response.body().byteStream();
-                    File file = new File(destFileDir, getFileName(url));
-                    fos = new FileOutputStream(file);
-                    while ((len = is.read(buf)) != -1)
+                    //缓存中文件中
+                    DiskLruCache.Editor editor = sDiskLruCache.edit(Util.md5Hex(url));
+                   // new FileOutputStream(new File(destFileDir + "/" + Util.md5Hex(url)+".0")
+                    if (downloadUrlToStream(is,editor.newOutputStream(0),buf))
                     {
-                        fos.write(buf, 0, len);
+                        editor.commit();
+                        //如果下载文件成功，第一个参数为文件的绝对路径
+                        sendSuccessResultCallback(destFileDir + "/" + Util.md5Hex(url)+".0", callback);
+                    } else
+                    {
+                        editor.abort();
                     }
-                    fos.flush();
-                    //如果下载文件成功，第一个参数为文件的绝对路径
-                    sendSuccessResultCallback(file.getAbsolutePath(), callback);
                 } catch (IOException e)
                 {
                     sendFailedStringCallback(response.request(), e, callback);
@@ -730,5 +768,37 @@ public class OkHttpNetWorkUtil
             res[i++] = new Param(entry.getKey(), entry.getValue());
         }
         return res;
+    }
+
+    /**保存流到缓存文件中*/
+    private static boolean downloadUrlToStream(InputStream inputStream,OutputStream outputStream,byte[] buffer)
+    {
+        try
+        {
+            int readByte=0;
+            while ((readByte=inputStream.read(buffer))>=0)
+            {
+                outputStream.write(buffer,0,readByte);
+            }
+            outputStream.flush();
+            return true;
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+            return  false;
+        }
+        finally
+        {
+            try
+            {
+                if(inputStream!=null)
+                    inputStream.close();
+                if(outputStream!=null)
+                    outputStream.close();
+            } catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 }
