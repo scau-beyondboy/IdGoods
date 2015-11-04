@@ -141,13 +141,16 @@ final public class FinshBarCodeHandler
                 case 0:
                     if (scanCodeBean.getType() == 0 || scanCodeBean.getType() == 2)
                     {
+                        //// TODO: 2015/11/4  这里后台有问题
                         if (!scanCodeBean.isHasAdded())
                         {
+                            Log.i(TAG,"返现");
                             //第一次扫描药品,第一次扫描其他
                             bundle.putBoolean(Consts.GET_DIS_COUNT, true);
                             intent = new Intent(mContext, MainActivity.class);
                         } else
                         {
+                            Log.i(TAG,"取钱");
                             // 第二次扫描药品,第二次扫描其他
                             intent = new Intent(mContext, FinishRegisterActivity.class);
                         }

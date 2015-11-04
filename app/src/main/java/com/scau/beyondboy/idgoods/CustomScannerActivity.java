@@ -30,11 +30,7 @@ import butterknife.OnClick;
  */
 public class CustomScannerActivity extends BaseActivity implements CompoundBarcodeView.TorchListener
 {
-    private static final String TAG = CustomScannerActivity.class.getName();
-    /**登录身份标记，0代表用户登录，1代表销售员登录，2代表游客登录*/
-    private int identity=0;
     private CompoundBarcodeView barcodeScannerView;
-    private String serialNumberValue;
     private Button switchFlashlightButton;
     private boolean alreadyScan=false;
     private BarcodeCallback callback = new BarcodeCallback()
@@ -52,12 +48,11 @@ public class CustomScannerActivity extends BaseActivity implements CompoundBarco
                     return;
                 }
                 alreadyScan=true;
-                serialNumberValue=result.getText().toString();
-                ShareUtils.putSerialNumberValue(CustomScannerActivity.this,serialNumberValue);//// TODO: 2015/10/20
+                String serialNumberValue = result.getText();
+                ShareUtils.putSerialNumberValue(CustomScannerActivity.this, serialNumberValue);
                 FinshBarCodeHandler.init(serialNumberValue,CustomScannerActivity.this,1);
                 FinshBarCodeHandler.finishScanHandler();
             }
-            //Toast.makeText(CustomScannerActivity.this, "显示二维码：" + result.getText(), Toast.LENGTH_SHORT).show();
         }
         @Override
         public void possibleResultPoints(List<ResultPoint> resultPoints)

@@ -3,20 +3,15 @@ package com.scau.beyondboy.idgoods;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.v4.util.ArrayMap;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.scau.beyondboy.idgoods.consts.Consts;
-import com.scau.beyondboy.idgoods.model.ResponseObject;
-import com.scau.beyondboy.idgoods.utils.OkHttpNetWorkUtil;
+import com.scau.beyondboy.idgoods.utils.NetWorkHandlerUtils;
 import com.scau.beyondboy.idgoods.utils.StringUtils;
-import com.squareup.okhttp.Request;
-
-import java.lang.reflect.Type;
+import com.scau.beyondboy.idgoods.utils.ToaskUtils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -38,7 +33,6 @@ public class CheckCodeActivity extends BaseActivity
     @Bind(R.id.et_checkcode)
     EditText checkCode;
     private CountTimer mCountTimer;
-    private boolean isVerifyCode=false;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -73,7 +67,7 @@ public class CheckCodeActivity extends BaseActivity
         public void onTick(long millisUntilFinished)
         {
             //更新页面的组件
-            checkCodeBn.setText(millisUntilFinished / 1000 + "秒后发送");
+            checkCodeBn.setText(String.format("%d秒后发送", millisUntilFinished / 1000));
             checkCodeBn.setBackgroundResource(R.drawable.btn_light_press);
             checkCodeBn.setClickable(false);
         }
@@ -102,24 +96,13 @@ public class CheckCodeActivity extends BaseActivity
     {
         if(StringUtils.isEmpty(phone.getText().toString()))
         {
-            displayToast("手机号不能为空");
+            ToaskUtils.displayToast("手机号不能为空");
         }
         else
         {
-            OkHttpNetWorkUtil.postAsyn(Consts.SEND_CODE, new OkHttpNetWorkUtil.ResultCallback<String>()
-            {
-                @Override
-                public void onError(Request request, Exception e)
-                {
-                    displayToast("网络异常");
-                }
-
-                @Override
-                public void onResponse(String response)
-                {
-                    parseCheckCodeDataJson(response);
-                }
-            },new OkHttpNetWorkUtil.Param(Consts.ACCOUNT_KEY,phone.getText().toString()));
+            ArrayMap<String,String> params=new ArrayMap<>(1);
+            params.put(Consts.ACCOUNT_KEY,phone.getText().toString());
+            NetWorkHandlerUtils.postAsynHandler(Consts.SEND_CODE, params, "获取验证码成功");
         }
     }
 
@@ -128,58 +111,24 @@ public class CheckCodeActivity extends BaseActivity
     {
         if(StringUtils.isEmpty(checkCode.getText().toString()))
         {
-            displayToast("验证码不能为空");
+            ToaskUtils.displayToast("验证码不能为空");
         }
         else
         {
-            OkHttpNetWorkUtil.postAsyn(Consts.VERIFY_CODE, new OkHttpNetWorkUtil.ResultCallback<String>()
+            ArrayMap<String,String> params=new ArrayMap<>(2);
+            params.put(Consts.ACCOUNT_KEY,phone.getText().toString());
+            params.put(Consts.SMS_CODE,checkCode.getText().toString());
+            NetWorkHandlerUtils.postAsynHandler(Consts.VERIFY_CODE, params, null, new NetWorkHandlerUtils.PostCallback<Object>()
             {
                 @Override
-                public void onError(Request request, Exception e)
+                public void success(Object result)
                 {
-                    displayToast("网络异常");
+                    Intent intent=new Intent(CheckCodeActivity.this,SignupActivity.class);
+                    startActivity(intent);
                 }
-
-                @Override
-                public void onResponse(String response)
-                {
-                    isVerifyCode=true;
-                    parseCheckCodeDataJson(response);
-                }
-            },new OkHttpNetWorkUtil.Param(Consts.ACCOUNT_KEY,phone.getText().toString()),new OkHttpNetWorkUtil.Param(Consts.SMS_CODE,checkCode.getText().toString()));
+            });
         }
     }
-    /**解析json*/
-    private void parseCheckCodeDataJson(String checkCodeDataJson)
-    {
-        Gson gson=new Gson();
-        Type type=new TypeToken<ResponseObject<Object>>(){}.getType();
-        ResponseObject<Object> responseObject=gson.fromJson(checkCodeDataJson, type);
-        String data=gson.toJson(responseObject.getData());
-        if(responseObject.getResult()==1)
-        {
-            if(isVerifyCode==false)
-            {
-                displayToast("获取验证码成功");
-            }
-            else
-            {
-                Intent intent=new Intent(this,SignupActivity.class);
-                startActivity(intent);
-                isVerifyCode=false;
-            }
-        }
-        else
-        {
-            displayToast(data);
-        }
-    }
-
-    private void displayToast(String warnning)
-    {
-        Toast.makeText(this, warnning, Toast.LENGTH_SHORT).show();
-    }
-
     @Override
     protected void onDestroy()
     {

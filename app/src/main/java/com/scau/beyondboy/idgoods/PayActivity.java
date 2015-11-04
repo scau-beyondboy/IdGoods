@@ -1,27 +1,28 @@
 package com.scau.beyondboy.idgoods;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.util.ArrayMap;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.Toast;
+import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.scau.beyondboy.idgoods.consts.Consts;
-import com.scau.beyondboy.idgoods.model.ResponseObject;
 import com.scau.beyondboy.idgoods.model.ScanCodeBean;
-import com.scau.beyondboy.idgoods.utils.OkHttpNetWorkUtil;
+import com.scau.beyondboy.idgoods.utils.NetWorkHandlerUtils;
 import com.scau.beyondboy.idgoods.utils.ShareUtils;
 import com.scau.beyondboy.idgoods.utils.StringUtils;
-import com.squareup.okhttp.Request;
-
-import java.lang.reflect.Type;
+import com.scau.beyondboy.idgoods.utils.ToaskUtils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnEditorAction;
 
 /**
  * Author:beyondboy
@@ -83,82 +84,67 @@ public class PayActivity extends BaseActivity
     @OnClick(R.id.nextstep)
     public void nextstep()
     {
-       // Log.i(TAG,"account1: "+inputAccount1.toString()+"   account2:   "+inputAccount2.toString());
+        next();
+    }
+
+    private void next()
+    {
         if(StringUtils.isEmpty(inputAccount1.getText().toString())||StringUtils.isEmpty(inputAccount2.getText().toString()))
         {
-            displayToast("支付宝和微信账号都不能为空");
+            ToaskUtils.displayToast("支付宝和微信账号都不能为空");
         }
         else
         {
             if(inputAccount1.getText().toString().equals(inputAccount2.getText().toString()))
             {
-                OkHttpNetWorkUtil.Param params[]=new OkHttpNetWorkUtil.Param[3];
-                params[0]=new OkHttpNetWorkUtil.Param(Consts.CUSTOMERID_KEY, ShareUtils.getUserId(this));
-                params[1]=new OkHttpNetWorkUtil.Param(Consts.SERIALNUMBERVALUEKEY,mSerialNumber);
+                ArrayMap<String,String> params=new ArrayMap<>(3);
+                params.put(Consts.CUSTOMERID_KEY, ShareUtils.getUserId());
+                params.put(Consts.SERIALNUMBERVALUEKEY,mSerialNumber);
                 if(payWay==0)
                 {
-                    params[2]=new OkHttpNetWorkUtil.Param(Consts.ALIAPAY,inputAccount1.getText().toString());
+                    params.put(Consts.ALIAPAY,inputAccount1.getText().toString());
                 }
                 else if(payWay==1)
                 {
-                    params[2]=new OkHttpNetWorkUtil.Param(Consts.WEBCHAT,inputAccount2.getText().toString());
+                    params.put(Consts.WEBCHAT,inputAccount2.getText().toString());
                 }
-                OkHttpNetWorkUtil.postAsyn(Consts.GET_DIS_COUNT, new OkHttpNetWorkUtil.ResultCallback<String>()
+
+                NetWorkHandlerUtils.postAsynHandler(Consts.GET_DIS_COUNT, params, null, new NetWorkHandlerUtils.PostCallback<Object>()
                 {
                     @Override
-                    public void onError(Request request, Exception e)
+                    public void success(Object result)
                     {
-                        displayToast("该药品还不可售");
+                        Intent intent = new Intent(PayActivity.this, FinishRegisterActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString(Consts.SERIALNUMBERVALUEKEY, mSerialNumber);
+                        bundle.putParcelable(Consts.SCAN_CODE_BEAN, mScanCodeBean);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                        finish();
                     }
-
-                    @Override
-                    public void onResponse(String response)
-                    {
-                        ResponseObject<String> responseObject=parseDiscountJson(response);
-                        if(responseObject.getResult()==1)
-                        {
-                            Intent intent=new Intent(PayActivity.this,FinishRegisterActivity.class);
-                            Bundle bundle=new Bundle();
-                            bundle.putString(Consts.SERIALNUMBERVALUEKEY,mSerialNumber);
-                            bundle.putParcelable(Consts.SCAN_CODE_BEAN,mScanCodeBean);
-                            intent.putExtras(bundle);
-                            startActivity(intent);
-                            finish();
-                        }
-                        else
-                        {
-                            displayToast(responseObject.getData());
-                        }
-                    }
-                },params);
+                });
             }
             else
             {
-                displayToast("两次输入账号不匹配");
+                ToaskUtils.displayToast("两次输入账号不匹配");
             }
         }
     }
 
-    private void displayToast(String warnning)
+    @OnEditorAction(R.id.account2)
+    public boolean onEditorAction(TextView content,int actionId,KeyEvent event)
     {
-        Toast.makeText(this, warnning, Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * 解析数据
-     */
-    private ResponseObject<String> parseDiscountJson(String discountJson)
-    {
-        Gson gson=new Gson();
-        Type type=new TypeToken<ResponseObject<String>>(){}.getType();
-        gson.toJson(new ResponseObject<String>(), type);
-        ResponseObject<String> responseObject=gson.fromJson(discountJson,type );
-        return responseObject;
-    }
-
-    @Override
-    protected void onDestroy()
-    {
-        super.onDestroy();
+        if(actionId== EditorInfo.IME_ACTION_SEND||(event!=null&&event.getKeyCode()== KeyEvent.KEYCODE_ENTER))
+        {
+            next();
+             /*隐藏软键盘*/
+            InputMethodManager imm = (InputMethodManager)content.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm.isActive())
+            {
+                imm.hideSoftInputFromWindow(content.getApplicationWindowToken(), 0);
+            }
+            return true;
+        }
+        return false;
     }
 }

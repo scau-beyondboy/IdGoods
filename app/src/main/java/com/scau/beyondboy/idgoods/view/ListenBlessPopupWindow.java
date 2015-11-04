@@ -106,7 +106,7 @@ public class ListenBlessPopupWindow extends AppCompatActivity
         lp.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
         this.getWindow().setAttributes(lp);
         ButterKnife.bind(this);
-        MyApplication.sActivityMap.put("ListenBlessPopupWindow",this);
+        MyApplication.sActivityMap.put(Consts.BLESS_POPUP,this);
         init();
     }
 
@@ -136,6 +136,7 @@ public class ListenBlessPopupWindow extends AppCompatActivity
         {
             mScanCodeBean=getIntent().getParcelableExtra(Consts.SCAN_CODE_BEAN);
             url=mScanCodeBean.getAddress();
+            Log.i(TAG,"在哪里啊");
             getRecordFile();
         }
         //收藏详情
@@ -144,6 +145,7 @@ public class ListenBlessPopupWindow extends AppCompatActivity
             mCollectBean = getIntent().getParcelableExtra(Consts.COLLECT_BEAN);
             android.support.v4.util.ArrayMap<String,String> params=new android.support.v4.util.ArrayMap<>();
             params.put(Consts.SERIALNUMBERVALUEKEY, mCollectBean.getSerialNumberValue());
+            Log.i(TAG,"这里了吗");
             NetWorkHandlerUtils.postAsynHandler(Consts.GET_COLLECT_INFO,params, null, null, new NetWorkHandlerUtils.PostCallback<CollectInfo>()
             {
                 @Override
@@ -262,8 +264,10 @@ public class ListenBlessPopupWindow extends AppCompatActivity
     @OnClick(R.id.play)
     public void play()
     {
-        if(mPostCardVoice!=null&&!mPostCardVoice.exists())
+        Log.i(TAG,"文件： "+mPostCardVoice);
+        if(mPostCardVoice==null||!mPostCardVoice.exists())
         {
+            Log.i(TAG,"删除");
             ToaskUtils.displayToast("音频文件还没下载完");
             return;
         }
@@ -323,7 +327,7 @@ public class ListenBlessPopupWindow extends AppCompatActivity
         MyApplication.sActivityMap.get("ListenBlessActivity").finish();
         MyApplication.sActivityMap.remove("ListenBlessActivity");
         ThreadManager.release();
-        if(!isSave&&mPostCardVoice.exists())
+        if(!isSave&&mPostCardVoice!=null&&mPostCardVoice.exists())
         {
             String fileName=mPostCardVoice.getAbsolutePath();
             fileName=fileName.substring(fileName.lastIndexOf("/")+1,fileName.length()-2);

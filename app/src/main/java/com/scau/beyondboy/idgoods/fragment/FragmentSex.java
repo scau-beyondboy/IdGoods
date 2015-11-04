@@ -90,4 +90,11 @@ public class FragmentSex extends DialogFragment
                 break;
         }
     }
+
+    @Override
+    public void onDestroyView()
+    {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
+    }
 }

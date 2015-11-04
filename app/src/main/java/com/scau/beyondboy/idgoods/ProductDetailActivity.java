@@ -1,22 +1,15 @@
 package com.scau.beyondboy.idgoods;
 
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.util.ArrayMap;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.scau.beyondboy.idgoods.consts.Consts;
 import com.scau.beyondboy.idgoods.model.ProductBean;
 import com.scau.beyondboy.idgoods.model.ProductInfo;
-import com.scau.beyondboy.idgoods.model.ResponseObject;
 import com.scau.beyondboy.idgoods.utils.LoadImageUtils;
-import com.scau.beyondboy.idgoods.utils.OkHttpNetWorkUtil;
-import com.squareup.okhttp.Request;
-
-import java.lang.reflect.Type;
+import com.scau.beyondboy.idgoods.utils.NetWorkHandlerUtils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -31,7 +24,7 @@ import butterknife.OnClick;
  */
 public class ProductDetailActivity extends BaseActivity
 {
-    private static final String TAG = ProductDetailActivity.class.getName();
+    //private static final String TAG = ProductDetailActivity.class.getName();
     @Bind(R.id.header_image)
     ImageView headerImage;
     @Bind(R.id.product_name)
@@ -56,52 +49,24 @@ public class ProductDetailActivity extends BaseActivity
 
     private void loadData()
     {
-        OkHttpNetWorkUtil.postAsyn(Consts.GET_PRODUCT_INFO, new OkHttpNetWorkUtil.ResultCallback<String>()
+        ArrayMap<String,String> params=new ArrayMap<>();
+        params.put(Consts.SERIALNUMBERVALUEKEY, mProductBean.getSerialNumber());
+        NetWorkHandlerUtils.postAsynHandler(Consts.GET_PRODUCT_INFO, params, null, "获取失败", new NetWorkHandlerUtils.PostCallback<ProductInfo>()
         {
             @Override
-            public void onError(Request request, Exception e)
+            public void success(ProductInfo result)
             {
                 LoadImageUtils.getInstance().loadImage(headerImage, mProductBean.getAdvertisementPhoto(), ProductDetailActivity.this);
-                productName.setText(mProductBean.getName());
-                adverseSerialNumber.setText(mProductBean.getSerialNumber());
-                discount.setText("优惠??元");
-                date.setText(mProductBean.getDateTime());
-                e.printStackTrace();
-                Toast.makeText(ProductDetailActivity.this, "网络异常", Toast.LENGTH_SHORT).show();
+                productName.setText(result.getName());
+                adverseSerialNumber.setText(result.getSerialNumber());
+                discount.setText(String.format("优惠%d元", result.getDiscount()));
+                date.setText(result.getTime());
             }
-
-            @Override
-            public void onResponse(String response)
-            {
-                Log.i(TAG, "response:  " + response);
-                ProductInfo productInfo =parseProductDataJson(response);
-                LoadImageUtils.getInstance().loadImage(headerImage, mProductBean.getAdvertisementPhoto(), ProductDetailActivity.this);
-                productName.setText(productInfo.getName());
-                adverseSerialNumber.setText(productInfo.getSerialNumber());
-                discount.setText("优惠"+productInfo.getDiscount()+"元");
-                date.setText(productInfo.getTime());
-            }
-        }, new OkHttpNetWorkUtil.Param(Consts.SERIALNUMBERVALUEKEY,mProductBean.getSerialNumber()));
+        }, ProductInfo.class);
     }
     @OnClick(R.id.product_detail_back)
     public void onClick()
     {
         finish();
-    }
-
-    /**解析json*/
-    private ProductInfo parseProductDataJson(String productDataJson)
-    {
-        Gson gson=new Gson();
-        Type type=new TypeToken<ResponseObject<ProductInfo>>(){}.getType();
-        gson.toJson(new ResponseObject<ProductInfo>(), type);
-        ResponseObject<ProductInfo> responseObject=gson.fromJson(productDataJson,type );
-        return responseObject.getData();
-    }
-
-    @Override
-    protected void onDestroy()
-    {
-        super.onDestroy();
     }
 }

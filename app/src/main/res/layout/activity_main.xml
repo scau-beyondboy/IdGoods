@@ -34,15 +34,6 @@
         android:textSize="25sp"
         android:visibility="gone"
         />
-      <android.support.v7.widget.SearchView
-        android:id="@+id/menu_search"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:searchIcon="@drawable/ic_search_black_24dp"
-        android:visibility="gone"
-        />
     </RelativeLayout>
     <FrameLayout
       android:id="@+id/content_frame"

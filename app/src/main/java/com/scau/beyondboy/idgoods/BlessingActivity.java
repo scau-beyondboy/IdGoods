@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
+import com.scau.beyondboy.idgoods.consts.Consts;
 import com.scau.beyondboy.idgoods.view.CircleProgressBar;
 import com.scau.beyondboy.idgoods.view.RecordPopupWindow;
 
@@ -33,7 +34,7 @@ public class BlessingActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blessing);
         ButterKnife.bind(this);
-        MyApplication.sActivityMap.put("BlessingActivity", this);
+        MyApplication.sActivityMap.put(Consts.BLESSING_ACTIVITY, this);
     }
 
     @OnClick({R.id.blessing_back,R.id.voice_blessing})
@@ -42,8 +43,8 @@ public class BlessingActivity extends AppCompatActivity
         switch (view.getId())
         {
             case R.id.blessing_back:
-                MyApplication.sActivityMap.get("RecordPopupWindow").finish();
-                MyApplication.sActivityMap.remove("RecordPopupWindow");
+                MyApplication.sActivityMap.get(Consts.RECORD_POPUP).finish();
+                MyApplication.sActivityMap.remove(Consts.RECORD_POPUP);
                 finish();
                 break;
             case R.id.voice_blessing:
@@ -51,5 +52,12 @@ public class BlessingActivity extends AppCompatActivity
                 startActivity(new Intent(this, RecordPopupWindow.class));
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        MyApplication.sActivityMap.clear();
     }
 }

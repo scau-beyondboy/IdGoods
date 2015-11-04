@@ -2,23 +2,19 @@ package com.scau.beyondboy.idgoods;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.scau.beyondboy.idgoods.consts.Consts;
-import com.scau.beyondboy.idgoods.model.ResponseObject;
+import com.scau.beyondboy.idgoods.manager.ThreadManager;
 import com.scau.beyondboy.idgoods.model.UserBean;
-import com.scau.beyondboy.idgoods.utils.OkHttpNetWorkUtil;
+import com.scau.beyondboy.idgoods.utils.NetWorkHandlerUtils;
 import com.scau.beyondboy.idgoods.utils.ShareUtils;
 import com.scau.beyondboy.idgoods.utils.StringUtils;
-import com.squareup.okhttp.Request;
+import com.scau.beyondboy.idgoods.utils.ToaskUtils;
 
 import org.litepal.crud.DataSupport;
-
-import java.lang.reflect.Type;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -52,43 +48,43 @@ public class SignupActivity extends AppCompatActivity
     {
         if(StringUtils.isEmpty(name.getText().toString())||StringUtils.isEmpty(password.getText().toString())||StringUtils.isEmpty(passwordagin.getText().toString()))
         {
-            displayToast("都不能为空");
+            ToaskUtils.displayToast("都不能为空");
         }
         else
         {
             if(password.getText().toString().equals(passwordagin.getText().toString()))
             {
-                OkHttpNetWorkUtil.postAsyn(Consts.USERS_SIGNUP, new OkHttpNetWorkUtil.ResultCallback<String>()
+                ArrayMap<String,String> params=new ArrayMap<>(2);
+                params.put(Consts.ACCOUNT_KEY,name.getText().toString());
+                params.put(Consts.PASSWORD_KEY,password.getText().toString());
+                NetWorkHandlerUtils.postAsynHandler(Consts.USERS_SIGNUP, params, "注册成功", "注册失败", new NetWorkHandlerUtils.PostCallback<UserBean>()
                 {
                     @Override
-                    public void onError(Request request, Exception e)
+                    public void success(final UserBean result)
                     {
-
-                    }
-
-                    @Override
-                    public void onResponse(String response)
-                    {
-                        UserBean userBean=parseRegisterDataJson(response);
-                        if(userBean!=null)
+                        ShareUtils.clearTempDate();
+                        ShareUtils.putUserInfo(result, password.getText().toString());
+                        ThreadManager.addSingalExecutorTask(new Runnable()
                         {
-                            ShareUtils.clearTempDate();
-                            ShareUtils.putUserInfo(userBean, password.getText().toString());
-                            //添加数据库中
-                            if(DataSupport.where("account=?", userBean.getAccount()).find(UserBean.class).size()==0)
+                            @Override
+                            public void run()
                             {
-                                userBean.save();
+                                //添加数据库中
+                                if(DataSupport.where("account=?", result.getAccount()).find(UserBean.class).size()==0)
+                                {
+                                    result.save();
+                                }
                             }
-                            Intent intent=new Intent(SignupActivity.this,MainActivity.class);
-                            intent.putExtra(Consts.USERS_SIGNUP,true);
-                            startActivity(intent);
-                        }
+                        });
+                        Intent intent=new Intent(SignupActivity.this,MainActivity.class);
+                        intent.putExtra(Consts.USERS_SIGNUP,true);
+                        startActivity(intent);
                     }
-                },new OkHttpNetWorkUtil.Param(Consts.ACCOUNT_KEY,name.getText().toString()),new OkHttpNetWorkUtil.Param(Consts.PASSWORD_KEY,password.getText().toString()));
+                },UserBean.class);
             }
             else
             {
-                displayToast("两个密码不匹配");
+                ToaskUtils.displayToast("两个密码不匹配");
             }
         }
     }
@@ -97,28 +93,6 @@ public class SignupActivity extends AppCompatActivity
     public void back()
     {
         finish();
-    }
-    /**解析json*/
-    private UserBean parseRegisterDataJson(String registerDataJson)
-    {
-        Gson gson=new Gson();
-        Type type=new TypeToken<ResponseObject<Object>>(){}.getType();
-        ResponseObject<Object> responseObject=gson.fromJson(registerDataJson, type);
-        String data=gson.toJson(responseObject.getData());
-        if(responseObject.getResult()==1)
-        {
-            return gson.fromJson(data,UserBean.class);
-        }
-        else
-        {
-            displayToast(data);
-            return null;
-        }
-    }
-
-    private void displayToast(String warnning)
-    {
-        Toast.makeText(this, warnning, Toast.LENGTH_SHORT).show();
     }
 
 }

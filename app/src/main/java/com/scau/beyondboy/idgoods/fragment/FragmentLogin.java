@@ -44,7 +44,7 @@ import butterknife.OnEditorAction;
  */
 public class FragmentLogin extends Fragment
 {
-    private static final String TAG = FragmentLogin.class.getName();
+    //private static final String TAG = FragmentLogin.class.getName();
     @Bind(R.id.et_password)
     EditText password;
     @Bind(R.id.et_name)

@@ -27,8 +27,6 @@ public class ListenBlessActivity extends AppCompatActivity
 {
     @Bind(R.id.listen)
     Button mListen;
-    private ScanCodeBean mScanCodeBean;
-    private boolean isCollect=false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -36,11 +34,11 @@ public class ListenBlessActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.listen);
         ButterKnife.bind(this);
-        MyApplication.sActivityMap.put("ListenBlessActivity", this);
-        isCollect=getIntent().getBooleanExtra(Consts.FRAGMENT_COLLECT,false);
+        MyApplication.sActivityMap.put(Consts.BLESS_ACTIVITY, this);
+        boolean isCollect = getIntent().getBooleanExtra(Consts.FRAGMENT_COLLECT, false);
         if(isCollect)
         {
-            mListen.setVisibility(View.INVISIBLE);
+            mListen.setVisibility(View.GONE);
             Intent intent = new Intent(this, ListenBlessPopupWindow.class);
             CollectBean collectBean=getIntent().getParcelableExtra(Consts.COLLECT_BEAN);
             intent.putExtra(Consts.COLLECT_BEAN, collectBean);
@@ -48,33 +46,22 @@ public class ListenBlessActivity extends AppCompatActivity
         }
     }
 
-    /*@Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        View view = inflater.inflate(R.layout.listen, container, false);
-        ButterKnife.bind(this, view);
-        Bundle bundle = getArguments();
-        mScanCodeBean = bundle.getParcelable(Consts.SCAN_CODE_BEAN);
-        return view;
-    }
-*/
     @OnClick(R.id.listen)
     public void onClick()
     {
         Intent intent = new Intent(this, ListenBlessPopupWindow.class);
-        mScanCodeBean=getIntent().getParcelableExtra(Consts.SCAN_CODE_BEAN);
+        ScanCodeBean scanCodeBean = getIntent().getParcelableExtra(Consts.SCAN_CODE_BEAN);
         mListen.setVisibility(View.INVISIBLE);
         intent.putExtra(Consts.RECEIVEBLESS, true);
-        intent.putExtra(Consts.SCAN_CODE_BEAN, mScanCodeBean);
+        intent.putExtra(Consts.SCAN_CODE_BEAN, scanCodeBean);
         startActivity(intent);
     }
 
     @OnClick(R.id.listen_back)
     public void back()
     {
-        MyApplication.sActivityMap.get("ListenBlessPopupWindow").finish();
-        MyApplication.sActivityMap.remove("ListenBlessPopupWindow");
+        MyApplication.sActivityMap.get(Consts.BLESS_POPUP).finish();
+        MyApplication.sActivityMap.remove(Consts.BLESS_POPUP);
         finish();
     }
 }

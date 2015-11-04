@@ -11,13 +11,9 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.scau.beyondboy.idgoods.consts.Consts;
 import com.scau.beyondboy.idgoods.fragment.FragmentCollect;
@@ -30,6 +26,7 @@ import com.scau.beyondboy.idgoods.fragment.FragmentProduct;
 import com.scau.beyondboy.idgoods.manager.ThreadManager;
 import com.scau.beyondboy.idgoods.model.UserBean;
 import com.scau.beyondboy.idgoods.utils.ShareUtils;
+import com.scau.beyondboy.idgoods.utils.ToaskUtils;
 
 import org.litepal.crud.DataSupport;
 
@@ -42,19 +39,18 @@ import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity
 {
-    private static final String TAG = MainActivity.class.getName();
+   // private static final String TAG = MainActivity.class.getName();
     @Bind(R.id.title_content)
     TextView titleContent;
     @Bind(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
-    @Bind(R.id.menu_toggle)
-    ImageView toggleImageView;
-    @Bind(R.id.menu_search)
-    public SearchView mSearchView;
+//    @Bind(R.id.menu_toggle)
+//    ImageView toggleImageView;
+//    @Bind(R.id.menu_search)
+//    public SearchView mSearchView;
     @Bind(R.id.changesetting)
     TextView changeSetting;
     private FragmentManager mFragmentManager;
-    private ActionBarDrawerToggle mDrawerToggle;
     @Bind(R.id.user_name)
     TextView userName;
     private UserBean mUserBean;
@@ -67,15 +63,15 @@ public class MainActivity extends AppCompatActivity
         ButterKnife.bind(this);
         mDrawerLayout.setScrimColor(Color.TRANSPARENT);
         mFragmentManager=getSupportFragmentManager();
-        mDrawerToggle=new ActionBarDrawerToggle(this,mDrawerLayout,null,R.string.open,R.string.close)
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, null, R.string.open, R.string.close)
         {
 
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset)
             {
-                View content=mDrawerLayout.getChildAt(0);
-                View menu=mDrawerLayout.getChildAt(1);
-                float slideDistance=menu.getWidth()*slideOffset;
+                View content = mDrawerLayout.getChildAt(0);
+                View menu = mDrawerLayout.getChildAt(1);
+                float slideDistance = menu.getWidth() * slideOffset;
                 //平移主界面内容布局
                 content.setTranslationX(slideDistance);
             }
@@ -83,13 +79,14 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onDrawerOpened(View drawerView)
             {
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm.isActive())
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm.isActive() && (MainActivity.this.getCurrentFocus() != null))
                 {
-                    imm.hideSoftInputFromWindow(MainActivity.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);                 }
+                    imm.hideSoftInputFromWindow(MainActivity.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                }
             }
         };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerLayout.setDrawerListener(drawerToggle);
         changeFragment(new FragmentHome(), true);
     }
     @Override
@@ -106,20 +103,18 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void run()
             {
-                if(ShareUtils.getAccount(MyApplication.getInstance())!=null)
+                if (ShareUtils.getAccount() != null)
                 {
-                    List<UserBean> userBeans= DataSupport.where("account=?", ShareUtils.getAccount()).find(UserBean.class);
-                    if(userBeans.size()!=0)
+                    List<UserBean> userBeans = DataSupport.where("account=?", ShareUtils.getAccount()).find(UserBean.class);
+                    if (userBeans.size() != 0)
                     {
-                        mUserBean =userBeans.get(0);
+                        mUserBean = userBeans.get(0);
                         userName.setText(mUserBean.getNickname());
-                    }
-                    else
+                    } else
                     {
                         userName.setText("未登陆");
                     }
-                }
-                else
+                } else
                 {
                     userName.setText("未登陆");
                 }
@@ -147,14 +142,12 @@ public class MainActivity extends AppCompatActivity
         switch (view.getId())
         {
             case R.id.home:
-               // Log.i(TAG,"数据：  "+ShareUtils.getAccount(this)+"      "+ShareUtils.getPassword(this));
                 changeFragment(new FragmentHome(),true);
                 break;
             case R.id.myproduct:
-               // Log.i(TAG, "数据：  " + ShareUtils.getAccount(this) + "      " + ShareUtils.getPassword(this));
                 if(ShareUtils.getAccount(this)==null&&ShareUtils.getPassword(this)==null)
                 {
-                    displayToast("请登录你的账号");
+                    ToaskUtils.displayToast("请登录你的账号");
                 }
                 else
                 {
@@ -162,7 +155,6 @@ public class MainActivity extends AppCompatActivity
                 }
                 break;
             case R.id.setting:
-                Log.i(TAG,"数据：  "+ShareUtils.getAccount(this)+"      "+ShareUtils.getPassword(this));
                 if(changeSetting.getText().toString().equals("登陆"))
                 {
                     changeFragment(new FragmentLogin(),true);
@@ -176,7 +168,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.header_image:
                 if(ShareUtils.getAccount(this)==null&&ShareUtils.getPassword(this)==null)
                 {
-                    displayToast("请登录你的账号");
+                    ToaskUtils.displayToast("请登录你的账号");
                 }
                 else
                 {
@@ -186,7 +178,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.mycollect:
                 if(ShareUtils.getAccount(this)==null&&ShareUtils.getPassword(this)==null)
                 {
-                    displayToast("请登录你的账号");
+                    ToaskUtils.displayToast("请登录你的账号");
                 }
                 else
                 {
@@ -199,7 +191,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onNewIntent(Intent intent)
     {
-        Log.i(TAG, "真假：  " + intent.getBooleanExtra(Consts.GET_DIS_COUNT, false));
         super.onNewIntent(intent);
         if(intent.getBooleanExtra(Consts.USERS_SIGNUP,false)||intent.getBooleanExtra(Consts.FINISHREGISTER,false))
         {
@@ -218,12 +209,12 @@ public class MainActivity extends AppCompatActivity
             fragmentPlay.setArguments(intent.getExtras());
             changeFragment(fragmentPlay,true);
         }
-        else if(intent.getBooleanExtra(Consts.FRAGMENT_LISTEN,false))
+        /*else if(intent.getBooleanExtra(Consts.FRAGMENT_LISTEN,false))
         {
-           /* ListenBlessActivity fragmentListen=new ListenBlessActivity();
+           *//* ListenBlessActivity fragmentListen=new ListenBlessActivity();
             fragmentListen.setArguments(intent.getExtras());
-            changeFragment(fragmentListen, true);*/
-        }
+            changeFragment(fragmentListen, true);*//*
+        }*/
     }
 
     public void setChangeSetting(String content)
@@ -258,10 +249,5 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy()
     {
         super.onDestroy();
-    }
-
-    private void displayToast(String warnning)
-    {
-        Toast.makeText(this, warnning, Toast.LENGTH_SHORT).show();
     }
 }

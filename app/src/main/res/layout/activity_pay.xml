@@ -71,24 +71,29 @@
     android:layout_height="0dp"
     android:layout_weight="1"
     >
-    <EditText
+    <com.scau.beyondboy.idgoods.view.ClearEditText
       android:id="@+id/account1"
       android:layout_marginTop="50dp"
       android:drawableLeft="@drawable/logininvitedcodex"
       android:layout_centerHorizontal="true"
       android:hint="请输入收款账号"
       android:layout_width="300dp"
+      android:inputType="number"
       android:layout_height="wrap_content"
+      android:singleLine="true"
       android:layout_gravity="center_horizontal"/>
-    <EditText
+    <com.scau.beyondboy.idgoods.view.ClearEditText
       android:id="@+id/account2"
       android:layout_centerHorizontal="true"
       android:layout_below="@id/account1"
       android:layout_marginTop="10dp"
       android:drawableLeft="@drawable/logininvitedcodex"
+      android:singleLine="true"
       android:hint="请再次输入收款账户"
       android:layout_width="300dp"
       android:layout_height="wrap_content"
+      android:imeOptions="actionSend"
+      android:inputType="number"
       android:layout_gravity="center_horizontal"/>
     <Button
       android:id="@+id/nextstep"

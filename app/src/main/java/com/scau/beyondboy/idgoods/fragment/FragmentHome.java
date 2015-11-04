@@ -95,5 +95,11 @@ public class FragmentHome extends Fragment
         integrator.initiateScan();
     }
 
+    @Override
+    public void onDestroyView()
+    {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
+    }
 }
 

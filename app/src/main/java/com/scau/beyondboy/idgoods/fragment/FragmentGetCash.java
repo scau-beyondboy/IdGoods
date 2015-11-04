@@ -32,7 +32,7 @@ import butterknife.OnClick;
  */
 public class FragmentGetCash extends Fragment
 {
-    private static final String TAG = FragmentGetCash.class.getName();
+    //private static final String TAG = FragmentGetCash.class.getName();
     @Bind(R.id.header_image)
     ImageView headerImage;
     @Bind(R.id.adverse_serialnumber)
@@ -60,9 +60,12 @@ public class FragmentGetCash extends Fragment
         Bundle bundle=getArguments();
         serialNumberValue=bundle.getString(Consts.SERIALNUMBERVALUEKEY);
         scanCodeBean=bundle.getParcelable(Consts.SCAN_CODE_BEAN);
-        LoadImageUtils.getInstance().loadImage(headerImage,scanCodeBean.getGetAdversementPhoto(),mActivity);
-        adverseSerialNumber.setText(serialNumberValue);
-        productName.setText(scanCodeBean.getName());
+        if (scanCodeBean != null)
+        {
+            LoadImageUtils.getInstance().loadImage(headerImage,scanCodeBean.getGetAdversementPhoto(),mActivity);
+            adverseSerialNumber.setText(serialNumberValue);
+            productName.setText(scanCodeBean.getName());
+        }
         return view;
     }
 
@@ -82,6 +85,7 @@ public class FragmentGetCash extends Fragment
     public void onDestroyView()
     {
         super.onDestroyView();
+        ButterKnife.unbind(this);
         //释放线程资源
         ThreadManager.release();
     }

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v4.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,27 +12,20 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.scau.beyondboy.idgoods.ListenBlessActivity;
-import com.scau.beyondboy.idgoods.MainActivity;
-import com.scau.beyondboy.idgoods.MyApplication;
 import com.scau.beyondboy.idgoods.R;
 import com.scau.beyondboy.idgoods.consts.Consts;
 import com.scau.beyondboy.idgoods.manager.ThreadManager;
 import com.scau.beyondboy.idgoods.model.CollectBean;
-import com.scau.beyondboy.idgoods.model.ProductBean;
-import com.scau.beyondboy.idgoods.model.ResponseObject;
 import com.scau.beyondboy.idgoods.model.TimeCollectBean;
 import com.scau.beyondboy.idgoods.model.TimeProductBean;
 import com.scau.beyondboy.idgoods.utils.LoadImageUtils;
+import com.scau.beyondboy.idgoods.utils.NetWorkHandlerUtils;
 import com.scau.beyondboy.idgoods.utils.NetworkUtils;
-import com.scau.beyondboy.idgoods.utils.OkHttpNetWorkUtil;
 import com.scau.beyondboy.idgoods.utils.ShareUtils;
 import com.scau.beyondboy.idgoods.view.SlideListView;
-import com.squareup.okhttp.Request;
 
 import org.litepal.crud.DataSupport;
 
@@ -50,11 +43,12 @@ import butterknife.OnItemClick;
  * Gmail:xuguoli.scau@gmail.com
  * Date: 2015-10-21
  * Time: 00:28
+ * 收藏列表
  */
 public class FragmentCollect extends Fragment
 {
-    private static final String TAG = FragmentCollect.class.getName();
-    private MainActivity mMainActivity;
+   // private static final String TAG = FragmentCollect.class.getName();
+    //private MainActivity mMainActivity;
     @Bind(R.id.collect_slidelistview)
     SlideListView mCollectListView;
     private List<Object> mCollectBeanList =new LinkedList<>();
@@ -64,7 +58,7 @@ public class FragmentCollect extends Fragment
     public void onAttach(Context context)
     {
         super.onAttach(context);
-        mMainActivity=(MainActivity)context;
+       // mMainActivity=(MainActivity)context;
         ThreadManager.scoolPoolSize=3;
     }
 
@@ -72,7 +66,7 @@ public class FragmentCollect extends Fragment
     {
         View view=inflater.inflate(R.layout.mycollect,container,false);
         ButterKnife.bind(this, view);
-        mMainActivity.mSearchView.setVisibility(View.VISIBLE);
+        //mMainActivity.mSearchView.setVisibility(View.VISIBLE);
         loadDate();
         return view;
     }
@@ -81,15 +75,7 @@ public class FragmentCollect extends Fragment
     public void onDetach()
     {
         super.onDetach();
-        mMainActivity.mSearchView.setVisibility(View.GONE);
-    }
-
-    /**解析json*/
-    private List<TimeCollectBean> parseCollectDataJson(String productDataJson)
-    {
-        Gson gson=new Gson();
-        ResponseObject<List<TimeCollectBean>> responseObject=gson.fromJson(productDataJson, new TypeToken<ResponseObject<List<TimeCollectBean>>>(){}.getType());
-        return responseObject.getData();
+       // mMainActivity.mSearchView.setVisibility(View.GONE);
     }
 
     /**
@@ -99,79 +85,110 @@ public class FragmentCollect extends Fragment
     {
         if(NetworkUtils.isNetworkReachable())
         {
-            OkHttpNetWorkUtil.postAsyn(Consts.GET_COLLECT, new OkHttpNetWorkUtil.ResultCallback<String>()
+            ArrayMap<String,String> params=new ArrayMap<>(1);
+            params.put(Consts.CUSTOMERID_KEY, ShareUtils.getUserId());
+            NetWorkHandlerUtils.<TimeCollectBean>postAsynHandler(Consts.GET_COLLECT, params, null, null, new NetWorkHandlerUtils.PostCallback<List<TimeCollectBean>>()
             {
-
                 @Override
-                public void onError(Request request, Exception e)
+                public void success(final List<TimeCollectBean> result)
                 {
-                    Toast.makeText(getContext(), "网络异常", Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "错误", e);
-                }
-
-                @Override
-                public void onResponse(String response)
-                {
-                    List<TimeCollectBean> timeCollectBeanList = parseCollectDataJson(response);
-                    for (TimeCollectBean timeCollecttBean : timeCollectBeanList)
+                    ThreadManager.addSingalExecutorTask(new Runnable()
                     {
-                        //存入数据库时间，由于数据库识别不了中文，转成全英的
-                        String dateTimedb = timeCollecttBean.getDateTime().replaceAll("[\u4e00-\u9fa5]+", "/");
-                        dateTimedb = dateTimedb.substring(0, dateTimedb.length() - 1);
-                        TimeCollectBean timeCollectBeandb;
-                        List<TimeCollectBean> timeCollectBeanListdb = DataSupport.where("datetime =?", dateTimedb).find(TimeCollectBean.class);
-                        if (timeCollectBeanListdb == null || timeCollectBeanListdb.size() == 0)
+                        @Override
+                        public void run()
                         {
-                            timeCollectBeandb = new TimeCollectBean();
-                            //保存到数据库
-                            timeCollectBeandb.setDateTime(dateTimedb);
-                        } else
-                        {
-                            //返回原来数据
-                            timeCollectBeandb = DataSupport.where("datetime =?", dateTimedb).find(TimeCollectBean.class).get(0);
+                            loadNetWordData(result);
                         }
-                        mCollectBeanList.add(timeCollecttBean.getDateTime());
-                        for (CollectBean collectBean : timeCollecttBean.getBeanList())
-                        {
-                            collectBean.setDateTime(timeCollecttBean.getDateTime());
-                            //添加数据库中
-                            if (DataSupport.where("serialnumbervalue=? and name=?", collectBean.getSerialNumberValue(), collectBean.getName()).find(CollectBean.class).size() == 0)
-                            {
-                                collectBean.save();
-                            }
-                            //添加不重复到数据库中
-                            timeCollectBeandb.getBeanList().add(collectBean);
-                            mCollectBeanList.add(collectBean);
-                        }
-                        //提交到数据库中
-                        timeCollectBeandb.save();
-                        mDateCountCollect.put(timeCollecttBean.getDateTime(), timeCollecttBean.getBeanList().size());
-                    }
-                    mCollectListView.setAdapter(new CollectAdapter());
+                    });
                 }
-            }, new OkHttpNetWorkUtil.Param(Consts.CUSTOMERID_KEY, ShareUtils.getUserId(mMainActivity)));
+            }, new TypeToken<List<TimeCollectBean>>(){}.getType());
         }
         else
         {
-            List<TimeCollectBean> timeCollectBeanList=DataSupport.findAll(TimeCollectBean.class,true);
-            for (TimeCollectBean timeCollectBean : timeCollectBeanList)
+            ThreadManager.addSingalExecutorTask(new Runnable()
             {
-                String dateTimedb=timeCollectBean.getDateTime();
-                String[] dateArray=dateTimedb.split("/");
-                if(dateArray!=null&&dateArray.length!=0)
+                @Override
+                public void run()
                 {
-                    dateTimedb=dateArray[0]+"年"+dateArray[1]+"月"+dateArray[2]+"日";
+                    loadLocalData();
                 }
-                mCollectBeanList.add(dateTimedb);
-                for(CollectBean collectBean:timeCollectBean.getBeanList())
-                {
-                    collectBean.setDateTime(dateTimedb);
-                    mCollectBeanList.add(collectBean);
-                }
-                mDateCountCollect.put(dateTimedb, timeCollectBean.getBeanList().size());
-            }
-            mCollectListView.setAdapter(new CollectAdapter());
+            });
         }
+    }
+
+    private void loadLocalData()
+    {
+        List<TimeCollectBean> timeCollectBeanList= DataSupport.findAll(TimeCollectBean.class, true);
+        for (TimeCollectBean timeCollectBean : timeCollectBeanList)
+        {
+            String dateTimedb=timeCollectBean.getDateTime();
+            String[] dateArray=dateTimedb.split("/");
+            if(dateArray.length != 0)
+            {
+                dateTimedb=dateArray[0]+"年"+dateArray[1]+"月"+dateArray[2]+"日";
+            }
+            mCollectBeanList.add(dateTimedb);
+            for(CollectBean collectBean:timeCollectBean.getBeanList())
+            {
+                collectBean.setDateTime(dateTimedb);
+                mCollectBeanList.add(collectBean);
+            }
+            mDateCountCollect.put(dateTimedb, timeCollectBean.getBeanList().size());
+        }
+        getActivity().runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                mCollectListView.setAdapter(new CollectAdapter());
+            }
+        });
+    }
+
+    private void loadNetWordData(List<TimeCollectBean> result)
+    {
+        for (TimeCollectBean timeCollecttBean : result)
+        {
+            //存入数据库时间，由于数据库识别不了中文，转成全英的
+            String dateTimedb = timeCollecttBean.getDateTime().replaceAll("[\u4e00-\u9fa5]+", "/");
+            dateTimedb = dateTimedb.substring(0, dateTimedb.length() - 1);
+            TimeCollectBean timeCollectBeandb;
+            List<TimeCollectBean> timeCollectBeanListdb = DataSupport.where("datetime =?", dateTimedb).find(TimeCollectBean.class);
+            if (timeCollectBeanListdb == null || timeCollectBeanListdb.size() == 0)
+            {
+                timeCollectBeandb = new TimeCollectBean();
+                //保存到数据库
+                timeCollectBeandb.setDateTime(dateTimedb);
+            } else
+            {
+                //返回原来数据
+                timeCollectBeandb = DataSupport.where("datetime =?", dateTimedb).find(TimeCollectBean.class).get(0);
+            }
+            mCollectBeanList.add(timeCollecttBean.getDateTime());
+            for (CollectBean collectBean : timeCollecttBean.getBeanList())
+            {
+                collectBean.setDateTime(timeCollecttBean.getDateTime());
+                //添加数据库中
+                if (DataSupport.where("serialnumbervalue=? and name=?", collectBean.getSerialNumberValue(), collectBean.getName()).find(CollectBean.class).size() == 0)
+                {
+                    collectBean.save();
+                }
+                //添加不重复到数据库中
+                timeCollectBeandb.getBeanList().add(collectBean);
+                mCollectBeanList.add(collectBean);
+            }
+            //提交到数据库中
+            timeCollectBeandb.save();
+            mDateCountCollect.put(timeCollecttBean.getDateTime(), timeCollecttBean.getBeanList().size());
+        }
+        getActivity().runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                mCollectListView.setAdapter(new CollectAdapter());
+            }
+        });
     }
 
     private class CollectAdapter extends ArrayAdapter<Object>
@@ -236,7 +253,6 @@ public class FragmentCollect extends Fragment
                     {
                         if(mCollectListView.isScrollFinished())
                         {
-                            Log.i(TAG, "位置：  " + position);
                             int count= mDateCountCollect.get(collectBean.getDateTime())-1;
                             if(position>=0)
                                 mCollectBeanList.remove(position);
@@ -244,28 +260,37 @@ public class FragmentCollect extends Fragment
                             if(count==0)
                             {
                                 mCollectBeanList.remove(collectBean.getDateTime());
-                                //删除数据库对应的时间
-                                DataSupport.deleteAll(TimeProductBean.class, "datetime=?", collectBean.getDateTime());
+                                ThreadManager.addSingalExecutorTask(new Runnable()
+                                {
+                                    @Override
+                                    public void run()
+                                    {
+                                        //删除数据库对应的时间
+                                        DataSupport.deleteAll(TimeProductBean.class, "datetime=?", collectBean.getDateTime());
+                                    }
+                                });
 
                             }
                             mDateCountCollect.put(collectBean.getDateTime(), count);
-                            OkHttpNetWorkUtil.postAsyn(Consts.DELETE_COLLECT, new OkHttpNetWorkUtil.ResultCallback<String>()
+                            ArrayMap<String,String> params=new ArrayMap<>(2);
+                            params.put(Consts.CUSTOMERID_KEY, ShareUtils.getUserId());
+                            params.put(Consts.SERIALNUMBERVALUEKEY, collectBean.getSerialNumberValue());
+                            NetWorkHandlerUtils.postAsynHandler(Consts.DELETE_COLLECT, params,"删除成功", new NetWorkHandlerUtils.PostCallback<Object>()
                             {
                                 @Override
-                                public void onError(Request request, Exception e)
+                                public void success(Object result)
                                 {
-                                    e.printStackTrace();
-                                    displayToast("删除失败");
+                                    ThreadManager.addSingalExecutorTask(new Runnable()
+                                    {
+                                        @Override
+                                        public void run()
+                                        {
+                                            //删除数据库对应的产品
+                                            DataSupport.deleteAll(CollectBean.class, "serialnumber=? and name=?", collectBean.getSerialNumberValue(), collectBean.getName());
+                                        }
+                                    });
                                 }
-
-                                @Override
-                                public void onResponse(String response)
-                                {
-                                    //删除数据库对应的产品
-                                    DataSupport.deleteAll(ProductBean.class, "serialnumber=? and name=?", collectBean.getSerialNumberValue(), collectBean.getName());
-                                    displayToast("删除成功");
-                                }
-                            },new OkHttpNetWorkUtil.Param(Consts.CUSTOMERID_KEY, ShareUtils.getUserId(getActivity())),new OkHttpNetWorkUtil.Param(Consts.SERIALNUMBERVALUEKEY,collectBean.getSerialNumberValue()));
+                            });
                             notifyDataSetChanged();
                         }
                     }
@@ -315,20 +340,15 @@ public class FragmentCollect extends Fragment
     {
         super.onDestroyView();
         //释放线程池资源
-        MyApplication.getInstance().sThreadManager.release();
+        ThreadManager.release();
     }
 
-    private void displayToast(String warnning)
-    {
-        Toast.makeText(getActivity(),warnning,Toast.LENGTH_SHORT).show();
-    }
 
     @OnItemClick(R.id.collect_slidelistview)
     public void onItemClick(int position)
     {
         if(mCollectBeanList.get(position) instanceof CollectBean)
         {
-            Log.i(TAG,"点击");
             Intent intent=new Intent();
             Bundle bundle=new Bundle();
             bundle.putParcelable(Consts.COLLECT_BEAN,(CollectBean)mCollectBeanList.get(position));

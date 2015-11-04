@@ -64,5 +64,9 @@ public class Consts
     public static final String QINIU = "http://7xlw46.com1.z0.glb.clouddn.com/";
     public static final String RECEIVEBLESS = "receivebless";
     public static final String FRAGMENT_COLLECT = "FragmentCollect";
+    public static final String BLESSING_ACTIVITY = "BlessingActivity";
+    public static final String RECORD_POPUP = "RecordPopupWindow";
+    public static final String BLESS_ACTIVITY = "ListenBlessActivity";
+    public static final String BLESS_POPUP = "ListenBlessPopupWindow";
 }
 

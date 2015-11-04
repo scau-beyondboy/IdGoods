@@ -15,7 +15,7 @@ public class ScanCodeBean implements Parcelable
     private int type;
     private String name;
     private String address;
-    private String discount;
+    private String discount=null;
     private String adversementName;
     private String getAdversementPhoto;
     private boolean hasAdded=false;

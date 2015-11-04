@@ -59,36 +59,44 @@
       />
     <activity
       android:name=".SignupActivity"
+      android:screenOrientation="portrait"
       android:label="@string/title_activity_signup"
       >
     </activity>
     <activity
       android:name=".CheckCodeActivity"
+      android:screenOrientation="portrait"
       android:label="@string/title_activity_get_check_code"
       >
     </activity>
     <activity
       android:name=".PayActivity"
+      android:windowSoftInputMode="adjustPan"
+      android:screenOrientation="portrait"
       android:label="@string/title_activity_selecte_pay"
       >
     </activity>
     <activity
       android:name=".Vendibility"
+      android:screenOrientation="portrait"
       android:label="@string/title_activity_selecte_pay"
       >
     </activity>
     <activity
       android:name=".ChangeEmailActivity"
+      android:screenOrientation="portrait"
       android:label="@string/title_activity_change_email"
       >
     </activity>
     <activity
       android:name=".ChangeAddressActivity"
+      android:screenOrientation="portrait"
       android:label="@string/title_activity_change_address"
       >
     </activity>
     <activity
       android:name=".ChangeNickNameActivity"
+      android:screenOrientation="portrait"
       android:label="@string/title_activity_change_address"
       >
     </activity>
@@ -118,12 +126,15 @@
     </activity>
     <activity android:name=".view.RecordPopupWindow"
       android:launchMode="singleInstance"
+      android:screenOrientation="portrait"
       android:theme="@style/MyDialogStyleBottom"/>
     <activity android:name=".view.ListenBlessPopupWindow"
       android:launchMode="singleInstance"
+      android:screenOrientation="portrait"
       android:theme="@style/MyDialogStyleBottom"/>
     <activity android:name=".ListenBlessActivity"
       android:launchMode="singleInstance"
+      android:screenOrientation="portrait"
       />
   </application>
 </manifest>

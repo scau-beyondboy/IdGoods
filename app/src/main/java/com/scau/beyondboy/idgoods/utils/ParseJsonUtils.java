@@ -3,6 +3,9 @@ package com.scau.beyondboy.idgoods.utils;
 import com.google.gson.Gson;
 import com.scau.beyondboy.idgoods.model.ResponseObject;
 
+import java.lang.reflect.Type;
+import java.util.List;
+
 /**
  * Author:beyondboy
  * Gmail:xuguoli.scau@gmail.com
@@ -16,7 +19,7 @@ public class ParseJsonUtils
   {
       Gson gson=new Gson();
       String data=gson.toJson(responseObject.getData());
-      if(responseObject.getResult()==1)
+      if(responseObject.getResult()==1&&successMessage!=null)
       {
           ToaskUtils.displayToast(successMessage);
       }
@@ -33,6 +36,22 @@ public class ParseJsonUtils
         if(responseObject.getResult()==1)
         {
             return  gson.fromJson(data,classOfT);
+        }
+        else
+        {
+            ToaskUtils.displayToast(data);
+            return null;
+        }
+    }
+
+    /**返回list集合*/
+    public static <T> List<T> paresListDataJson(ResponseObject<Object> responseObject,Type type)
+    {
+        Gson gson=new Gson();
+        String data=gson.toJson(responseObject.getData());
+        if(responseObject.getResult()==1)
+        {
+            return  gson.fromJson(data,type);
         }
         else
         {

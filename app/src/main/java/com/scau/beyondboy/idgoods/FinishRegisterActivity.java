@@ -44,7 +44,7 @@ public class FinishRegisterActivity extends AppCompatActivity
         LoadImageUtils.getInstance().loadImage(headerImage, scanCodeBean.getGetAdversementPhoto(), this);
         adverseSerialNumber.setText(serialNumber);
         productName.setText(scanCodeBean.getName());
-        discount.setText(scanCodeBean.getDiscount());
+        discount.setText(String.format("优惠%s", scanCodeBean.getDiscount()));
     }
 
     //跳转到首页
