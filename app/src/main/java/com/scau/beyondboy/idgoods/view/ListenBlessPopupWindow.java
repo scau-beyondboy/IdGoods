@@ -150,6 +150,7 @@ public class ListenBlessPopupWindow extends AppCompatActivity
                 public void success(CollectInfo result)
                 {
                     url=result.getRadioAddress();
+                    Log.i(TAG,"网址：  "+url);
                     getRecordFile();
                 }
             }, CollectInfo.class);
@@ -320,6 +321,7 @@ public class ListenBlessPopupWindow extends AppCompatActivity
             mAudioTrack.release();
         }
         MyApplication.sActivityMap.get("ListenBlessActivity").finish();
+        MyApplication.sActivityMap.remove("ListenBlessActivity");
         ThreadManager.release();
         if(!isSave&&mPostCardVoice.exists())
         {

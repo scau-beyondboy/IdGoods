@@ -96,6 +96,10 @@ public class MainActivity extends AppCompatActivity
     protected void onResume()
     {
         super.onResume();
+        if(ShareUtils.getAccount()!=null&&ShareUtils.getPassword()!=null)
+        {
+            changeSetting.setText("设置");
+        }
         //开启线程更改头像名
         ThreadManager.addTask(new Runnable()
         {

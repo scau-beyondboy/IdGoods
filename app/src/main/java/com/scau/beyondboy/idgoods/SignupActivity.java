@@ -72,8 +72,8 @@ public class SignupActivity extends AppCompatActivity
                         UserBean userBean=parseRegisterDataJson(response);
                         if(userBean!=null)
                         {
-                            ShareUtils.clearTempDate(SignupActivity.this);
-                            ShareUtils.putUserInfo(SignupActivity.this, userBean, password.getText().toString());
+                            ShareUtils.clearTempDate();
+                            ShareUtils.putUserInfo(userBean, password.getText().toString());
                             //添加数据库中
                             if(DataSupport.where("account=?", userBean.getAccount()).find(UserBean.class).size()==0)
                             {

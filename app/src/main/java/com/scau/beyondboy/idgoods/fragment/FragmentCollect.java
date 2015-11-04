@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.scau.beyondboy.idgoods.ListenActivity;
+import com.scau.beyondboy.idgoods.ListenBlessActivity;
 import com.scau.beyondboy.idgoods.MainActivity;
 import com.scau.beyondboy.idgoods.MyApplication;
 import com.scau.beyondboy.idgoods.R;
@@ -105,7 +105,7 @@ public class FragmentCollect extends Fragment
                 @Override
                 public void onError(Request request, Exception e)
                 {
-                    Toast.makeText(getContext(), "有异常抛出", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "网络异常", Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "错误", e);
                 }
 
@@ -196,7 +196,7 @@ public class FragmentCollect extends Fragment
         @Override
         public int getItemViewType(int position)
         {
-            if(getItem(position) instanceof ProductBean)
+            if(getItem(position) instanceof CollectBean)
             {
                 return 0;
             }
@@ -332,9 +332,10 @@ public class FragmentCollect extends Fragment
             Intent intent=new Intent();
             Bundle bundle=new Bundle();
             bundle.putParcelable(Consts.COLLECT_BEAN,(CollectBean)mCollectBeanList.get(position));
+            bundle.putBoolean(Consts.FRAGMENT_COLLECT, true);
             // intent.putExtra(Consts.SERIALNUMBERVALUEKEY,((ProductBean)mProductBeanList.get(position)).getSerialNumber());
             intent.putExtras(bundle);
-            intent.setClass(getActivity(), ListenActivity.class);
+            intent.setClass(getActivity(), ListenBlessActivity.class);
             startActivity(intent);
         }
     }

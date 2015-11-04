@@ -5,24 +5,25 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.scau.beyondboy.idgoods.CheckCodeActivity;
 import com.scau.beyondboy.idgoods.MainActivity;
 import com.scau.beyondboy.idgoods.R;
 import com.scau.beyondboy.idgoods.consts.Consts;
-import com.scau.beyondboy.idgoods.model.ResponseObject;
+import com.scau.beyondboy.idgoods.manager.ThreadManager;
 import com.scau.beyondboy.idgoods.model.UserBean;
-import com.scau.beyondboy.idgoods.utils.OkHttpNetWorkUtil;
+import com.scau.beyondboy.idgoods.utils.NetWorkHandlerUtils;
 import com.scau.beyondboy.idgoods.utils.ShareUtils;
 import com.scau.beyondboy.idgoods.utils.StringUtils;
-import com.squareup.okhttp.Request;
+import com.scau.beyondboy.idgoods.utils.ToaskUtils;
 
 import org.litepal.crud.DataSupport;
 
@@ -32,6 +33,7 @@ import java.util.Map;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnEditorAction;
 
 /**
  * Author:beyondboy
@@ -69,73 +71,78 @@ public class FragmentLogin extends Fragment
     @OnClick(R.id.btn_login)
     public void onClick()
     {
+        login();
+    }
+
+    /**登录验证*/
+    private void login()
+    {
         if(StringUtils.isEmpty(name.getText().toString())||StringUtils.isEmpty(password.getText().toString()))
         {
-            displayToast("两者都不能为空");
+            ToaskUtils.displayToast("两者都不能为空");
         }
         else
         {
             Map<String,String> params=new LinkedHashMap<>();
             params.put(Consts.ACCOUNT_KEY,name.getText().toString());
-            params.put(Consts.PASSWORD_KEY,password.getText().toString());
+            params.put(Consts.PASSWORD_KEY, password.getText().toString());
             if(!StringUtils.isEmpty(inviteNumber.getText().toString()))
             {
                 params.put(Consts.INVITECODEVALUE_KEY,inviteNumber.getText().toString());
             }
-            OkHttpNetWorkUtil.postAsyn(Consts.USER_LOGIN, new OkHttpNetWorkUtil.ResultCallback<ResponseObject<Object>>()
+            NetWorkHandlerUtils.postAsynHandler(Consts.USER_LOGIN, params, "登陆成功", "登陆不匹配或登陆失败", new NetWorkHandlerUtils.PostCallback<UserBean>()
             {
                 @Override
-                public void onError(Request request, Exception e)
+                public void success(final UserBean result)
                 {
-                    displayToast("密码不匹配或登陆失败");
-                }
-
-                @Override
-                public void onResponse(ResponseObject<Object> response)
-                {
-                    Log.i(TAG, "登陆数据"+response);
-                    UserBean userBean=parseLoginDataJson(response);
-                    if(userBean!=null)
+                    ShareUtils.clearTempDate();
+                    ShareUtils.putUserInfo(result, password.getText().toString());
+                    mActivity.changeFragment(new FragmentHome(), true);
+                    mActivity.setNickName(result.getNickname());
+                    mActivity.setChangeSetting("设置");
+                    ThreadManager.addSingalExecutorTask(new Runnable()
                     {
-                        ShareUtils.clearTempDate(getActivity());
-                        ShareUtils.putUserInfo(getActivity(), userBean, password.getText().toString());
-                        mActivity.changeFragment(new FragmentHome(), true);
-                        mActivity.setNickName(userBean.getNickname());
-                        mActivity.setChangeSetting("设置");
-                        //添加数据库中
-                        if(DataSupport.where("account=?", userBean.getAccount()).find(UserBean.class).size()==0)
+                        @Override
+                        public void run()
                         {
-                            userBean.save();
+                            //添加数据库中
+                            if (DataSupport.where("account=?", result.getAccount()).find(UserBean.class).size() == 0)
+                            {
+                                result.save();
+                            }
                         }
-                    }
+                    });
                 }
-            },params);
+            }, UserBean.class);
         }
     }
 
+    @OnEditorAction({R.id.et_password,R.id.et_invitenumber})
+    public boolean onEditorAction(TextView content,int actionId,KeyEvent event)
+    {
+        if(actionId== EditorInfo.IME_ACTION_SEND||(event!=null&&event.getKeyCode()== KeyEvent.KEYCODE_ENTER))
+        {
+            login();
+             /*隐藏软键盘*/
+            InputMethodManager imm = (InputMethodManager)content.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm.isActive())
+            {
+                imm.hideSoftInputFromWindow(content.getApplicationWindowToken(), 0);
+            }
+            return true;
+        }
+        return false;
+    }
     @OnClick(R.id.btn_signup)
     public void signUp()
     {
         startActivity(new Intent(getActivity(), CheckCodeActivity.class));
     }
-    /**解析json*/
-    private UserBean parseLoginDataJson(ResponseObject<Object> responseObject)
-    {
-        Gson gson=new Gson();
-        String data=gson.toJson(responseObject.getData());
-        if(responseObject.getResult()==1)
-        {
-            return gson.fromJson(data,UserBean.class);
-        }
-        else
-        {
-            displayToast(data);
-            return null;
-        }
-    }
 
-    private void displayToast(String warnning)
+    @Override
+    public void onDestroyView()
     {
-        Toast.makeText(mActivity, warnning, Toast.LENGTH_SHORT).show();
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 }

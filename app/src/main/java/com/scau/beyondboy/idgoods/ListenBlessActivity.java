@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.scau.beyondboy.idgoods.consts.Consts;
+import com.scau.beyondboy.idgoods.model.CollectBean;
 import com.scau.beyondboy.idgoods.model.ScanCodeBean;
 import com.scau.beyondboy.idgoods.view.ListenBlessPopupWindow;
 
@@ -27,6 +28,7 @@ public class ListenBlessActivity extends AppCompatActivity
     @Bind(R.id.listen)
     Button mListen;
     private ScanCodeBean mScanCodeBean;
+    private boolean isCollect=false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -34,8 +36,16 @@ public class ListenBlessActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.listen);
         ButterKnife.bind(this);
-        MyApplication.sActivityMap.put("ListenBlessActivity",this);
-        mScanCodeBean=getIntent().getParcelableExtra(Consts.SCAN_CODE_BEAN);
+        MyApplication.sActivityMap.put("ListenBlessActivity", this);
+        isCollect=getIntent().getBooleanExtra(Consts.FRAGMENT_COLLECT,false);
+        if(isCollect)
+        {
+            mListen.setVisibility(View.INVISIBLE);
+            Intent intent = new Intent(this, ListenBlessPopupWindow.class);
+            CollectBean collectBean=getIntent().getParcelableExtra(Consts.COLLECT_BEAN);
+            intent.putExtra(Consts.COLLECT_BEAN, collectBean);
+            startActivity(intent);
+        }
     }
 
     /*@Nullable
@@ -52,10 +62,19 @@ public class ListenBlessActivity extends AppCompatActivity
     @OnClick(R.id.listen)
     public void onClick()
     {
-        mListen.setVisibility(View.INVISIBLE);
         Intent intent = new Intent(this, ListenBlessPopupWindow.class);
-        intent.putExtra(Consts.RECEIVEBLESS,true);
+        mScanCodeBean=getIntent().getParcelableExtra(Consts.SCAN_CODE_BEAN);
+        mListen.setVisibility(View.INVISIBLE);
+        intent.putExtra(Consts.RECEIVEBLESS, true);
         intent.putExtra(Consts.SCAN_CODE_BEAN, mScanCodeBean);
         startActivity(intent);
+    }
+
+    @OnClick(R.id.listen_back)
+    public void back()
+    {
+        MyApplication.sActivityMap.get("ListenBlessPopupWindow").finish();
+        MyApplication.sActivityMap.remove("ListenBlessPopupWindow");
+        finish();
     }
 }

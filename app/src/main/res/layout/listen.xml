@@ -3,9 +3,23 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@drawable/postcard"
-  android:orientation="horizontal"
+  android:orientation="vertical"
   >
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="?android:attr/actionBarSize"
+    >
+    <TextView
+      android:id="@+id/listen_back"
+      android:layout_width="wrap_content"
+      android:layout_height="?android:attr/actionBarSize"
+      android:drawableLeft="@drawable/ic_navigate_black_24dp"
+      android:gravity="left|center_vertical"
+      android:text="首页"
+      android:textColor="@android:color/holo_blue_light"
+      android:textSize="25sp"
+      />
+  </RelativeLayout>
   <!--<ImageView
     android:id="@+id/listen_image"
     android:layout_marginTop="20dp"
@@ -27,16 +41,41 @@
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:layout_weight="1"/>-->
-  <Button
-    android:id="@+id/listen"
+
+  <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="bottom"
-    android:background="@android:color/black"
-    android:gravity="center"
-    android:padding="10dp"
-    android:text="收听祝福"
-    android:textColor="@android:color/white"
-    android:textSize="25sp"
-    />
+    android:layout_height="match_parent"
+    android:background="@drawable/postcard"
+    >
+    <!--<ImageView
+    android:id="@+id/blessing_image"
+    android:layout_width="match_parent"
+    android:layout_weight="1"
+    android:layout_height="0dp"
+    android:background="@drawable/postcard"
+    />-->
+    <!--<TextView-->
+    <!--android:id="@+id/nickname"-->
+    <!--android:textSize="25sp"-->
+    <!--android:textColor="@color/black"-->
+    <!--android:layout_marginTop="15dp"-->
+    <!--android:layout_below="@id/blessing_image"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:text="beyondboy"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--/>-->
+    <Button
+      android:id="@+id/listen"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:background="@android:color/black"
+      android:gravity="center"
+      android:padding="10dp"
+      android:text="收听祝福"
+      android:textColor="@android:color/white"
+      android:textSize="25sp"
+      />
+  </RelativeLayout>
 </LinearLayout>

@@ -4,21 +4,22 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.scau.beyondboy.idgoods.MainActivity;
 import com.scau.beyondboy.idgoods.R;
 import com.scau.beyondboy.idgoods.consts.Consts;
-import com.scau.beyondboy.idgoods.model.ResponseObject;
-import com.scau.beyondboy.idgoods.utils.OkHttpNetWorkUtil;
+import com.scau.beyondboy.idgoods.utils.NetWorkHandlerUtils;
 import com.scau.beyondboy.idgoods.utils.ShareUtils;
 import com.scau.beyondboy.idgoods.utils.StringUtils;
-import com.squareup.okhttp.Request;
+import com.scau.beyondboy.idgoods.utils.ToaskUtils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -26,6 +27,7 @@ import java.util.Map;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnEditorAction;
 
 /**
  * Author:beyondboy
@@ -80,7 +82,7 @@ public class FragmentModifyPassword extends Fragment
     {
         if(StringUtils.isEmpty(originPassword.getText().toString())||StringUtils.isEmpty(newPassword.getText().toString())||StringUtils.isEmpty(newPasswordSecond.getText().toString()))
         {
-            displayToast("都不能为空");
+            ToaskUtils.displayToast("都不能为空");
         }
         else
         {
@@ -90,53 +92,35 @@ public class FragmentModifyPassword extends Fragment
                 params.put(Consts.USERID_KEY, ShareUtils.getUserId(mActivity));
                 params.put(Consts.ORIPASSWORD_KEY, originPassword.getText().toString());
                 params.put(Consts.NEWPASSWORD_KEY,newPassword.getText().toString());
-                OkHttpNetWorkUtil.postAsyn(Consts.UPDATE_PASSWORD, new OkHttpNetWorkUtil.ResultCallback<ResponseObject<Object>>()
-                {
-                    @Override
-                    public void onError(Request request, Exception e)
-                    {
-                        e.printStackTrace();
-                        displayToast("网络异常");
-                    }
-
-                    @Override
-                    public void onResponse(ResponseObject<Object> response)
-                    {
-                        parseUdPdDataJson(response);
-                    }
-                },params);
+                NetWorkHandlerUtils.postAsynHandler(Consts.UPDATE_PASSWORD,params,"更改密码成功");
             }
             else
             {
-                displayToast("两次输入的新密码不匹配");
+                ToaskUtils.displayToast("两次输入的新密码不匹配");
             }
         }
     }
-
-    /**解析json*/
-    private void parseUdPdDataJson(ResponseObject<Object> responseObject)
-    {
-        Gson gson=new Gson();
-        String data=gson.toJson(responseObject.getData());
-        if(responseObject.getResult()==1)
-        {
-            displayToast("更改密码成功");
-        }
-        else
-        {
-            displayToast(data);
-        }
-    }
-
-    private void displayToast(String warnning)
-    {
-        Toast.makeText(getActivity(), warnning, Toast.LENGTH_SHORT).show();
-    }
-
     @Override
     public void onDestroyView()
     {
         super.onDestroyView();
         mActivity.getTitleContent().setVisibility(View.GONE);
+    }
+
+    @OnEditorAction({R.id.new_passwordsecond})
+    public boolean onEditorAction(TextView content,int actionId,KeyEvent event)
+    {
+        if(actionId== EditorInfo.IME_ACTION_SEND||(event!=null&&event.getKeyCode()== KeyEvent.KEYCODE_ENTER))
+        {
+            modifyPassword();
+             /*隐藏软键盘*/
+            InputMethodManager imm = (InputMethodManager)content.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm.isActive())
+            {
+                imm.hideSoftInputFromWindow(content.getApplicationWindowToken(), 0);
+            }
+            return true;
+        }
+        return false;
     }
 }

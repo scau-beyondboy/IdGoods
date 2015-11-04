@@ -37,7 +37,7 @@ public class Consts
     public static final String VERIFY_CODE =HOST+"/VerificationCodes/verifyCode";
     public static final String SMS_CODE = "verifyCode";
     public static final String USERS_SIGNUP =HOST+"/Users/signup";
-    public static final String UPDATE_PASSWORD = "Users/updatePassword";
+    public static final String UPDATE_PASSWORD = HOST+"/Users/updatePassword";
     public static final String ORIPASSWORD_KEY = "oriPassword";
     public static final String NEWPASSWORD_KEY = "newPassword";
     public static final String UPDATE_INFO =HOST+"/Users/updateInfo";
@@ -63,5 +63,6 @@ public class Consts
     public static final String FRAGMENT_LISTEN = "FragmentListen";
     public static final String QINIU = "http://7xlw46.com1.z0.glb.clouddn.com/";
     public static final String RECEIVEBLESS = "receivebless";
+    public static final String FRAGMENT_COLLECT = "FragmentCollect";
 }
 

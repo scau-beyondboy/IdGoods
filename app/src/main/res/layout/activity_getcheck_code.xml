@@ -37,7 +37,7 @@
         android:text="@string/register_get_check_num"
         android:background="@drawable/button_bound"/>
 
-    <EditText
+    <com.scau.beyondboy.idgoods.view.ClearEditText
         android:layout_above="@+id/btn_getCheckCode"
         android:layout_centerInParent="true"
         android:hint="请输入手机号码"
@@ -46,12 +46,14 @@
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/loginuserx"
         android:inputType="phone" />
-    <EditText
+    <com.scau.beyondboy.idgoods.view.ClearEditText
         android:id="@+id/et_checkcode"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/btn_getCheckCode"
         android:layout_centerInParent="true"
+        android:singleLine="true"
+      android:inputType="number"
         android:drawableLeft="@drawable/loginuserx"
         android:hint="请输入验证码"/>
     <Button

@@ -2,44 +2,50 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/white"
   android:orientation="vertical">
 
-  <RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="250dp">
+  <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="250dp">-->
 
     <ImageView
       android:layout_width="150dp"
-      android:layout_height="150dp"
-      android:layout_centerInParent="true"
+      android:layout_height="250dp"
+      android:layout_gravity="center"
+      android:background="@android:color/transparent"
       android:src="@drawable/iconx" />
-  </RelativeLayout>
+  <!--</RelativeLayout>-->
 
-  <EditText
+  <com.scau.beyondboy.idgoods.view.ClearEditText
     android:hint="请输入用户名"
     android:id="@+id/et_name"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
+    android:singleLine="true"
     android:layout_gravity="center"
     android:drawableLeft="@drawable/loginuserx"
-    android:inputType="textPersonName" />
+    android:inputType="textVisiblePassword" />
 
-  <EditText
+  <com.scau.beyondboy.idgoods.view.ClearEditText
     android:hint="请输入密码"
     android:id="@+id/et_password"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
+    android:singleLine="true"
+    android:imeOptions="actionSend"
     android:drawableLeft="@drawable/loginpasswordx"
     android:inputType="textPassword" />
 
-  <EditText
+  <com.scau.beyondboy.idgoods.view.ClearEditText
     android:hint="邀请码/可不填"
     android:id="@+id/et_invitenumber"
     android:layout_width="300dp"
+    android:singleLine="true"
+    android:imeOptions="actionSend"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
+    android:inputType="textVisiblePassword"
     android:drawableLeft="@drawable/logininvitedcodex"
     />
   <Button
