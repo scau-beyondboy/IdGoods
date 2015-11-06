@@ -80,10 +80,6 @@ public final class NetWorkHandlerUtils
                 {
                     postCallback.success(result);
                 }
-                else
-                {
-                    ToaskUtils.displayToast(failMessage);
-                }
             }
         }, params);
     }
@@ -108,7 +104,7 @@ public final class NetWorkHandlerUtils
             @Override
             public void onResponse(ResponseObject<Object> response)
             {
-                List<T> result=ParseJsonUtils.<T>paresListDataJson(response,type);
+                List<T> result=ParseJsonUtils.<T>paresListDataJson(response, type);
                 if(result!=null&&postCallback!=null)
                 {
                     postCallback.success(result);
@@ -136,9 +132,10 @@ public final class NetWorkHandlerUtils
             @Override
             public void onResponse(String filePath)
             {
-                if(postCallback!=null)
+                if (postCallback != null)
                     postCallback.success(filePath);
             }
         });
     }
+
 }

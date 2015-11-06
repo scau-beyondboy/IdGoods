@@ -44,6 +44,7 @@
       android:id="@+id/address"
       android:layout_width="match_parent"
       android:layout_height="50dp"
+      android:singleLine="true"
       android:layout_marginTop="40dp"
       android:background="@color/white"
       android:text="华南农业大学"

@@ -54,7 +54,7 @@
     >
     <TextView
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_height="35dp"
       android:layout_alignParentLeft="true"
       android:layout_margin="10dp"
       android:text="个人姓名"
@@ -63,6 +63,7 @@
     <ImageView
       android:id="@+id/nickname_go"
       android:layout_width="wrap_content"
+      android:layout_centerVertical="true"
       android:layout_height="wrap_content"
       android:layout_alignParentRight="true"
       android:src="@drawable/ic_chevron_right_black_24dp"
@@ -70,8 +71,9 @@
     <TextView
       android:id="@+id/nickname"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_height="35dp"
       android:layout_margin="10dp"
+      android:layout_centerVertical="true"
       android:layout_toLeftOf="@id/nickname_go"
       android:inputType="textEmailAddress"
       android:text="123456789@qq.com"
@@ -94,7 +96,7 @@
     >
     <TextView
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_height="35dp"
       android:layout_alignParentLeft="true"
       android:layout_margin="10dp"
       android:text="邮箱"
@@ -104,13 +106,15 @@
       android:id="@+id/email_go"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_centerVertical="true"
       android:layout_alignParentRight="true"
       android:src="@drawable/ic_chevron_right_black_24dp"
       />
     <TextView
       android:id="@+id/email"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_height="35dp"
+      android:layout_centerVertical="true"
       android:layout_margin="10dp"
       android:layout_toLeftOf="@id/email_go"
       android:inputType="textEmailAddress"
@@ -135,7 +139,7 @@
     >
     <TextView
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_height="35dp"
       android:layout_alignParentLeft="true"
       android:layout_margin="10dp"
       android:text="生日"
@@ -145,13 +149,15 @@
       android:id="@+id/birthday_go"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_centerVertical="true"
       android:layout_alignParentRight="true"
       android:src="@drawable/ic_chevron_right_black_24dp"
       />
     <TextView
       android:id="@+id/birthday"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_height="35dp"
+      android:layout_centerVertical="true"
       android:layout_margin="10dp"
       android:layout_toLeftOf="@id/birthday_go"
       android:text="1990-09-07"
@@ -176,7 +182,7 @@
     >
     <TextView
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_height="35dp"
       android:layout_alignParentLeft="true"
       android:layout_margin="10dp"
       android:text="性别"
@@ -187,13 +193,15 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_alignParentRight="true"
+      android:layout_centerVertical="true"
       android:src="@drawable/ic_chevron_right_black_24dp"
       />
     <TextView
       android:id="@+id/sex"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_height="35dp"
       android:layout_margin="10dp"
+      android:layout_centerVertical="true"
       android:layout_toLeftOf="@id/sex_go"
       android:text="男"
       android:textSize="20dp"
@@ -216,7 +224,7 @@
     >
     <TextView
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_height="35dp"
       android:layout_alignParentLeft="true"
       android:layout_margin="10dp"
       android:text="地址"
@@ -227,14 +235,16 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_alignParentRight="true"
+      android:layout_centerVertical="true"
       android:src="@drawable/ic_chevron_right_black_24dp"
       />
     <TextView
       android:id="@+id/address"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_height="35dp"
       android:layout_margin="10dp"
       android:layout_toLeftOf="@id/address_go"
+      android:layout_centerVertical="true"
       android:text="马栏山马栏村小谷围2号"
       android:textSize="20dp"
       />

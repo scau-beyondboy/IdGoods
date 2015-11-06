@@ -21,7 +21,7 @@
       android:layout_centerHorizontal="true"
       android:layout_marginBottom="20dp"
       android:background="@drawable/bg_special_disease_circle"
-      android:text="按住说话"
+      android:text="长按说话"
       android:textColor="@drawable/textcolorselector"
       android:textSize="25sp"
       />

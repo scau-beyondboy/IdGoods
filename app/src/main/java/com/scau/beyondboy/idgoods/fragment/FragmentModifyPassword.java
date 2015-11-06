@@ -43,13 +43,15 @@ public class FragmentModifyPassword extends Fragment
     EditText newPassword;
     @Bind(R.id.new_passwordsecond)
     EditText newPasswordSecond;
+    @Bind(R.id.account)
+    TextView mAccount;
     private MainActivity mActivity;
 
     @Override
     public void onAttach(Context context)
     {
         super.onAttach(context);
-        mActivity=(MainActivity)context;
+        mActivity = (MainActivity) context;
     }
 
     @Nullable
@@ -57,12 +59,14 @@ public class FragmentModifyPassword extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view=inflater.inflate(R.layout.modify_password,container,false);
-        ButterKnife.bind(this,view);
+        View view = inflater.inflate(R.layout.modify_password, container, false);
+        ButterKnife.bind(this, view);
+        mAccount.setText(ShareUtils.getAccount());
         return view;
     }
 
-    @OnClick({R.id.logout,R.id.modify})
+    @OnClick({R.id.logout,
+            R.id.modify})
     public void onClick(View view)
     {
         switch (view.getId())
@@ -72,7 +76,7 @@ public class FragmentModifyPassword extends Fragment
                 break;
             case R.id.logout:
                 ShareUtils.clearTempDate(mActivity);
-                mActivity.changeFragment(new FragmentLogin(), true);
+                mActivity.changeFragment(new FragmentLogin(), true, "login");
                 mActivity.setChangeSetting("登陆");
                 break;
         }
@@ -80,41 +84,41 @@ public class FragmentModifyPassword extends Fragment
 
     private void modifyPassword()
     {
-        if(StringUtils.isEmpty(originPassword.getText().toString())||StringUtils.isEmpty(newPassword.getText().toString())||StringUtils.isEmpty(newPasswordSecond.getText().toString()))
+        if (StringUtils.isEmpty(originPassword.getText().toString()) || StringUtils.isEmpty(newPassword.getText().toString()) || StringUtils.isEmpty(newPasswordSecond.getText().toString()))
         {
             ToaskUtils.displayToast("都不能为空");
-        }
-        else
+        } else
         {
-            if(newPassword.getText().toString().equals(newPasswordSecond.getText().toString()))
+            if (newPassword.getText().toString().equals(newPasswordSecond.getText().toString()))
             {
-                Map<String,String> params=new LinkedHashMap<>();
+                Map<String, String> params = new LinkedHashMap<>();
                 params.put(Consts.USERID_KEY, ShareUtils.getUserId(mActivity));
                 params.put(Consts.ORIPASSWORD_KEY, originPassword.getText().toString());
-                params.put(Consts.NEWPASSWORD_KEY,newPassword.getText().toString());
-                NetWorkHandlerUtils.postAsynHandler(Consts.UPDATE_PASSWORD,params,"更改密码成功");
-            }
-            else
+                params.put(Consts.NEWPASSWORD_KEY, newPassword.getText().toString());
+                NetWorkHandlerUtils.postAsynHandler(Consts.UPDATE_PASSWORD, params, "更改密码成功");
+            } else
             {
                 ToaskUtils.displayToast("两次输入的新密码不匹配");
             }
         }
     }
+
     @Override
     public void onDestroyView()
     {
         super.onDestroyView();
         mActivity.getTitleContent().setVisibility(View.GONE);
+        ButterKnife.unbind(this);
     }
 
     @OnEditorAction({R.id.new_passwordsecond})
-    public boolean onEditorAction(TextView content,int actionId,KeyEvent event)
+    public boolean onEditorAction(TextView content, int actionId, KeyEvent event)
     {
-        if(actionId== EditorInfo.IME_ACTION_SEND||(event!=null&&event.getKeyCode()== KeyEvent.KEYCODE_ENTER))
+        if (actionId == EditorInfo.IME_ACTION_SEND || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
         {
             modifyPassword();
              /*隐藏软键盘*/
-            InputMethodManager imm = (InputMethodManager)content.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) content.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             if (imm.isActive())
             {
                 imm.hideSoftInputFromWindow(content.getApplicationWindowToken(), 0);

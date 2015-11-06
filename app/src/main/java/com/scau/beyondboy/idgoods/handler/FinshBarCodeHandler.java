@@ -108,6 +108,7 @@ final public class FinshBarCodeHandler
                     Intent intent=new Intent(mContext,Vendibility.class);
                     Bundle bundle=new Bundle();
                     bundle.putString(Consts.SERIALNUMBERVALUEKEY, serialNumberValue);
+                   // bundle.putString(Consts.ADDRESS_KEY,);
                     mContext.startActivity(intent);
                     // 二维码扫描时，要销毁该Activity实例
                     if(InputBarCodeWay==1)

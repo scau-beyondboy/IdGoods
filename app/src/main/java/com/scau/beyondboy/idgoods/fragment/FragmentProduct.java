@@ -67,8 +67,14 @@ public class FragmentProduct extends Fragment
         View view=inflater.inflate(R.layout.myproduct,container,false);
         ButterKnife.bind(this, view);
         //mMainActivity.mSearchView.setVisibility(View.VISIBLE);
-        loadDate();
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        loadDate();
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
@@ -97,13 +103,8 @@ public class FragmentProduct extends Fragment
                         @Override
                         public void run()
                         {
-                            try
-                            {
-                                loadNetWordData(result);
-                            } catch (Exception e)
-                            {
-                                e.printStackTrace();
-                            }
+                            Log.i(TAG,"拉取");
+                            loadNetWordData(result);
                         }
                     });
                 }
@@ -185,15 +186,15 @@ public class FragmentProduct extends Fragment
             //提交到数据库中
             timeProductBeandb.save();
             mDateCountProduct.put(timeProductBean.getDateTime(), timeProductBean.getBeanList().size());
-            getActivity().runOnUiThread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    mProductListView.setAdapter(new ProductAdapter());
-                }
-            });
         }
+        getActivity().runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                mProductListView.setAdapter(new ProductAdapter());
+            }
+        });
     }
 
     private class ProductAdapter extends ArrayAdapter<Object>
@@ -258,7 +259,6 @@ public class FragmentProduct extends Fragment
                     {
                         if(mProductListView.isScrollFinished())
                         {
-                            Log.i(TAG, "位置：  " + position);
                             int count=mDateCountProduct.get(productBean.getDateTime())-1;
                             if(position>=0)
                                 mProductBeanList.remove(position);

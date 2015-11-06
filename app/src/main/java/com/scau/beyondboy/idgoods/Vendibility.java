@@ -20,16 +20,20 @@ import butterknife.OnClick;
  */
 public class Vendibility extends AppCompatActivity
 {
-   @Bind(R.id.adverse_serialnumber)
+    @Bind(R.id.adverse_serialnumber)
     TextView serialNumberTextView;
+//    @Bind(R.id.header_image)
+//    ImageView mHeaderImage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vendibility);
         ButterKnife.bind(this);
-        Intent intent=getIntent();
+        Intent intent = getIntent();
         serialNumberTextView.setText(intent.getStringExtra(Consts.SERIALNUMBERVALUEKEY));
+        //LoadImageUtils.getInstance().loadImage(mHeaderImage, intent.getStringExtra(Consts.));
     }
 
     @OnClick(R.id.finishbn)

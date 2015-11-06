@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity
             }
         };
         mDrawerLayout.setDrawerListener(drawerToggle);
-        changeFragment(new FragmentHome(), true);
+        changeFragment(new FragmentHome(), true,"home");
     }
     @Override
     protected void onResume()
@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity
         switch (view.getId())
         {
             case R.id.home:
-                changeFragment(new FragmentHome(),true);
+                changeFragment(new FragmentHome(),true,"home");
                 break;
             case R.id.myproduct:
                 if(ShareUtils.getAccount(this)==null&&ShareUtils.getPassword(this)==null)
@@ -151,17 +151,17 @@ public class MainActivity extends AppCompatActivity
                 }
                 else
                 {
-                    changeFragment(new FragmentProduct(), true);
+                    changeFragment(new FragmentProduct(), true,"product");
                 }
                 break;
             case R.id.setting:
                 if(changeSetting.getText().toString().equals("登陆"))
                 {
-                    changeFragment(new FragmentLogin(),true);
+                    changeFragment(new FragmentLogin(),true,"login");
                 }
                 else
                 {
-                    changeFragment(new FragmentModifyPassword(),true);
+                    changeFragment(new FragmentModifyPassword(),true,"modifypassword");
                     titleContent.setVisibility(View.VISIBLE);
                 }
                 break;
@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 else
                 {
-                    changeFragment(new FragmentCollect(), true);
+                    changeFragment(new FragmentCollect(), true,"collect");
                 }
                 break;
         }
@@ -195,19 +195,19 @@ public class MainActivity extends AppCompatActivity
         if(intent.getBooleanExtra(Consts.USERS_SIGNUP,false)||intent.getBooleanExtra(Consts.FINISHREGISTER,false))
         {
             changeSetting.setText("设置");
-            changeFragment(new FragmentHome(),true);
+            changeFragment(new FragmentHome(),true,"home");
         }
         else if(intent.getBooleanExtra(Consts.GET_DIS_COUNT,false))
         {
             FragmentGetCash fragmentGetCash=new FragmentGetCash();
             fragmentGetCash.setArguments(intent.getExtras());
-            changeFragment(fragmentGetCash,true);
+            changeFragment(fragmentGetCash,true,"getcash");
         }
         else if(intent.getBooleanExtra(Consts.FRAGMENT_PLAY,false))
         {
             FragmentPlay fragmentPlay=new FragmentPlay();
             fragmentPlay.setArguments(intent.getExtras());
-            changeFragment(fragmentPlay,true);
+            changeFragment(fragmentPlay,true,"play");
         }
         /*else if(intent.getBooleanExtra(Consts.FRAGMENT_LISTEN,false))
         {
@@ -223,11 +223,15 @@ public class MainActivity extends AppCompatActivity
     }
 
     //切换不同的fragment
-    public void changeFragment(Fragment fragment,boolean isAddToStack)
+    public void changeFragment(Fragment fragment,boolean isAddToStack,String tag)
     {
+        if(mFragmentManager.findFragmentByTag(tag)!=null)
+        {
+            return;
+        }
         //开启事务
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
-        transaction.replace(R.id.content_frame, fragment);
+        transaction.replace(R.id.content_frame, fragment,tag);
         //加入后退栈
         if (!isAddToStack)
         {

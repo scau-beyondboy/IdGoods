@@ -1,5 +1,6 @@
 package com.scau.beyondboy.idgoods.view;
 
+import android.app.Dialog;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -166,6 +167,7 @@ public class RecordPopupWindow extends AppCompatActivity
     private String mToken;
     private String fileName;
     private BlessingActivity mBlessingActivity;
+    private Dialog mDialog;
 
 
     @Override
@@ -571,13 +573,11 @@ public class RecordPopupWindow extends AppCompatActivity
                 ToaskUtils.displayToast("录音准备正在初始化");
             return false;
         }
-        //当状态为0时
+        //当状态为0时,重新录音
         else
         {
             try
             {
-                //录音
-                randomAccessWriter.seek(0xc);
                 //计录音时间
                 mTimer = new Timer();
                 mTimer.schedule(new TimerTask()
@@ -591,7 +591,7 @@ public class RecordPopupWindow extends AppCompatActivity
                 voiceBlessing.setSelected(true);
                 voiceBlessing.setText("松开停止");
                 start();
-            } catch (IOException e)
+            } catch (Exception e)
             {
                 state.set(2);
                 e.printStackTrace();
@@ -773,34 +773,7 @@ public class RecordPopupWindow extends AppCompatActivity
         switch (view.getId())
         {
             case R.id.delete:
-                if(state.get()==6)
-                    mSemaphore.release();
-                ThreadManager.stopFuture(createPlayRuannble().toString());
-                if(state.get()!=7)
-                {
-                    mAudioTrack.pause();
-                    mAudioTrack.flush();
-                    mAudioTrack.stop();
-                }
-                //noinspection ResultOfMethodCallIgnored
-                audioFile.delete();
-                state.set(8);
-                voiceBlessing.setSelected(false);
-                voiceBlessing.setText("长按说话");
-                seekbar.setVisibility(View.INVISIBLE);
-                oscillograph.setVisibility(View.VISIBLE);
-                uploading.setEnabled(false);
-                delete.setEnabled(false);
-                date.setText(TimeUtils.converTommss(0));
-                countDate=0;
-                ThreadManager.addSingalExecutorTask(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        prepareRecord();
-                    }
-                });
+               showDeleteDailog();
                 break;
             case R.id.uploading:
                 getToken();
@@ -808,6 +781,75 @@ public class RecordPopupWindow extends AppCompatActivity
         }
     }
 
+    private void deleteRecordFile()
+    {
+        if(state.get()==6)
+            mSemaphore.release();
+        ThreadManager.stopFuture(createPlayRuannble().toString());
+        if(state.get()!=7)
+        {
+            mAudioTrack.pause();
+            mAudioTrack.flush();
+            mAudioTrack.stop();
+        }
+        //noinspection ResultOfMethodCallIgnored
+        audioFile.delete();
+        state.set(8);
+        voiceBlessing.setSelected(false);
+        voiceBlessing.setText("长按说话");
+        seekbar.setVisibility(View.INVISIBLE);
+        oscillograph.setVisibility(View.VISIBLE);
+        uploading.setEnabled(false);
+        delete.setEnabled(false);
+        date.setText(TimeUtils.converTommss(0));
+        countDate=0;
+        ThreadManager.addSingalExecutorTask(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                prepareRecord();
+            }
+        });
+    }
+
+    private void showDeleteDailog()
+    {
+        if(mDialog ==null)
+        {
+            View dialog=View.inflate(this, R.layout.dailog_style, null);
+            mDialog = new Dialog(this);
+            mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            (dialog.findViewById(R.id.comfirm)).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    deleteRecordFile();
+                    mDialog.dismiss();
+                }
+            });
+            (dialog.findViewById(R.id.cancel)).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    mDialog.dismiss();
+                }
+            });
+            mDialog.setContentView(dialog);
+//                    .setView(R.layout.dailog_style)
+//                    .setPositiveButton("确定", new DialogInterface.OnClickListener()
+//                    {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which)
+//                        {
+//                            deleteRecordFile();
+//                        }
+//                    }).setNegativeButton("取消", null);
+        }
+        mDialog.show();
+    }
     private void getToken()
     {
         mBlessingActivity = (BlessingActivity) MyApplication.sActivityMap.get("BlessingActivity");

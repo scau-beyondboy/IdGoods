@@ -67,7 +67,6 @@ public class FragmentCollect extends Fragment
         View view=inflater.inflate(R.layout.mycollect,container,false);
         ButterKnife.bind(this, view);
         //mMainActivity.mSearchView.setVisibility(View.VISIBLE);
-        loadDate();
         return view;
     }
 
@@ -76,6 +75,13 @@ public class FragmentCollect extends Fragment
     {
         super.onDetach();
        // mMainActivity.mSearchView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        loadDate();
+        super.onViewCreated(view, savedInstanceState);
     }
 
     /**
@@ -275,7 +281,7 @@ public class FragmentCollect extends Fragment
                             ArrayMap<String,String> params=new ArrayMap<>(2);
                             params.put(Consts.CUSTOMERID_KEY, ShareUtils.getUserId());
                             params.put(Consts.SERIALNUMBERVALUEKEY, collectBean.getSerialNumberValue());
-                            NetWorkHandlerUtils.postAsynHandler(Consts.DELETE_COLLECT, params,"删除成功", new NetWorkHandlerUtils.PostCallback<Object>()
+                            NetWorkHandlerUtils.postAsynHandler(Consts.DELETE_COLLECT, params, "删除成功", new NetWorkHandlerUtils.PostCallback<Object>()
                             {
                                 @Override
                                 public void success(Object result)
@@ -289,6 +295,7 @@ public class FragmentCollect extends Fragment
                                             DataSupport.deleteAll(CollectBean.class, "serialnumber=? and name=?", collectBean.getSerialNumberValue(), collectBean.getName());
                                         }
                                     });
+
                                 }
                             });
                             notifyDataSetChanged();

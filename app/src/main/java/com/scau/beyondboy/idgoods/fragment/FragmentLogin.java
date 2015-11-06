@@ -77,9 +77,9 @@ public class FragmentLogin extends Fragment
     /**登录验证*/
     private void login()
     {
-        if(StringUtils.isEmpty(name.getText().toString())||StringUtils.isEmpty(password.getText().toString()))
+        if(StringUtils.isEmpty(name.getText().toString())&&StringUtils.isEmpty(inviteNumber.getText().toString()))
         {
-            ToaskUtils.displayToast("两者都不能为空");
+            ToaskUtils.displayToast("账号错误，请输入手机号码");
         }
         else
         {
@@ -97,7 +97,7 @@ public class FragmentLogin extends Fragment
                 {
                     ShareUtils.clearTempDate();
                     ShareUtils.putUserInfo(result, password.getText().toString());
-                    mActivity.changeFragment(new FragmentHome(), true);
+                    mActivity.changeFragment(new FragmentHome(), true,"home");
                     mActivity.setNickName(result.getNickname());
                     mActivity.setChangeSetting("设置");
                     ThreadManager.addSingalExecutorTask(new Runnable()
