@@ -4,16 +4,14 @@
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
+  android:background="@drawable/postcard"
   >
   <TextView
-    android:id="@+id/date"
-    android:focusable="false"
-    android:clickable="false"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/lightgrey"
-    android:padding="5dp"
-    android:textAppearance="?android:attr/textAppearanceMedium"
-    android:text="2015/09/30"
+    android:gravity="center"
+    android:text="没有数据"
+    android:textSize="40sp"
+    android:textColor="@color/red"
+    android:layout_height="match_parent"
     />
 </LinearLayout>

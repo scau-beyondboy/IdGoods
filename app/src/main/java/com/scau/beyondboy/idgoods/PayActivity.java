@@ -33,7 +33,7 @@ import butterknife.OnEditorAction;
  */
 public class PayActivity extends BaseActivity
 {
-    private static final String TAG = PayActivity.class.getName();
+    //private static final String TAG = PayActivity.class.getName();
     /**0代表支付宝，1代表微信*/
     private int payWay=0;
     @Bind(R.id.alipay)
@@ -109,7 +109,7 @@ public class PayActivity extends BaseActivity
                     params.put(Consts.WEBCHAT,inputAccount2.getText().toString());
                 }
 
-                NetWorkHandlerUtils.postAsynHandler(Consts.GET_DIS_COUNT, params, null, new NetWorkHandlerUtils.PostCallback<Object>()
+                NetWorkHandlerUtils.postAsynHandler(Consts.GET_DIS_COUNT, params, null, new NetWorkHandlerUtils.PostSuccessCallback<Object>()
                 {
                     @Override
                     public void success(Object result)

@@ -90,7 +90,7 @@ public class FragmentLogin extends Fragment
             {
                 params.put(Consts.INVITECODEVALUE_KEY,inviteNumber.getText().toString());
             }
-            NetWorkHandlerUtils.postAsynHandler(Consts.USER_LOGIN, params, "登陆成功", "登陆不匹配或登陆失败", new NetWorkHandlerUtils.PostCallback<UserBean>()
+            NetWorkHandlerUtils.postAsynHandler(Consts.USER_LOGIN, params, "登陆成功", "登陆不匹配或登陆失败", new NetWorkHandlerUtils.PostSuccessCallback<UserBean>()
             {
                 @Override
                 public void success(final UserBean result)

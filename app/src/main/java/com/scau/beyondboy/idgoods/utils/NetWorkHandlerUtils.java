@@ -25,7 +25,7 @@ public final class NetWorkHandlerUtils
     }
 
     /**post异步处理*/
-    public static void postAsynHandler(String url, Map<String, String> params, final String successMessage,final PostCallback<Object> postCallback)
+    public static void postAsynHandler(String url, Map<String, String> params, final String successMessage,final PostSuccessCallback<Object> postSuccessCallback)
     {
         if(!NetworkUtils.isNetworkReachable())
         {
@@ -45,18 +45,22 @@ public final class NetWorkHandlerUtils
             public void onResponse(ResponseObject<Object> response)
             {
                 ParseJsonUtils.parseDataJson(response,successMessage);
-                if(postCallback!=null)
-                    postCallback.success(response.getData());
+                if(postSuccessCallback !=null&&response.getResult()==1)
+                    postSuccessCallback.success(response.getData());
             }
         }, params);
     }
-    public interface PostCallback<T>
+    public interface PostSuccessCallback<T>
     {
         void success(T result);
     }
 
+    public interface PostFailCallback<T>
+    {
+        void fail();
+    }
     /**post异步处理*/
-    public static<T> void postAsynHandler(String url, Map<String, String> params, final String successMessage,final String failMessage,final PostCallback postCallback, final Class<T> tClass)
+    public static<T> void postAsynHandler(String url, Map<String, String> params, final String successMessage,final String failMessage,final PostSuccessCallback postSuccessCallback, final Class<T> tClass)
     {
         if(!NetworkUtils.isNetworkReachable())
         {
@@ -76,16 +80,46 @@ public final class NetWorkHandlerUtils
             public void onResponse(ResponseObject<Object> response)
             {
                 T result=ParseJsonUtils.parseDataJson(response,tClass);
-                if(result!=null&&postCallback!=null)
+                if(result!=null&& postSuccessCallback !=null)
                 {
-                    postCallback.success(result);
+                    postSuccessCallback.success(result);
                 }
             }
         }, params);
     }
 
     /**post异步处理*/
-    public static<T> void postAsynHandler(String url, Map<String, String> params, final String successMessage,final String failMessage,final PostCallback postCallback, final Type type)
+    public static<T> void postAsynHandler(String url, Map<String, String> params, final String successMessage,final String failMessage,final PostSuccessCallback postSuccessCallback, final Type type,final PostFailCallback postFailCallback)
+    {
+        if(!NetworkUtils.isNetworkReachable())
+        {
+            ToaskUtils.displayToast("没有网络");
+            return;
+        }
+        OkHttpNetWorkUtil.postAsyn(url, new OkHttpNetWorkUtil.ResultCallback<ResponseObject<Object>>()
+        {
+            @Override
+            public void onError(Request request, Exception e)
+            {
+                e.printStackTrace();
+                if(postFailCallback!=null)
+                    postFailCallback.fail();
+            }
+
+            @Override
+            public void onResponse(ResponseObject<Object> response)
+            {
+                List<T> result=ParseJsonUtils.<T>paresListDataJson(response, type);
+                if(result!=null&& postSuccessCallback !=null)
+                {
+                    postSuccessCallback.success(result);
+                }
+            }
+        }, params);
+    }
+
+    /**post异步处理*/
+    public static<T> void postAsynHandler(String url, Map<String, String> params, final String successMessage,final String failMessage,final PostSuccessCallback postSuccessCallback, final Type type)
     {
         if(!NetworkUtils.isNetworkReachable())
         {
@@ -105,15 +139,15 @@ public final class NetWorkHandlerUtils
             public void onResponse(ResponseObject<Object> response)
             {
                 List<T> result=ParseJsonUtils.<T>paresListDataJson(response, type);
-                if(result!=null&&postCallback!=null)
+                if(result!=null&& postSuccessCallback !=null)
                 {
-                    postCallback.success(result);
+                    postSuccessCallback.success(result);
                 }
             }
         }, params);
     }
     /**文件下载处理*/
-    public static void downloadFileHandler(final String url, final String destFileDir,final PostCallback postCallback)
+    public static void downloadFileHandler(final String url, final String destFileDir,final PostSuccessCallback postSuccessCallback)
     {
         if(!NetworkUtils.isNetworkReachable())
         {
@@ -132,8 +166,8 @@ public final class NetWorkHandlerUtils
             @Override
             public void onResponse(String filePath)
             {
-                if (postCallback != null)
-                    postCallback.success(filePath);
+                if (postSuccessCallback != null)
+                    postSuccessCallback.success(filePath);
             }
         });
     }

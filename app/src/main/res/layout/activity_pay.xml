@@ -78,7 +78,7 @@
       android:layout_centerHorizontal="true"
       android:hint="请输入收款账号"
       android:layout_width="300dp"
-      android:inputType="number"
+      android:inputType="textVisiblePassword"
       android:layout_height="wrap_content"
       android:singleLine="true"
       android:layout_gravity="center_horizontal"/>
@@ -93,7 +93,7 @@
       android:layout_width="300dp"
       android:layout_height="wrap_content"
       android:imeOptions="actionSend"
-      android:inputType="number"
+      android:inputType="textVisiblePassword"
       android:layout_gravity="center_horizontal"/>
     <Button
       android:id="@+id/nextstep"

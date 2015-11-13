@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -25,6 +26,7 @@ import butterknife.OnClick;
  */
 public class ListenBlessActivity extends AppCompatActivity
 {
+    private static final String TAG = ListenBlessPopupWindow.class.getName();
     @Bind(R.id.listen)
     Button mListen;
 
@@ -38,6 +40,7 @@ public class ListenBlessActivity extends AppCompatActivity
         boolean isCollect = getIntent().getBooleanExtra(Consts.FRAGMENT_COLLECT, false);
         if(isCollect)
         {
+            Log.i(TAG,"这里消失");
             mListen.setVisibility(View.GONE);
             Intent intent = new Intent(this, ListenBlessPopupWindow.class);
             CollectBean collectBean=getIntent().getParcelableExtra(Consts.COLLECT_BEAN);
@@ -57,11 +60,19 @@ public class ListenBlessActivity extends AppCompatActivity
         startActivity(intent);
     }
 
+
     @OnClick(R.id.listen_back)
     public void back()
     {
         MyApplication.sActivityMap.get(Consts.BLESS_POPUP).finish();
         MyApplication.sActivityMap.remove(Consts.BLESS_POPUP);
         finish();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        Log.i(TAG,"被销毁吗" );
     }
 }

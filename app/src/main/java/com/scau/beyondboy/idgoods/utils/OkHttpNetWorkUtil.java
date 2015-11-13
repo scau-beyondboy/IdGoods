@@ -37,6 +37,7 @@ import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Author:beyondboy
@@ -58,6 +59,7 @@ public class OkHttpNetWorkUtil
     private OkHttpNetWorkUtil()
     {
         mOkHttpClient = new OkHttpClient();
+        mOkHttpClient.setConnectTimeout(1000, TimeUnit.MILLISECONDS);
         //cookie enabled
         mOkHttpClient.setCookieHandler(new CookieManager(null, CookiePolicy.ACCEPT_ORIGINAL_SERVER));
         mDelivery = new Handler(Looper.getMainLooper());

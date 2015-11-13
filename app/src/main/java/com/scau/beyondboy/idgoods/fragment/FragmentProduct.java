@@ -25,6 +25,7 @@ import com.scau.beyondboy.idgoods.utils.LoadImageUtils;
 import com.scau.beyondboy.idgoods.utils.NetWorkHandlerUtils;
 import com.scau.beyondboy.idgoods.utils.NetworkUtils;
 import com.scau.beyondboy.idgoods.utils.ShareUtils;
+import com.scau.beyondboy.idgoods.utils.ToaskUtils;
 import com.scau.beyondboy.idgoods.view.SlideListView;
 
 import org.litepal.crud.DataSupport;
@@ -66,7 +67,9 @@ public class FragmentProduct extends Fragment
     {
         View view=inflater.inflate(R.layout.myproduct,container,false);
         ButterKnife.bind(this, view);
-        //mMainActivity.mSearchView.setVisibility(View.VISIBLE);
+        View empty=inflater.inflate(R.layout.list_item_empty_view,container,false);
+        //((ViewGroup)mProductListView.getParent()).addView(empty);
+        mProductListView.setEmptyView(empty);
         return view;
     }
 
@@ -93,7 +96,7 @@ public class FragmentProduct extends Fragment
         {
             ArrayMap<String,String> params=new ArrayMap<>(1);
             params.put(Consts.USERID_KEY, ShareUtils.getUserId());
-            NetWorkHandlerUtils.<TimeProductBean>postAsynHandler(Consts.GET_PRODUCT, params, null, null, new NetWorkHandlerUtils.PostCallback<List<TimeProductBean>>()
+            NetWorkHandlerUtils.<TimeProductBean>postAsynHandler(Consts.GET_PRODUCT, params, null, null, new NetWorkHandlerUtils.PostSuccessCallback<List<TimeProductBean>>()
             {
                 @Override
                 public void success(final List<TimeProductBean> result)
@@ -103,12 +106,28 @@ public class FragmentProduct extends Fragment
                         @Override
                         public void run()
                         {
-                            Log.i(TAG,"拉取");
+                            Log.i(TAG, "拉取");
                             loadNetWordData(result);
                         }
                     });
                 }
-            }, new TypeToken<List<TimeProductBean>>(){}.getType());
+            }, new TypeToken<List<TimeProductBean>>()
+            {
+            }.getType(), new NetWorkHandlerUtils.PostFailCallback()
+            {
+                @Override
+                public void fail()
+                {
+                    ThreadManager.addSingalExecutorTask(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            loadLocalData();
+                        }
+                    });
+                }
+            });
         }
         else
         {
@@ -202,6 +221,10 @@ public class FragmentProduct extends Fragment
         public ProductAdapter()
         {
             super(getActivity(),0,mProductBeanList);
+            if(mProductBeanList==null||mProductBeanList.size()==0)
+            {
+                ToaskUtils.displayToast("没有数据");
+            }
         }
 
         @Override
@@ -280,7 +303,7 @@ public class FragmentProduct extends Fragment
                             ArrayMap<String,String> params=new ArrayMap<>(2);
                             params.put(Consts.USERID_KEY, ShareUtils.getUserId());
                             params.put(Consts.SERIALNUMBERVALUEKEY, productBean.getSerialNumber());
-                            NetWorkHandlerUtils.postAsynHandler(Consts.DELETE_PRODUCT, params, "删除成功", new NetWorkHandlerUtils.PostCallback<Object>()
+                            NetWorkHandlerUtils.postAsynHandler(Consts.DELETE_PRODUCT, params, "删除成功", new NetWorkHandlerUtils.PostSuccessCallback<Object>()
                             {
                                 @Override
                                 public void success(Object result)

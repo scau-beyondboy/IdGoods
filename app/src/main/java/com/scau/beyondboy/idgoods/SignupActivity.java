@@ -41,6 +41,7 @@ public class SignupActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
+        name.setText(ShareUtils.getAccount());
     }
 
     @OnClick(R.id.btn_signup)
@@ -57,7 +58,7 @@ public class SignupActivity extends AppCompatActivity
                 ArrayMap<String,String> params=new ArrayMap<>(2);
                 params.put(Consts.ACCOUNT_KEY,name.getText().toString());
                 params.put(Consts.PASSWORD_KEY,password.getText().toString());
-                NetWorkHandlerUtils.postAsynHandler(Consts.USERS_SIGNUP, params, "注册成功", "注册失败", new NetWorkHandlerUtils.PostCallback<UserBean>()
+                NetWorkHandlerUtils.postAsynHandler(Consts.USERS_SIGNUP, params, "注册成功", "注册失败", new NetWorkHandlerUtils.PostSuccessCallback<UserBean>()
                 {
                     @Override
                     public void success(final UserBean result)

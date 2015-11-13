@@ -8,6 +8,7 @@ import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
@@ -59,7 +60,6 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -142,6 +142,7 @@ public class RecordPopupWindow extends AppCompatActivity
     private final short RATEX = 6;
     private int oldX;
     private int oldY;
+    private boolean isUpLoad=false;
     private int countDate = 0;
     private MyHandler mHandler;
     private RandomAccessFile randomAccessWriter;
@@ -158,7 +159,7 @@ public class RecordPopupWindow extends AppCompatActivity
     private Paint mPaint;
     private DrawRunnable mDrawRunnable;
     private AudioTrack mAudioTrack;
-    private Semaphore mSemaphore=new Semaphore(0);
+   // private Semaphore mSemaphore=new Semaphore(0);
     /**
      * 录音计时器
      */
@@ -645,7 +646,8 @@ public class RecordPopupWindow extends AppCompatActivity
                 {
                     mInputStream = new FileInputStream(audioFile);
                     seekbar.setProgress(0);
-                    ThreadManager.addSingalExecutorTask(createPlayRuannble());
+                 //   state.set(5);
+                    //ThreadManager.addSingalExecutorTask(createPlayRuannble());
                 } catch (Exception e)
                 {
                     e.printStackTrace();
@@ -654,13 +656,17 @@ public class RecordPopupWindow extends AppCompatActivity
             }
             voiceBlessing.setSelected(true);
             voiceBlessing.setText("暂停");
-            if(state.get()==6)
+            state.set(5);
+            ThreadManager.addSingalExecutorTask(createPlayRuannble());
+            //ThreadManager.addSingalExecutorTask(createPlayRuannble());
+          //  state.set(5);
+           /* if(state.get()==6)
             {
                 //防止多次阻塞
                 state.set(5);
                 mSemaphore.release();
-            }
-            state.set(5);
+            }*/
+
         }
     }
     /**
@@ -672,8 +678,11 @@ public class RecordPopupWindow extends AppCompatActivity
         mTimer.purge();
         delete.setVisibility(View.VISIBLE);
         uploading.setVisibility(View.VISIBLE);
-        delete.setEnabled(true);
-        uploading.setEnabled(true);
+        if(!isUpLoad)
+        {
+            uploading.setEnabled(true);
+            delete.setEnabled(true);
+        }
         draw();
         oscillograph.setVisibility(View.INVISIBLE);
         seekbar.setVisibility(View.VISIBLE);
@@ -706,12 +715,12 @@ public class RecordPopupWindow extends AppCompatActivity
             try
             {
                 int readByte;
-                while (state.get()!=8&&(readByte=mInputStream.read(buffer,0,buffer.length))>=0)
+                while (state.get()==5&&(readByte=mInputStream.read(buffer,0,buffer.length))>=0)
                 {
                     int seconds=Math.round(mAudioTrack.getPlaybackHeadPosition() /mAudioTrack.getSampleRate( ));
                     seekbar.setProgress(seconds);
                     mAudioTrack.write(buffer, 0, readByte);
-                    //当正在播放，且按暂停时
+                   /* //当正在播放，且按暂停时
                     if(state.get()==6&&mAudioTrack.getPlayState()==AudioTrack.PLAYSTATE_PAUSED)
                     {
                         runOnUiThread(new Runnable()
@@ -724,20 +733,38 @@ public class RecordPopupWindow extends AppCompatActivity
                             }
                         });
                         //阻塞当前线程
-                        mSemaphore.acquire();
-                    }
+                        //mSemaphore.acquire();
+                        return;
+                    }*/
+                }
+                //当正在播放，且按暂停时
+                if(state.get()==6&&mAudioTrack.getPlayState()==AudioTrack.PLAYSTATE_PAUSED)
+                {
+                    runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            voiceBlessing.setSelected(false);
+                            voiceBlessing.setText("回放录音");
+                        }
+                    });
+                    //阻塞当前线程
+                    //mSemaphore.acquire();
+                    return;
                 }
                 //播放完时候
                 seekbar.setProgress(countDate);
-                runOnUiThread(new Runnable()
-                {
-                    @Override
-                    public void run()
+                if(state.get()!=8)
+                    runOnUiThread(new Runnable()
                     {
-                        voiceBlessing.setSelected(false);
-                        voiceBlessing.setText("回放录音");
-                    }
-                });
+                        @Override
+                        public void run()
+                        {
+                            voiceBlessing.setSelected(false);
+                            voiceBlessing.setText("回放录音");
+                        }
+                    });
                 mInputStream.close();
                 mAudioTrack.pause();
                 mAudioTrack.flush();
@@ -783,8 +810,8 @@ public class RecordPopupWindow extends AppCompatActivity
 
     private void deleteRecordFile()
     {
-        if(state.get()==6)
-            mSemaphore.release();
+       /* if(state.get()==6)
+            mSemaphore.release();*/
         ThreadManager.stopFuture(createPlayRuannble().toString());
         if(state.get()!=7)
         {
@@ -795,8 +822,6 @@ public class RecordPopupWindow extends AppCompatActivity
         //noinspection ResultOfMethodCallIgnored
         audioFile.delete();
         state.set(8);
-        voiceBlessing.setSelected(false);
-        voiceBlessing.setText("长按说话");
         seekbar.setVisibility(View.INVISIBLE);
         oscillograph.setVisibility(View.VISIBLE);
         uploading.setEnabled(false);
@@ -811,6 +836,8 @@ public class RecordPopupWindow extends AppCompatActivity
                 prepareRecord();
             }
         });
+        voiceBlessing.setSelected(false);
+        voiceBlessing.setText("长按说话");
     }
 
     private void showDeleteDailog()
@@ -818,8 +845,20 @@ public class RecordPopupWindow extends AppCompatActivity
         if(mDialog ==null)
         {
             View dialog=View.inflate(this, R.layout.dailog_style, null);
+           // mDialog = new Dialog(this,R.style.dialog);
             mDialog = new Dialog(this);
             mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            //Grab the window of the dialog, and change the width
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            Window window = mDialog.getWindow();
+            window.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.zxing_transparent)));
+            window.getDecorView().setPadding(0, 0, 0, 0);
+            lp.copyFrom(window.getAttributes());
+            lp.gravity=Gravity.BOTTOM;
+//This makes the dialog take up the full width
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            window.setAttributes(lp);
             (dialog.findViewById(R.id.comfirm)).setOnClickListener(new View.OnClickListener()
             {
                 @Override
@@ -838,33 +877,24 @@ public class RecordPopupWindow extends AppCompatActivity
                 }
             });
             mDialog.setContentView(dialog);
-//                    .setView(R.layout.dailog_style)
-//                    .setPositiveButton("确定", new DialogInterface.OnClickListener()
-//                    {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which)
-//                        {
-//                            deleteRecordFile();
-//                        }
-//                    }).setNegativeButton("取消", null);
         }
         mDialog.show();
     }
     private void getToken()
     {
         mBlessingActivity = (BlessingActivity) MyApplication.sActivityMap.get("BlessingActivity");
-        NetWorkHandlerUtils.postAsynHandler(Consts.UPLOAD_TOKEN, null, null,"已上传过该文件",new NetWorkHandlerUtils.PostCallback()
+        NetWorkHandlerUtils.postAsynHandler(Consts.UPLOAD_TOKEN, null, null, "已上传过该文件", new NetWorkHandlerUtils.PostSuccessCallback()
         {
             @Override
             public void success(Object result)
             {
-                if(result instanceof UploadBean)
+                if (result instanceof UploadBean)
                 {
-                    UploadBean uploadBean=(UploadBean)result;
-                    mToken =uploadBean.getToken();
-                    fileName =uploadBean.getFileName();
+                    UploadBean uploadBean = (UploadBean) result;
+                    mToken = uploadBean.getToken();
+                    fileName = uploadBean.getFileName();
                     //Log.i(TAG,"数据：  "+uploadBean.getToken());
-                    fileName +=".wav";
+                    fileName += ".wav";
                     mBlessingActivity.mProgressbar.setVisibility(View.VISIBLE);
                     upLoading();
                 }
@@ -882,6 +912,9 @@ public class RecordPopupWindow extends AppCompatActivity
             public void complete(String key, ResponseInfo info, JSONObject response)
             {
                 mBlessingActivity.mProgressbar.setVisibility(View.INVISIBLE);
+                isUpLoad=true;
+                uploading.setEnabled(false);
+                delete.setEnabled(false);
                 saveRadio();
             }
         }, new UploadOptions(null, null, false, new UpProgressHandler()

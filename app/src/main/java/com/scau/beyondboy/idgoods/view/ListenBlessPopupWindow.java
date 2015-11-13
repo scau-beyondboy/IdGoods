@@ -1,10 +1,9 @@
 package com.scau.beyondboy.idgoods.view;
 
-import android.media.AudioFormat;
-import android.media.AudioManager;
-import android.media.AudioTrack;
-import android.os.Build;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -29,14 +28,14 @@ import com.scau.beyondboy.idgoods.utils.ToaskUtils;
 import com.squareup.okhttp.internal.Util;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.concurrent.Semaphore;
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.sharesdk.framework.ShareSDK;
+import cn.sharesdk.onekeyshare.OnekeyShare;
 
 /**
  * Author:beyondboy
@@ -49,45 +48,21 @@ public class ListenBlessPopupWindow extends AppCompatActivity
     private static final String TAG = ListenBlessPopupWindow.class.getName();
     @Bind(R.id.play)
     Button mPlay;
-    @Bind(R.id.share)
-    Button mShare;
-    @Bind(R.id.save)
-    Button mSave;
     @Bind(R.id.seekbar)
     SeekBar mSeekbar;
     @Bind(R.id.date)
     TextView mDate;
-    private AudioTrack mAudioTrack;
+   // private AudioTrack mAudioTrack;
     private String url;
     /**0代表准备播放，1代表正在播放，2代表暂停，3代表重新播放*/
     private AtomicInteger state=new AtomicInteger(-1);
-    private Semaphore mSemaphore=new Semaphore(0);
-    /**
-     * 采样16位
-     */
-    private int mAudioformat = AudioFormat.ENCODING_PCM_16BIT;
-    /**
-     * 采样率
-     */
-    private int mSamplerateinhz = 8000;
-    /**
-     * 双声道
-     */
-    private final short channelOutMono = AudioFormat.CHANNEL_OUT_MONO;
-    private int bufferSize=2048;
-    /**
-     * 音频缓冲区
-     */
-    private byte[] buffer;
-    private ScanCodeBean mScanCodeBean;
-    private CollectBean mCollectBean;
-    private InputStream mInputStream;
+    private MediaPlayer player;
     private PlayRuannble mPlayRuannble;
     private File mPostCardVoice;
     private int totalTime;
     /**是否保存*/
     private boolean isSave=false;
-    private String mFilePath;
+    private final ThreadLocal<OnekeyShare> mOks = new ThreadLocal<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -112,41 +87,24 @@ public class ListenBlessPopupWindow extends AppCompatActivity
 
     private void init()
     {
+        ThreadManager.scoolPoolSize=1;
         OkHttpNetWorkUtil.setCache(StorageUtils.getOwnCacheDirectory(this, "poscard"), 100 * 1024 * 1024);
-        if (bufferSize < AudioTrack.getMinBufferSize(mSamplerateinhz, channelOutMono, mAudioformat))
-        {
-            bufferSize = AudioTrack.getMinBufferSize(mSamplerateinhz, channelOutMono, mAudioformat);
-        }
-        if(mAudioTrack ==null)
-        {
-            mAudioTrack =new AudioTrack(AudioManager.STREAM_MUSIC,mSamplerateinhz, channelOutMono,mAudioformat,bufferSize,AudioTrack.MODE_STREAM);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            {
-                mAudioTrack.setVolume(1.0f);
-            }
-            else
-            {
-                //noinspection deprecation
-                mAudioTrack.setStereoVolume(1.0f, 1.0f);
-            }
-            buffer=new byte[bufferSize];
-        }
         //二维码扫描方式听明信片
         if(getIntent().getBooleanExtra(Consts.RECEIVEBLESS,false))
         {
-            mScanCodeBean=getIntent().getParcelableExtra(Consts.SCAN_CODE_BEAN);
-            url=mScanCodeBean.getAddress();
+            ScanCodeBean scanCodeBean = getIntent().getParcelableExtra(Consts.SCAN_CODE_BEAN);
+            url= scanCodeBean.getAddress();
             Log.i(TAG,"在哪里啊");
             getRecordFile();
         }
         //收藏详情
         else
         {
-            mCollectBean = getIntent().getParcelableExtra(Consts.COLLECT_BEAN);
+            CollectBean collectBean = getIntent().getParcelableExtra(Consts.COLLECT_BEAN);
             android.support.v4.util.ArrayMap<String,String> params=new android.support.v4.util.ArrayMap<>();
-            params.put(Consts.SERIALNUMBERVALUEKEY, mCollectBean.getSerialNumberValue());
+            params.put(Consts.SERIALNUMBERVALUEKEY, collectBean.getSerialNumberValue());
             Log.i(TAG,"这里了吗");
-            NetWorkHandlerUtils.postAsynHandler(Consts.GET_COLLECT_INFO,params, null, null, new NetWorkHandlerUtils.PostCallback<CollectInfo>()
+            NetWorkHandlerUtils.postAsynHandler(Consts.GET_COLLECT_INFO,params, null, null, new NetWorkHandlerUtils.PostSuccessCallback<CollectInfo>()
             {
                 @Override
                 public void success(CollectInfo result)
@@ -162,8 +120,8 @@ public class ListenBlessPopupWindow extends AppCompatActivity
     /**获取录音文件*/
     private void getRecordFile()
     {
-        mFilePath = StorageUtils.getIndividualCacheDirectory(this, "postcard").getAbsolutePath()+"/"+ Util.md5Hex(url)+".0";
-        mPostCardVoice=new File(mFilePath);
+        String filePath = StorageUtils.getIndividualCacheDirectory(this, "postcard").getAbsolutePath() + "/" + Util.md5Hex(url) + ".0";
+        mPostCardVoice=new File(filePath);
         if(mPostCardVoice.exists())
         {
             setInfo();
@@ -171,7 +129,7 @@ public class ListenBlessPopupWindow extends AppCompatActivity
         }
         else
         {
-            NetWorkHandlerUtils.downloadFileHandler(url, StorageUtils.getIndividualCacheDirectory(this, "postcard").getAbsolutePath(), new NetWorkHandlerUtils.PostCallback<String>()
+            NetWorkHandlerUtils.downloadFileHandler(url, StorageUtils.getIndividualCacheDirectory(this, "postcard").getAbsolutePath(), new NetWorkHandlerUtils.PostSuccessCallback<String>()
             {
                 @Override
                 public void success(String result)
@@ -185,10 +143,78 @@ public class ListenBlessPopupWindow extends AppCompatActivity
 
     private void setInfo()
     {
-        totalTime = (int) mPostCardVoice.length() / mSamplerateinhz / 2;
-        mDate.setText(TimeUtils.converTommss(totalTime));
-        mSeekbar.setMax(totalTime);
-        state.set(0);
+        player=new MediaPlayer();
+        try
+        {
+            player.setDataSource(mPostCardVoice.toString());
+            player.prepare();
+            totalTime=player.getDuration()/1000;
+            mDate.setText(TimeUtils.converTommss(player.getDuration() / 1000));
+            mSeekbar.setMax(totalTime);
+            state.set(0);
+            player.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
+            {
+                @Override
+                public void onCompletion(MediaPlayer mp)
+                {
+                    try
+                    {
+                        state.set(3);
+                        player.stop();
+                        //播放完时候
+                        mPlay.setSelected(false);
+                        mPlay.setText("播放录音");
+                        player.prepare();
+                    } catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            ThreadManager.addTask(new Runnable()
+            {
+                Handler mHandler=new Handler(getMainLooper())
+                {
+                    @Override
+                    public void handleMessage(Message msg)
+                    {
+                        try
+                        {
+                            if(msg.what==011&&state.get()==1&&player!=null)
+                            {
+                                mSeekbar.setProgress(player.getCurrentPosition()/1000);
+                            }
+                            else  if(state.get()==3)
+                            {
+                                mSeekbar.setProgress(totalTime);
+                            }
+                        } catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+                @Override
+                public void run()
+                {
+                    //noinspection InfiniteLoopStatement
+                    while(true)
+                    {
+                        try
+                        {
+                            Thread.sleep(1000);
+                            mHandler.sendEmptyMessage(011);
+                        } catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private class PlayRuannble implements Runnable
@@ -198,46 +224,10 @@ public class ListenBlessPopupWindow extends AppCompatActivity
         {
             try
             {
-                int readByte;
-                while (state.get()!=3&&(readByte= mInputStream.read(buffer, 0, buffer.length))>=0)
+                if(state.get()!=3)
                 {
-                    int seconds=Math.round(mAudioTrack.getPlaybackHeadPosition() /mAudioTrack.getSampleRate( ));
-                    mSeekbar.setProgress(seconds);
-                    mAudioTrack.write(buffer, 0, readByte);
-                    //当正在播放，且按暂停时
-                    if(state.get()==2&&mAudioTrack.getPlayState()==AudioTrack.PLAYSTATE_PAUSED)
-                    {
-                        runOnUiThread(new Runnable()
-                        {
-                            @Override
-                            public void run()
-                            {
-                                mPlay.setSelected(false);
-                                mPlay.setText("播放录音");
-                            }
-                        });
-                        //Log.i(TAG, "阻塞");
-                        //阻塞当前线程
-                        mSemaphore.acquire();
-                        //Log.i(TAG,"解除阻塞");
-                    }
+                    player.start();
                 }
-                //播放完时候
-                mSeekbar.setProgress(totalTime);
-                runOnUiThread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        mPlay.setSelected(false);
-                        mPlay.setText("播放录音");
-                    }
-                });
-                mAudioTrack.pause();
-                mAudioTrack.flush();
-                mAudioTrack.stop();
-                state.set(3);
-                //Log.i(TAG,"播放结束");
             } catch (Exception e)
             {
                 e.printStackTrace();
@@ -274,21 +264,17 @@ public class ListenBlessPopupWindow extends AppCompatActivity
         if(state.get()==1)
         {
             state.set(2);
-            mAudioTrack.pause();
+            player.pause();
             mPlay.setSelected(false);
             mPlay.setText("播放录音");
-            //Log.i(TAG,"暂停" );
         }
         else
         {
-            mAudioTrack.play();
             //重新播放时候
             if(state.get()!=2)
             {
                 try
                 {
-                    mInputStream=new FileInputStream(mPostCardVoice);
-                    mInputStream.skip(0x2c);
                     mSeekbar.setProgress(0);
                     state.set(1);
                     ThreadManager.addSingalExecutorTask(createPlayRuannble());
@@ -300,12 +286,7 @@ public class ListenBlessPopupWindow extends AppCompatActivity
             }
             mPlay.setText("暂停");
             mPlay.setSelected(true);
-            if(state.get()==2)
-            {
-                //防止多次阻塞
-                state.set(1);
-                mSemaphore.release();
-            }
+            player.start();
             state.set(1);
         }
     }
@@ -319,21 +300,46 @@ public class ListenBlessPopupWindow extends AppCompatActivity
     protected void onDestroy()
     {
         super.onDestroy();
-        if(mAudioTrack!=null)
-        {
-            mAudioTrack.stop();
-            mAudioTrack.release();
-        }
-        MyApplication.sActivityMap.get("ListenBlessActivity").finish();
-        MyApplication.sActivityMap.remove("ListenBlessActivity");
+        MyApplication.sActivityMap.get(Consts.BLESS_ACTIVITY).finish();
+        MyApplication.sActivityMap.remove(Consts.BLESS_ACTIVITY);
         ThreadManager.release();
+        if(player!=null)
+        {
+            player.pause();
+            player.stop();
+            player.release();
+            player=null;
+        }
         if(!isSave&&mPostCardVoice!=null&&mPostCardVoice.exists())
         {
             String fileName=mPostCardVoice.getAbsolutePath();
             fileName=fileName.substring(fileName.lastIndexOf("/")+1,fileName.length()-2);
-            Log.i(TAG,"文件名：  "+fileName );
+            Log.i(TAG, "文件名：  " + fileName);
             OkHttpNetWorkUtil.removeCacheFile(fileName);
         }
+        Log.i(TAG,"被销毁在这里" );
         MyApplication.sActivityMap.clear();
+    }
+
+    @OnClick(R.id.share)
+    public void share()
+    {
+        showShare();
+    }
+
+    private void showShare()
+    {
+        ShareSDK.initSDK(this);
+        mOks.set(new OnekeyShare());
+        //关闭sso授权
+        mOks.get().disableSSOWhenAuthorize();
+        // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
+        mOks.get().setTitle("idgoods留言");
+        // titleUrl是标题的网络链接，仅在人人网和QQ空间使用
+        mOks.get().setText("idgoods分享了明信片留言给你，明信片留言地址：" + url);
+        mOks.get().setTitleUrl("idgoods分享了明信片留言给你" + url);
+        mOks.get().setAddress(url);
+        // 启动分享GUI
+        mOks.get().show(this);
     }
 }

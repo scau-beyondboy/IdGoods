@@ -30,7 +30,7 @@
       android:layout_width="220dp"
       android:layout_height="150dp"
       android:scaleType="fitXY"
-      android:src="@drawable/header_image"
+      android:src="@drawable/postcard"
       />
     <TextView
       android:id="@+id/adverse_serialnumber"

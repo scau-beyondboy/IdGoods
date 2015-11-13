@@ -10,6 +10,7 @@ import android.widget.EditText;
 
 import com.scau.beyondboy.idgoods.consts.Consts;
 import com.scau.beyondboy.idgoods.utils.NetWorkHandlerUtils;
+import com.scau.beyondboy.idgoods.utils.ShareUtils;
 import com.scau.beyondboy.idgoods.utils.StringUtils;
 import com.scau.beyondboy.idgoods.utils.ToaskUtils;
 
@@ -67,7 +68,7 @@ public class CheckCodeActivity extends BaseActivity
         public void onTick(long millisUntilFinished)
         {
             //更新页面的组件
-            checkCodeBn.setText(String.format("%d秒后发送", millisUntilFinished / 1000));
+            checkCodeBn.setText(String.format("%d秒后重新发送", millisUntilFinished / 1000));
             checkCodeBn.setBackgroundResource(R.drawable.btn_light_press);
             checkCodeBn.setClickable(false);
         }
@@ -118,12 +119,13 @@ public class CheckCodeActivity extends BaseActivity
             ArrayMap<String,String> params=new ArrayMap<>(2);
             params.put(Consts.ACCOUNT_KEY,phone.getText().toString());
             params.put(Consts.SMS_CODE,checkCode.getText().toString());
-            NetWorkHandlerUtils.postAsynHandler(Consts.VERIFY_CODE, params, null, new NetWorkHandlerUtils.PostCallback<Object>()
+            NetWorkHandlerUtils.postAsynHandler(Consts.VERIFY_CODE, params, null, new NetWorkHandlerUtils.PostSuccessCallback<Object>()
             {
                 @Override
                 public void success(Object result)
                 {
                     Intent intent=new Intent(CheckCodeActivity.this,SignupActivity.class);
+                    ShareUtils.putAccount(phone.getText().toString());
                     startActivity(intent);
                 }
             });

@@ -89,6 +89,12 @@ public class MainActivity extends AppCompatActivity
         mDrawerLayout.setDrawerListener(drawerToggle);
         changeFragment(new FragmentHome(), true,"home");
     }
+
+    public void setUserName(String userName)
+    {
+        this.userName.setText(userName);
+    }
+
     @Override
     protected void onResume()
     {
@@ -142,6 +148,10 @@ public class MainActivity extends AppCompatActivity
         switch (view.getId())
         {
             case R.id.home:
+                if(mFragmentManager.findFragmentByTag("home")!=null)
+                {
+                    return;
+                }
                 changeFragment(new FragmentHome(),true,"home");
                 break;
             case R.id.myproduct:
@@ -151,16 +161,28 @@ public class MainActivity extends AppCompatActivity
                 }
                 else
                 {
+                    if(mFragmentManager.findFragmentByTag("product")!=null)
+                    {
+                        return;
+                    }
                     changeFragment(new FragmentProduct(), true,"product");
                 }
                 break;
             case R.id.setting:
                 if(changeSetting.getText().toString().equals("登陆"))
                 {
+                    if(mFragmentManager.findFragmentByTag("login")!=null)
+                    {
+                        return;
+                    }
                     changeFragment(new FragmentLogin(),true,"login");
                 }
                 else
                 {
+                    if(mFragmentManager.findFragmentByTag("setting")!=null)
+                    {
+                        return;
+                    }
                     changeFragment(new FragmentModifyPassword(),true,"modifypassword");
                     titleContent.setVisibility(View.VISIBLE);
                 }
@@ -182,6 +204,10 @@ public class MainActivity extends AppCompatActivity
                 }
                 else
                 {
+                    if(mFragmentManager.findFragmentByTag("collect")!=null)
+                    {
+                        return;
+                    }
                     changeFragment(new FragmentCollect(), true,"collect");
                 }
                 break;
@@ -225,10 +251,10 @@ public class MainActivity extends AppCompatActivity
     //切换不同的fragment
     public void changeFragment(Fragment fragment,boolean isAddToStack,String tag)
     {
-        if(mFragmentManager.findFragmentByTag(tag)!=null)
+       /* if(mFragmentManager.findFragmentByTag(tag)!=null)
         {
             return;
-        }
+        }*/
         //开启事务
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
         transaction.replace(R.id.content_frame, fragment,tag);

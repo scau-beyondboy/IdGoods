@@ -1,5 +1,6 @@
 package com.scau.beyondboy.idgoods.utils;
 
+import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
@@ -22,25 +23,28 @@ public class NetworkUtils
      */
     public static boolean isNetworkReachable()
     {
-        ConnectivityManager manager=(ConnectivityManager)MyApplication.getContext().getSystemService(MyApplication.getContext().CONNECTIVITY_SERVICE);
+        ConnectivityManager manager=(ConnectivityManager)MyApplication.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo current=manager.getActiveNetworkInfo();
         if(current==null)
         {
             Log.i(TAG, "没有网络");
             return false;
         }
-        if(current.getType()==ConnectivityManager.TYPE_WIFI)
+        if(current.getState()==NetworkInfo.State.CONNECTED&&current.getType()==ConnectivityManager.TYPE_WIFI)
         {
             Log.i(TAG,"有wifi网络");
+            return true;
         }
-        else if(current.getType()==ConnectivityManager.TYPE_MOBILE)
+        else if(current.getType()==ConnectivityManager.TYPE_MOBILE&&current.getState()==NetworkInfo.State.CONNECTED)
         {
             Log.i(TAG,"有移动网络");
+            return  true;
         }
-        else
+        else if(current.getState()==NetworkInfo.State.CONNECTED)
         {
             Log.i(TAG,"其他网络");
+            return true;
         }
-        return true;
+        return false;
     }
 }

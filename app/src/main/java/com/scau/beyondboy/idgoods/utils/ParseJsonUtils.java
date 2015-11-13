@@ -15,13 +15,19 @@ import java.util.List;
  */
 public class ParseJsonUtils
 {
-  public static <T> void parseDataJson(ResponseObject<T> responseObject,String successMessage)
+    private static final String TAG = ParseJsonUtils.class.getName();
+
+    public static <T> void parseDataJson(ResponseObject<T> responseObject,String successMessage)
   {
       Gson gson=new Gson();
       String data=gson.toJson(responseObject.getData());
       if(responseObject.getResult()==1&&successMessage!=null)
       {
           ToaskUtils.displayToast(successMessage);
+      }
+      else if(responseObject.getResult()==1&&successMessage==null)
+      {
+          return;
       }
       else
       {

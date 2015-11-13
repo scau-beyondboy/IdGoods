@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:orientation="vertical"
+  android:background="@drawable/postcard"
   >
   <RelativeLayout
     android:layout_width="match_parent"
+    android:background="@color/white"
     android:layout_height="?android:attr/actionBarSize"
     >
     <TextView
@@ -42,11 +44,11 @@
     android:layout_height="0dp"
     android:layout_weight="1"/>-->
 
-  <RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/postcard"
-    >
+  <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:background="@drawable/postcard"-->
+    <!-->-->
     <!--<ImageView
     android:id="@+id/blessing_image"
     android:layout_width="match_parent"
@@ -67,6 +69,7 @@
     <!--/>-->
     <Button
       android:id="@+id/listen"
+      android:visibility="visible"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_alignParentBottom="true"
@@ -77,5 +80,5 @@
       android:textColor="@android:color/white"
       android:textSize="25sp"
       />
-  </RelativeLayout>
-</LinearLayout>
+  <!--</RelativeLayout>-->
+</RelativeLayout>

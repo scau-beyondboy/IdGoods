@@ -78,6 +78,7 @@ public class FragmentModifyPassword extends Fragment
                 ShareUtils.clearTempDate(mActivity);
                 mActivity.changeFragment(new FragmentLogin(), true, "login");
                 mActivity.setChangeSetting("登陆");
+                mActivity.setUserName("未登录");
                 break;
         }
     }

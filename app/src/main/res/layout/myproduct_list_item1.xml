@@ -5,15 +5,5 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   >
-  <TextView
-    android:id="@+id/date"
-    android:focusable="false"
-    android:clickable="false"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/gray"
-    android:padding="5dp"
-    android:textAppearance="?android:attr/textAppearanceMedium"
-    android:text="2015/09/30"
-    />
+  <include layout="@layout/date_tv_style"/>
 </LinearLayout>

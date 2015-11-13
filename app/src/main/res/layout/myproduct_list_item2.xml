@@ -22,25 +22,17 @@
       />
     <TextView
       android:id="@+id/product_name"
-      android:layout_toRightOf="@id/header_image"
-      android:layout_marginLeft="15dp"
       android:paddingTop="5dp"
-      android:textSize="20sp"
       android:text="beyondboy"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      style="@style/text_style1"
       />
     <TextView
       android:id="@+id/adverse_serialnumber"
       android:layout_toRightOf="@id/header_image"
       android:layout_below="@id/product_name"
-      android:layout_marginLeft="15dp"
-      android:layout_marginTop="10dp"
-      android:paddingTop="5dp"
-      android:textSize="20sp"
+      style="@style/text_style1"
+      android:layout_marginTop="25dp"
       android:text="12345678898"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
       />
     <ImageView
       android:layout_width="wrap_content"

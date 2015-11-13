@@ -120,7 +120,7 @@ public class SlideListView extends ListView
             case MotionEvent.ACTION_MOVE:
             {
                 Log.i(TAG,"dispatch:move");
-                if (Math.abs(downX-event.getX()) > mTouchSlop && Math.abs(event.getY() - downY) < mTouchSlop)
+                if (downX-event.getX()>mTouchSlop && Math.abs(event.getY() - downY) < mTouchSlop)
                 {
                     isSlide = true;
                     performMove(event);

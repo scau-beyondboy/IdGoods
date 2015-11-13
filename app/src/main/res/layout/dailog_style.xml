@@ -4,42 +4,59 @@
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:background="@drawable/dialog_bound"
+  android:background="@android:color/white"
   >
-  <ImageView
-    android:layout_width="match_parent"
-    android:src="@drawable/ic_error_white_24dp"
-    android:layout_height="wrap_content"
-    />
   <TextView
-    android:layout_marginTop="20dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="录音删除提示"
+    android:textSize="25sp"
+    android:padding="10dp"
     android:gravity="center"
-    android:textSize="30sp"
-    android:text="重新录音"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:textColor="@color/black"
     />
-  <RelativeLayout
-    android:layout_marginTop="15dp"
+  <!--<TextView-->
+    <!--android:layout_marginTop="20dp"-->
+    <!--android:gravity="center"-->
+    <!--android:textSize="30sp"-->
+    <!--android:text="重新录音"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--/>-->
+  <!--<RelativeLayout-->
+    <!--android:layout_marginTop="15dp"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!-->-->
+  <View
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    >
+    android:layout_height="1dp"
+    android:background="@color/grey"/>
     <Button
       android:id="@+id/comfirm"
-      android:layout_width="wrap_content"
+      android:background="@android:color/transparent"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:textSize="25sp"
-      android:layout_marginLeft="15dp"
+      android:textColor="@color/red"
       android:text="确定"
       />
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="@color/grey"/>
     <Button
       android:id="@+id/cancel"
-      android:layout_alignParentRight="true"
-      android:layout_marginRight="15dp"
-      android:layout_width="wrap_content"
+      android:layout_marginTop="10dp"
+      android:layout_width="match_parent"
+      android:background="@android:color/transparent"
       android:layout_height="wrap_content"
       android:textSize="25sp"
       android:text="取消"
+      android:textColor="@color/black"
       />
-  </RelativeLayout>
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="@color/grey"/>
 </LinearLayout>

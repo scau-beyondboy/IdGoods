@@ -25,6 +25,7 @@ import com.scau.beyondboy.idgoods.utils.LoadImageUtils;
 import com.scau.beyondboy.idgoods.utils.NetWorkHandlerUtils;
 import com.scau.beyondboy.idgoods.utils.NetworkUtils;
 import com.scau.beyondboy.idgoods.utils.ShareUtils;
+import com.scau.beyondboy.idgoods.utils.ToaskUtils;
 import com.scau.beyondboy.idgoods.view.SlideListView;
 
 import org.litepal.crud.DataSupport;
@@ -66,6 +67,9 @@ public class FragmentCollect extends Fragment
     {
         View view=inflater.inflate(R.layout.mycollect,container,false);
         ButterKnife.bind(this, view);
+        View empty=inflater.inflate(R.layout.list_item_empty_view,container,false);
+       // ((ViewGroup)mCollectListView.getParent()).addView(empty);
+        mCollectListView.setEmptyView(empty);
         //mMainActivity.mSearchView.setVisibility(View.VISIBLE);
         return view;
     }
@@ -93,7 +97,7 @@ public class FragmentCollect extends Fragment
         {
             ArrayMap<String,String> params=new ArrayMap<>(1);
             params.put(Consts.CUSTOMERID_KEY, ShareUtils.getUserId());
-            NetWorkHandlerUtils.<TimeCollectBean>postAsynHandler(Consts.GET_COLLECT, params, null, null, new NetWorkHandlerUtils.PostCallback<List<TimeCollectBean>>()
+            NetWorkHandlerUtils.<TimeCollectBean>postAsynHandler(Consts.GET_COLLECT, params, null, null, new NetWorkHandlerUtils.PostSuccessCallback<List<TimeCollectBean>>()
             {
                 @Override
                 public void success(final List<TimeCollectBean> result)
@@ -107,7 +111,23 @@ public class FragmentCollect extends Fragment
                         }
                     });
                 }
-            }, new TypeToken<List<TimeCollectBean>>(){}.getType());
+            }, new TypeToken<List<TimeCollectBean>>()
+            {
+            }.getType(), new NetWorkHandlerUtils.PostFailCallback()
+            {
+                @Override
+                public void fail()
+                {
+                    ThreadManager.addSingalExecutorTask(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            loadLocalData();
+                        }
+                    });
+                }
+            });
         }
         else
         {
@@ -202,6 +222,10 @@ public class FragmentCollect extends Fragment
         public CollectAdapter()
         {
             super(getActivity(),0, mCollectBeanList);
+            if(mCollectBeanList==null||mCollectBeanList.size()==0)
+            {
+                ToaskUtils.displayToast("没有数据");
+            }
         }
 
         @Override
@@ -281,7 +305,7 @@ public class FragmentCollect extends Fragment
                             ArrayMap<String,String> params=new ArrayMap<>(2);
                             params.put(Consts.CUSTOMERID_KEY, ShareUtils.getUserId());
                             params.put(Consts.SERIALNUMBERVALUEKEY, collectBean.getSerialNumberValue());
-                            NetWorkHandlerUtils.postAsynHandler(Consts.DELETE_COLLECT, params, "删除成功", new NetWorkHandlerUtils.PostCallback<Object>()
+                            NetWorkHandlerUtils.postAsynHandler(Consts.DELETE_COLLECT, params, "删除成功", new NetWorkHandlerUtils.PostSuccessCallback<Object>()
                             {
                                 @Override
                                 public void success(Object result)
