@@ -70,15 +70,8 @@
     <Button
       android:id="@+id/listen"
       android:visibility="visible"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_alignParentBottom="true"
-      android:background="@android:color/black"
-      android:gravity="center"
-      android:padding="10dp"
       android:text="收听祝福"
-      android:textColor="@android:color/white"
-      android:textSize="25sp"
+      style="@style/button_style1"
       />
   <!--</RelativeLayout>-->
 </RelativeLayout>

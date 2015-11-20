@@ -6,11 +6,6 @@
   >
 <com.scau.beyondboy.idgoods.view.SlideListView
   android:id="@+id/product_slidelistview"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:divider="?android:attr/listDivider"
-  android:listSelector="@android:color/transparent"
-  android:cacheColorHint="@android:color/transparent"
-  android:dividerHeight="2dp"
+  style="@style/slide_style"
   />
   </RelativeLayout>

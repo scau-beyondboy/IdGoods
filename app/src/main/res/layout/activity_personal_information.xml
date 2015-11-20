@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   >
@@ -9,23 +10,15 @@
     >
     <TextView
       android:id="@+id/textView"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_centerInParent="true"
-      android:text="个人信息"
+      android:text="@string/info_person"
       android:textColor="@color/black"
-      android:textSize="25dp"
+      style="@style/text_style4"
       />
     <ImageView
       android:id="@+id/personinfo_back"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginLeft="15dp"
-      android:layout_centerInParent="true"
-      android:layout_alignParentLeft="true"
       android:src="@drawable/ic_navigate_black_24dp"
-      android:paddingLeft="5dp"
-      android:paddingRight="5dp"
+      style="@style/image_style1"
+      android:contentDescription="@null"
       />
   </RelativeLayout>
   <ImageView
@@ -35,224 +28,170 @@
     android:layout_centerHorizontal="true"
     android:layout_marginTop="80dp"
     android:src="@drawable/iconx"
+    android:contentDescription="@null"
     />
-  <!--<ImageButton-->
-  <!--android:layout_width="wrap_content"-->
-  <!--android:layout_height="wrap_content"-->
-  <!--android:layout_below="@+id/imageView"-->
-  <!--android:layout_toRightOf="@+id/name"-->
-  <!--android:src="@drawable/edit_query"-->
-  <!--/>-->
   <RelativeLayout
     android:id="@+id/nickname_layout"
     android:layout_below="@+id/header_image"
     android:layout_marginTop="50dp"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/buttonselector"
-    android:clickable="true"
+    style="@style/relativelayout_style1"
     >
     <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="35dp"
       android:layout_alignParentLeft="true"
-      android:layout_margin="10dp"
-      android:text="个人姓名"
-      android:textSize="20dp"
+      android:text="@string/name"
+      tools:ignore="RelativeOverlap,RtlHardcoded"
+      style="@style/text_style7"
       />
     <ImageView
       android:id="@+id/nickname_go"
-      android:layout_width="wrap_content"
-      android:layout_centerVertical="true"
-      android:layout_height="wrap_content"
-      android:layout_alignParentRight="true"
       android:src="@drawable/ic_chevron_right_black_24dp"
+      tools:ignore="RtlHardcoded"
+      style="@style/imageview_style3"
+      android:contentDescription="@null"
       />
     <TextView
       android:id="@+id/nickname"
-      android:layout_width="wrap_content"
-      android:layout_height="35dp"
-      android:layout_margin="10dp"
       android:layout_centerVertical="true"
       android:layout_toLeftOf="@id/nickname_go"
-      android:inputType="textEmailAddress"
-      android:text="123456789@qq.com"
-      android:textSize="20dp"
+      tools:text="123456789@qq.com"
+      tools:ignore="RelativeOverlap,RtlHardcoded"
+      style="@style/text_style7"
       />
   </RelativeLayout>
   <ImageView
-    android:layout_width="fill_parent"
-    android:layout_height="1dp"
     android:layout_alignBottom="@+id/nickname_layout"
-    android:background="#cccc"
+    android:contentDescription="@null"
+    style="@style/image_style4"
     />
   <RelativeLayout
     android:id="@+id/email_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     android:layout_below="@+id/nickname_layout"
-    android:background="@drawable/buttonselector"
-    android:clickable="true"
+    style="@style/relativelayout_style1"
     >
     <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="35dp"
       android:layout_alignParentLeft="true"
-      android:layout_margin="10dp"
-      android:text="邮箱"
-      android:textSize="20dp"
+      android:text="@string/email"
+      tools:ignore="RelativeOverlap,RtlHardcoded"
+      style="@style/text_style7"
       />
     <ImageView
       android:id="@+id/email_go"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_centerVertical="true"
-      android:layout_alignParentRight="true"
       android:src="@drawable/ic_chevron_right_black_24dp"
+      tools:ignore="RtlHardcoded"
+      style="@style/imageview_style3"
+      android:contentDescription="@null"
       />
     <TextView
       android:id="@+id/email"
-      android:layout_width="wrap_content"
-      android:layout_height="35dp"
       android:layout_centerVertical="true"
-      android:layout_margin="10dp"
       android:layout_toLeftOf="@id/email_go"
-      android:inputType="textEmailAddress"
-      android:text="123456789@qq.com"
-      android:textSize="20dp"
+      tools:text="123456789@qq.com"
+      tools:ignore="RelativeOverlap,RtlHardcoded"
+      style="@style/text_style7"
       />
   </RelativeLayout>
   <ImageView
-    android:layout_width="fill_parent"
-    android:layout_height="1dp"
     android:layout_alignBottom="@+id/email_layout"
-    android:background="#cccc"
+    android:contentDescription="@null"
+    style="@style/image_style4"
     />
   <RelativeLayout
     android:id="@+id/birthday_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     android:layout_below="@+id/email_layout"
     android:layout_centerInParent="true"
-    android:background="@drawable/buttonselector"
-    android:clickable="true"
+    style="@style/relativelayout_style1"
     >
     <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="35dp"
       android:layout_alignParentLeft="true"
-      android:layout_margin="10dp"
-      android:text="生日"
-      android:textSize="20dp"
+      tools:ignore="RelativeOverlap,RtlHardcoded"
+      android:text="@string/birthday"
+      style="@style/text_style7"
       />
     <ImageView
       android:id="@+id/birthday_go"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_centerVertical="true"
-      android:layout_alignParentRight="true"
       android:src="@drawable/ic_chevron_right_black_24dp"
+      tools:ignore="RtlHardcoded"
+      style="@style/imageview_style3"
+      android:contentDescription="@null"
       />
     <TextView
       android:id="@+id/birthday"
-      android:layout_width="wrap_content"
-      android:layout_height="35dp"
       android:layout_centerVertical="true"
-      android:layout_margin="10dp"
       android:layout_toLeftOf="@id/birthday_go"
-      android:text="1990-09-07"
-      android:inputType="datetime"
-      android:textSize="20dp"
+      tools:text="1990-09-07"
+      tools:ignore="RelativeOverlap,RtlHardcoded"
+      style="@style/text_style7"
       />
   </RelativeLayout>
   <ImageView
-    android:layout_width="fill_parent"
-    android:layout_height="1dp"
     android:layout_alignBottom="@+id/birthday_layout"
-    android:background="#cccc"
+    android:contentDescription="@null"
+    style="@style/image_style4"
     />
   <RelativeLayout
     android:id="@+id/sex_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     android:layout_below="@+id/birthday_layout"
     android:layout_centerInParent="true"
-    android:background="@drawable/buttonselector"
-    android:clickable="true"
+    style="@style/relativelayout_style1"
     >
     <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="35dp"
       android:layout_alignParentLeft="true"
-      android:layout_margin="10dp"
-      android:text="性别"
-      android:textSize="20dp"
+      android:text="@string/sex"
+      tools:ignore="RelativeOverlap,RtlHardcoded"
+      style="@style/text_style7"
       />
     <ImageView
       android:id="@+id/sex_go"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentRight="true"
-      android:layout_centerVertical="true"
       android:src="@drawable/ic_chevron_right_black_24dp"
+      tools:ignore="RtlHardcoded"
+      style="@style/imageview_style3"
+      android:contentDescription="@null"
       />
     <TextView
       android:id="@+id/sex"
-      android:layout_width="wrap_content"
-      android:layout_height="35dp"
-      android:layout_margin="10dp"
       android:layout_centerVertical="true"
       android:layout_toLeftOf="@id/sex_go"
-      android:text="男"
-      android:textSize="20dp"
+      android:text="@string/man"
+      tools:ignore="RelativeOverlap,RtlHardcoded"
+      style="@style/text_style7"
       />
   </RelativeLayout>
   <ImageView
-    android:layout_width="fill_parent"
-    android:layout_height="1dp"
     android:layout_alignBottom="@+id/sex_layout"
-    android:background="#cccc"
+    android:contentDescription="@null"
+    style="@style/image_style4"
     />
   <RelativeLayout
     android:id="@+id/address_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     android:layout_below="@+id/sex_layout"
     android:layout_centerInParent="true"
-    android:background="@drawable/buttonselector"
-    android:clickable="true"
+    style="@style/relativelayout_style1"
     >
     <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="35dp"
       android:layout_alignParentLeft="true"
-      android:layout_margin="10dp"
-      android:text="地址"
-      android:textSize="20dp"
+      android:text="@string/address"
+      tools:ignore="RelativeOverlap,RtlHardcoded"
+      style="@style/text_style7"
       />
     <ImageView
       android:id="@+id/address_go"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentRight="true"
-      android:layout_centerVertical="true"
       android:src="@drawable/ic_chevron_right_black_24dp"
+      tools:ignore="RtlHardcoded"
+      style="@style/imageview_style3"
+      android:contentDescription="@null"
       />
     <TextView
       android:id="@+id/address"
-      android:layout_width="wrap_content"
-      android:layout_height="35dp"
-      android:layout_margin="10dp"
       android:layout_toLeftOf="@id/address_go"
       android:layout_centerVertical="true"
-      android:text="马栏山马栏村小谷围2号"
-      android:textSize="20dp"
+      tools:text="马栏山马栏村小谷围2号"
+      tools:ignore="RelativeOverlap,RtlHardcoded"
+      style="@style/text_style7"
       />
   </RelativeLayout>
   <ImageView
-    android:layout_width="fill_parent"
-    android:layout_height="1dp"
     android:layout_alignBottom="@+id/address_layout"
-    android:background="#cccc"
+    android:contentDescription="@null"
+    style="@style/image_style4"
     />
 </RelativeLayout>

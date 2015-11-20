@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.scau.beyondboy.idgoods"
+<manifest
+  package="com.scau.beyondboy.idgoods"
   xmlns:android="http://schemas.android.com/apk/res/android"
   >
   <uses-permission android:name="android.permission.CAMERA"/>
@@ -15,19 +16,19 @@
   <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKSREAD_EXTERNAL_STORAGE"/>
   <uses-permission android:name="android.permission.RECORD_AUDIO"/>
   <!--suppress DeprecatedClassUsageInspection -->
-  <uses-permission android:name="android.permission.GET_TASKS" />
-  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-  <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-  <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+  <uses-permission android:name="android.permission.GET_TASKS"/>
+  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+  <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+  <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
   <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
   <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
   <!-- 蓝牙分享所需的权限 -->
-  <uses-permission android:name="android.permission.BLUETOOTH" />
-  <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+  <uses-permission android:name="android.permission.BLUETOOTH"/>
+  <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
   <application
     android:name=".MyApplication"
     android:allowBackup="true"
-    android:icon="@mipmap/ic_launcher"
+    android:icon="@drawable/iconx"
     android:label="@string/app_name"
     android:theme="@style/AppTheme"
     >
@@ -35,9 +36,9 @@
       android:name=".MainActivity"
       android:label="@string/app_name"
       android:launchMode="singleTask"
-      android:windowSoftInputMode="adjustPan"
       android:screenOrientation="portrait"
       android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+      android:windowSoftInputMode="adjustPan"
       >
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
@@ -58,10 +59,6 @@
       android:windowSoftInputMode="stateAlwaysHidden"
       >
     </activity>
-    <!--<activity android:name=".FragmentGetCash"-->
-    <!--android:screenOrientation="portrait"-->
-    <!--android:theme="@style/Theme.AppCompat.Light.NoActionBar"-->
-    <!--/>-->
     <activity
       android:name=".FinishRegisterActivity"
       android:screenOrientation="portrait"
@@ -69,119 +66,112 @@
       />
     <activity
       android:name=".SignupActivity"
-      android:screenOrientation="portrait"
       android:label="@string/title_activity_signup"
+      android:screenOrientation="portrait"
       >
     </activity>
     <activity
       android:name=".CheckCodeActivity"
-      android:screenOrientation="portrait"
       android:label="@string/title_activity_get_check_code"
+      android:screenOrientation="portrait"
       >
     </activity>
     <activity
       android:name=".PayActivity"
-      android:windowSoftInputMode="adjustPan"
-      android:screenOrientation="portrait"
       android:label="@string/title_activity_selecte_pay"
+      android:screenOrientation="portrait"
+      android:windowSoftInputMode="adjustPan"
       >
     </activity>
     <activity
       android:name=".Vendibility"
-      android:screenOrientation="portrait"
       android:label="@string/title_activity_selecte_pay"
+      android:screenOrientation="portrait"
       >
     </activity>
     <activity
       android:name=".ChangeEmailActivity"
-      android:screenOrientation="portrait"
       android:label="@string/title_activity_change_email"
+      android:screenOrientation="portrait"
       >
     </activity>
     <activity
       android:name=".ChangeAddressActivity"
-      android:screenOrientation="portrait"
       android:label="@string/title_activity_change_address"
+      android:screenOrientation="portrait"
       >
     </activity>
     <activity
       android:name=".ChangeNickNameActivity"
-      android:screenOrientation="portrait"
       android:label="@string/title_activity_change_address"
+      android:screenOrientation="portrait"
       >
     </activity>
-    <activity
-      android:name=".RecordActivity"
-      android:label="@string/title_activity_change_address"
-      android:screenOrientation="portrait"
-      />
     <activity
       android:name=".BlessingActivity"
       android:label="@string/title_activity_change_address"
       android:screenOrientation="portrait"
       >
     </activity>
-    <activity android:name=".ListenBlessActivity"
-      android:label="@string/title_activity_change_address"
-      android:screenOrientation="portrait">
-
-    </activity>
     <activity
       android:name=".PersonInfoActivity"
       android:label="@string/title_activity_selecte_pay"
-      android:screenOrientation="portrait"
       android:launchMode="singleTop"
+      android:screenOrientation="portrait"
       >
     </activity>
     <activity
-      android:name=".ListenActivity"
-      android:label="@string/title_activity_selecte_pay"
-      android:screenOrientation="portrait"
-      >
-    </activity>
-    <activity android:name=".view.RecordPopupWindow"
+      android:name=".view.RecordPlayPopupWindow"
       android:launchMode="singleInstance"
       android:screenOrientation="portrait"
-      android:theme="@style/MyDialogStyleBottom"/>
-    <activity android:name=".view.ListenBlessPopupWindow"
+      android:theme="@style/MyDialogStyleBottom"
+      />
+    <activity
+      android:name=".view.ListenBlessPopupWindow"
       android:screenOrientation="portrait"
-      android:theme="@style/MyDialogStyleBottom"/>
-    <!--<activity android:name=".ListenBlessActivity"-->
-      <!--android:launchMode="singleInstance"-->
-      <!--android:screenOrientation="portrait"-->
-      <!--/>-->
+      android:theme="@style/MyDialogStyleBottom"
+      />
     <!--微信分享回调 -->
     <activity
       android:name="cn.sharesdk.onekeyshare.wxapi.WXEntryActivity"
-      android:theme="@android:style/Theme.Translucent.NoTitleBar"
       android:configChanges="keyboardHidden|orientation|screenSize"
       android:exported="true"
-      android:screenOrientation="portrait" />
+      android:screenOrientation="portrait"
+      android:theme="@android:style/Theme.Translucent.NoTitleBar"
+      />
     <activity
       android:name="com.mob.tools.MobUIShell"
-      android:theme="@android:style/Theme.Translucent.NoTitleBar"
       android:configChanges="keyboardHidden|orientation|screenSize"
       android:screenOrientation="portrait"
-      android:windowSoftInputMode="stateHidden|adjustResize" >
+      android:theme="@android:style/Theme.Translucent.NoTitleBar"
+      android:windowSoftInputMode="stateHidden|adjustResize"
+      >
       <intent-filter>
-        <data android:scheme="tencent1104950546" />
-        <action android:name="android.intent.action.VIEW" />
-        <category android:name="android.intent.category.BROWSABLE" />
-        <category android:name="android.intent.category.DEFAULT" />
+        <data android:scheme="tencent1104950546"/>
+        <action android:name="android.intent.action.VIEW"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+        <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
     </activity>
     <!-- 调用新浪原生SDK，需要注册的回调activity -->
     <activity
       android:name="cn.sharesdk.sina.weibo.SinaActivity"
-      android:theme="@android:style/Theme.Translucent.NoTitleBar">
+      android:theme="@android:style/Theme.Translucent.NoTitleBar"
+      >
       <intent-filter>
-        <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
-        <category android:name="android.intent.category.DEFAULT" />
+        <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY"/>
+        <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
     </activity>
-    <activity android:name=".view.InfoPopupWindow"
+    <activity
+      android:name=".view.InfoPopupWindow"
       android:launchMode="singleInstance"
       android:screenOrientation="portrait"
-      android:theme="@style/InfoDialogStyle"/>
+      android:theme="@style/InfoDialogStyle"
+      />
+    <activity
+      android:name=".ListenBlessActivity"
+      android:screenOrientation="portrait"
+      />
   </application>
 </manifest>

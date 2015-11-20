@@ -5,28 +5,6 @@
   android:layout_height="match_parent"
   android:orientation="vertical"
   >
-  <!--<RelativeLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="?android:attr/actionBarSize"-->
-    <!-->-->
-    <!--<ImageView-->
-      <!--android:id="@+id/product_detail_back"-->
-      <!--android:layout_width="wrap_content"-->
-      <!--android:layout_height="wrap_content"-->
-      <!--android:layout_centerVertical="true"-->
-      <!--android:layout_marginLeft="15dp"-->
-      <!--android:src="@drawable/ic_menu_black_24dp"-->
-      <!--/>-->
-    <!--<ImageView-->
-      <!--android:id="@+id/product_detail_voice"-->
-      <!--android:layout_width="wrap_content"-->
-      <!--android:layout_height="wrap_content"-->
-      <!--android:layout_alignParentRight="true"-->
-      <!--android:layout_centerVertical="true"-->
-      <!--android:layout_marginRight="15dp"-->
-      <!--android:src="@drawable/ic_volume_up_black_24dp"-->
-      <!--/>-->
-  <!--</RelativeLayout>-->
   <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -45,10 +23,8 @@
       android:layout_centerHorizontal="true"
       android:layout_marginTop="50dp"
       android:paddingTop="5dp"
-      android:textSize="20sp"
       android:text="beyondboy"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      style="@style/text_style8"
       />
     <TextView
       android:id="@+id/adverse_serialnumber"
@@ -56,22 +32,13 @@
       android:layout_marginTop="10dp"
       android:layout_centerHorizontal="true"
       android:paddingTop="5dp"
-      android:textSize="20sp"
       android:text="12345678898"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      style="@style/text_style8"
       />
    <Button
      android:id="@+id/getcashbn"
-     android:layout_width="match_parent"
-     android:layout_height="wrap_content"
-     android:padding="10dp"
-     android:gravity="center"
-     android:textSize="25sp"
-     android:textColor="@android:color/white"
-     android:background="@android:color/black"
-     android:layout_alignParentBottom="true"
      android:text="领取返现"
+     style="@style/button_style1"
      />
   </RelativeLayout>
 </LinearLayout>

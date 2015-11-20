@@ -19,6 +19,7 @@ import java.lang.reflect.Field;
  * Time: 13:34
  * 图片压缩和缩放工具类
  */
+@SuppressWarnings("ALL")
 public class ImageUtils
 {
     private static final String TAG = ImageSize.class.getName();
@@ -88,7 +89,6 @@ public class ImageUtils
      * 计算图片压缩比例
      * @param srcSize 原图片尺寸
      * @param targetSize    目标尺寸
-     * @return
      */
     public static int calculateInSampleSize(ImageSize srcSize, ImageSize targetSize)
     {
@@ -119,7 +119,7 @@ public class ImageUtils
         final int srcHeight = srcSize.height;
         final int targetWidth = targetSize.width;
         final int targetHeight = targetSize.height;
-        int scale = 1;
+        int scale;
         if (imageView == null)
         {
             scale = Math.max(srcWidth / targetWidth, srcHeight / targetHeight); // max
@@ -167,7 +167,6 @@ public class ImageUtils
     /**
      * 根据view获得期望的高度
      * @param view 图片组件
-     * @return
      */
     private static int getExpectHeight(View view)
     {
@@ -248,7 +247,6 @@ public class ImageUtils
      * 通过反射获取imageview的某个属性值
      * @param object 对象
      * @param fieldName 变量属性
-     * @return
      */
     private static int getImageViewFieldValue(Object object, String fieldName)
     {
@@ -263,7 +261,7 @@ public class ImageUtils
                 value = fieldValue;
             }
         }
-        catch (Exception e)
+        catch (Exception ignored)
         {
         }
         return value;
@@ -273,7 +271,7 @@ public class ImageUtils
     public static byte[] readStream(InputStream inStream) throws Exception
     {
         byte[] buffer = new byte[1024];
-        int len = -1;
+        int len;
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         while ((len = inStream.read(buffer)) != -1)
         {

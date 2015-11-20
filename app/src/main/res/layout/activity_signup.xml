@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:background="@color/white"
@@ -18,12 +19,14 @@
       android:paddingLeft="5dp"
       android:paddingRight="5dp"
       android:src="@drawable/ic_navigate_black_24dp"
+      android:contentDescription="@null"
+      tools:ignore="RtlHardcoded"
       />
     <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textSize="30sp"
-      android:text="注册"
+      android:text="@string/register"
       android:textColor="@color/black"
       android:layout_centerInParent="true"
       />
@@ -31,41 +34,35 @@
   <ImageView
     android:layout_width="150dp"
     android:layout_height="150dp"
-    android:layout_centerInParent="true"
     android:layout_gravity="center_horizontal"
     android:layout_marginTop="35dp"
     android:src="@drawable/iconx"
+    android:contentDescription="@null"
     />
   <com.scau.beyondboy.idgoods.view.ClearEditText
     android:id="@+id/et_name"
-    android:layout_width="300dp"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:singleLine="true"
     android:layout_marginTop="35dp"
     android:drawableLeft="@drawable/loginuserx"
-    android:hint="请输入用户名"
+    android:hint="@string/name_hint"
     android:inputType="textVisiblePassword"
+    tools:ignore="RtlHardcoded"
+    style="@style/edittext_style1"
     />
   <com.scau.beyondboy.idgoods.view.ClearEditText
     android:id="@+id/et_password"
-    android:layout_width="300dp"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
     android:drawableLeft="@drawable/loginpasswordx"
-    android:hint="请输入密码"
-    android:singleLine="true"
+    android:hint="@string/input_password_hint"
     android:inputType="textPassword"
+    tools:ignore="RtlHardcoded"
+    style="@style/edittext_style1"
     />
   <com.scau.beyondboy.idgoods.view.ClearEditText
     android:id="@+id/et_passworde2"
-    android:layout_width="300dp"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
     android:drawableLeft="@drawable/loginpasswordx"
-    android:singleLine="true"
-    android:hint="请再次输入密码"
+    android:hint="@string/again_input_password_hint"
     android:inputType="textPassword"
+    tools:ignore="RtlHardcoded"
+    style="@style/edittext_style1"
     />
   <Button
     android:id="@+id/btn_signup"
@@ -74,6 +71,6 @@
     android:layout_gravity="center"
     android:layout_marginTop="40dp"
     android:background="@drawable/button_bound"
-    android:text="注册"
+    android:text="@string/register"
     />
 </LinearLayout>

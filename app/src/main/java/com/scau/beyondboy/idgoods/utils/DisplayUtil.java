@@ -9,6 +9,7 @@ import android.content.Context;
  * Time: 21:29
  * dp,sp,px转换工具类
  */
+@SuppressWarnings("ALL")
 public class DisplayUtil
 {
     /**

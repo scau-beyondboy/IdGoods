@@ -7,6 +7,7 @@ package com.scau.beyondboy.idgoods.model;
  * Time: 01:03
  * 用户详情界面
  */
+@SuppressWarnings("ALL")
 public class ProductInfo
 {
     private String advertisementName;

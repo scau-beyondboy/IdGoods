@@ -1,78 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:orientation="vertical"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   >
-  <RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
     <ImageView
       android:id="@+id/header_image"
       android:layout_marginTop="20dp"
       android:layout_centerHorizontal="true"
-      android:layout_width="70dp"
-      android:layout_height="70dp"
+      android:layout_width="120dp"
+      android:layout_height="100dp"
       android:scaleType="fitXY"
-      android:src="@drawable/header_image"
+      android:src="@drawable/iconx"
+      android:contentDescription="@null"
       />
     <TextView
       android:id="@+id/product_name"
       android:layout_below="@id/header_image"
-      android:layout_centerHorizontal="true"
-      android:layout_marginTop="50dp"
-      android:paddingTop="5dp"
-      android:textSize="20sp"
-      android:text="beyondboy"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      tools:text="测试"
+      style="@style/text_style2"
       />
     <TextView
       android:id="@+id/adverse_serialnumber"
       android:layout_below="@id/product_name"
+      tools:text="测试"
       android:layout_marginTop="10dp"
-      android:layout_centerHorizontal="true"
-      android:paddingTop="5dp"
-      android:textSize="20sp"
-      android:text="12345678898"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      style="@style/text_style2"
       />
     <TextView
       android:id="@+id/discount"
+      tools:text="测试"
       android:layout_below="@id/adverse_serialnumber"
       android:layout_marginTop="10dp"
-      android:layout_centerHorizontal="true"
-      android:paddingTop="5dp"
-      android:textSize="20sp"
-      android:text="优惠90%"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      style="@style/text_style2"
       />
     <TextView
       android:layout_below="@id/discount"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="80dp"
-      android:layout_centerHorizontal="true"
+      style="@style/text_style2"
       android:gravity="center_horizontal"
-      android:text="登记成功\n敬请等待返现"
+      android:layout_marginTop="80dp"
+      android:text="@string/finish_register"
       android:textColor="@android:color/black"
-      android:textSize="20sp"
       />
     <Button
       android:id="@+id/finishbn"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:padding="10dp"
-      android:gravity="center"
-      android:textSize="25sp"
-      android:textColor="@android:color/white"
-      android:background="@android:color/black"
-      android:layout_alignParentBottom="true"
-      android:text="完成"
+      android:text="@string/finish"
+      style="@style/button_style1"
       />
   </RelativeLayout>
-</LinearLayout>

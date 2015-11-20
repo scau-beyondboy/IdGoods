@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
+  xmlns:tools="http://schemas.android.com/tools"
   android:alpha="0.6"
   android:background="@color/grey"
   android:orientation="vertical"
@@ -12,43 +13,21 @@
     >
     <TextView
       android:id="@+id/textView"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_centerInParent="true"
-      android:text="修改邮箱"
-      android:textSize="25dp"
+      android:text="@string/modify_email"
+      style="@style/text_style4"
       />
     <ImageView
       android:id="@+id/change_back"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentLeft="true"
-      android:layout_marginLeft="15dp"
-      android:paddingLeft="5dp"
-      android:paddingRight="5dp"
-      android:layout_centerVertical="true"
-      android:background="@drawable/buttonbackselector"
       android:src="@drawable/ic_navigate_black_24dp"
+      style="@style/image_style1"
+      android:contentDescription="@null"
       />
-    <Button
-      android:id="@+id/save"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentRight="true"
-      android:background="@drawable/buttonselector"
-      android:text="保存"
-      android:textSize="20dp"
-      />
+    <include layout="@layout/save_button"/>
   </RelativeLayout>
   <com.scau.beyondboy.idgoods.view.ClearEditText
     android:id="@+id/email"
-    android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:layout_marginTop="40dp"
-    android:background="@color/white"
-    android:singleLine="true"
     android:inputType="textEmailAddress"
-    android:text="123456789@qq.com"
-    android:textSize="20dp"
+    tools:text="123456789@qq.com"
+    style="@style/textv_style5"
     />
 </LinearLayout>

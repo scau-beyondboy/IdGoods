@@ -2,6 +2,7 @@ package com.scau.beyondboy.idgoods;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -28,7 +29,7 @@ import butterknife.OnClick;
  * Time: 20:32
  * 自定义二维扫描框
  */
-public class CustomScannerActivity extends BaseActivity implements CompoundBarcodeView.TorchListener
+public class CustomScannerActivity extends AppCompatActivity implements CompoundBarcodeView.TorchListener
 {
     private CompoundBarcodeView barcodeScannerView;
     private Button switchFlashlightButton;
@@ -49,7 +50,7 @@ public class CustomScannerActivity extends BaseActivity implements CompoundBarco
                 }
                 alreadyScan=true;
                 String serialNumberValue = result.getText();
-                ShareUtils.putSerialNumberValue(CustomScannerActivity.this, serialNumberValue);
+                ShareUtils.putSerialNumberValue(serialNumberValue);
                 FinshBarCodeHandler.init(serialNumberValue,CustomScannerActivity.this,1);
                 FinshBarCodeHandler.finishScanHandler();
             }

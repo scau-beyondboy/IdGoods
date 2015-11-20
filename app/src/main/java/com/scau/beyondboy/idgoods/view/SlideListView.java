@@ -55,10 +55,6 @@ public class SlideListView extends ListView
      /**速度追踪对象*/
     private VelocityTracker velocityTracker;
     /**
-     * 是否响应滑动，默认为不响应
-     */
-    private boolean isSlide = false;
-    /**
      * 认为是用户滑动的最小距离
      */
     private int mTouchSlop;
@@ -122,14 +118,13 @@ public class SlideListView extends ListView
                 Log.i(TAG,"dispatch:move");
                 if (downX-event.getX()>mTouchSlop && Math.abs(event.getY() - downY) < mTouchSlop)
                 {
-                    isSlide = true;
                     performMove(event);
                 }
                 break;
             }
             case MotionEvent.ACTION_UP:
                 //按钮显示时,且点击删除按钮那一项时，使其恢复原位置
-                if(isDeleteShown==true&&scroller.isFinished()&&clickPosition==slidePosition)
+                if(isDeleteShown &&scroller.isFinished()&&clickPosition==slidePosition)
                 {
                     itemView.scrollTo(0, 0);
                     invalidate();
@@ -150,7 +145,6 @@ public class SlideListView extends ListView
                 }
                 Log.i(TAG,"dispatch:up");
                 // 手指离开的时候就不响应左滚动
-                isSlide = false;
                 recycleVelocityTracker();
                 break;
         }
@@ -258,8 +252,7 @@ public class SlideListView extends ListView
     private int getScrollVelocity()
     {
         velocityTracker.computeCurrentVelocity(1000);
-        int velocity = (int) velocityTracker.getXVelocity();
-        return velocity;
+        return (int) velocityTracker.getXVelocity();
     }
 
     /**判断滑动是否结束*/

@@ -149,7 +149,7 @@ public class ListenBlessPopupWindow extends AppCompatActivity
             player.setDataSource(mPostCardVoice.toString());
             player.prepare();
             totalTime=player.getDuration()/1000;
-            mDate.setText(TimeUtils.converTommss(player.getDuration() / 1000));
+            mDate.setText(TimeUtils.converTommss(totalTime));
             mSeekbar.setMax(totalTime);
             state.set(0);
             player.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
@@ -180,7 +180,7 @@ public class ListenBlessPopupWindow extends AppCompatActivity
                     {
                         try
                         {
-                            if(msg.what==011&&state.get()==1&&player!=null)
+                            if(msg.what== 9 &&state.get()==1&&player!=null)
                             {
                                 mSeekbar.setProgress(player.getCurrentPosition()/1000);
                             }
@@ -203,7 +203,7 @@ public class ListenBlessPopupWindow extends AppCompatActivity
                         try
                         {
                             Thread.sleep(1000);
-                            mHandler.sendEmptyMessage(011);
+                            mHandler.sendEmptyMessage(9);
                         } catch (Exception e)
                         {
                             e.printStackTrace();

@@ -12,8 +12,8 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.scau.beyondboy.idgoods.MyApplication;
 import com.scau.beyondboy.idgoods.R;
+import com.scau.beyondboy.idgoods.manager.ThreadManager;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,6 +31,7 @@ import java.util.concurrent.ExecutorService;
  * 上拉取图片，并缓存到SD卡和内存上
  * 内存缓存机采用LRU机制策略
  */
+@SuppressWarnings("ALL")
 public class LoadImageUtils
 {
     private static final String TAG =LoadImageUtils.class.getName() ;
@@ -106,7 +107,7 @@ public class LoadImageUtils
     public void loadImage(final ImageView ImageView,final  String ImageUrl,Context context)
     {
         //建立线程缓存池，最大线程是五个，并且线程空闲状态超过60s将会自动删除其线程
-        ExecutorService mExecutorService= MyApplication.getInstance().sThreadManager.createThreadPool();
+        ExecutorService mExecutorService= ThreadManager.createThreadPool();
         Log.i(TAG,"图片地址： "+ImageUrl);
         if(mImageHandle!=null)
             mImageHandle.start(ImageView);

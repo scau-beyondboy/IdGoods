@@ -47,6 +47,7 @@ import java.util.concurrent.TimeUnit;
  * 网络工具类
  * 说明：大部分代码来自https://github.com/hongyangAndroid/okhttp-utils，其使用文档也在其此处链接中
  */
+@SuppressWarnings("ALL")
 public class OkHttpNetWorkUtil
 {
     private static final String TAG = OkHttpNetWorkUtil.class.getName();

@@ -13,6 +13,7 @@ import java.util.Set;
  * 存储当前时间的所有产品
  * 一对多关联
  */
+@SuppressWarnings("ALL")
 public class TimeProductBean extends DataSupport
 {
     private Set<ProductBean> beanList;

@@ -9,6 +9,6 @@
   <color name="black">#000</color>
   <color name="dialogbg">#0b000000</color>
   <color name="popupwindow">#1f000000</color>
-  <color name="testbg">#ff424242</color>
+  <color name="menubg">#ff424242</color>
   <drawable name="popupwindow">#1f000000</drawable>
 </resources>

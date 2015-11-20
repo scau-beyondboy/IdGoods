@@ -10,6 +10,7 @@ import android.os.Parcelable;
  * Time: 01:06
  * 存储音频信息
  */
+@SuppressWarnings("ALL")
 public class MediaBean implements Parcelable
 {
     private short mChannelInMono;

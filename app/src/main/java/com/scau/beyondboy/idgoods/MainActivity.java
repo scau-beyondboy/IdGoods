@@ -21,7 +21,6 @@ import com.scau.beyondboy.idgoods.fragment.FragmentGetCash;
 import com.scau.beyondboy.idgoods.fragment.FragmentHome;
 import com.scau.beyondboy.idgoods.fragment.FragmentLogin;
 import com.scau.beyondboy.idgoods.fragment.FragmentModifyPassword;
-import com.scau.beyondboy.idgoods.fragment.FragmentPlay;
 import com.scau.beyondboy.idgoods.fragment.FragmentProduct;
 import com.scau.beyondboy.idgoods.manager.ThreadManager;
 import com.scau.beyondboy.idgoods.model.UserBean;
@@ -44,10 +43,6 @@ public class MainActivity extends AppCompatActivity
     TextView titleContent;
     @Bind(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
-//    @Bind(R.id.menu_toggle)
-//    ImageView toggleImageView;
-//    @Bind(R.id.menu_search)
-//    public SearchView mSearchView;
     @Bind(R.id.changesetting)
     TextView changeSetting;
     private FragmentManager mFragmentManager;
@@ -112,7 +107,7 @@ public class MainActivity extends AppCompatActivity
                 if (ShareUtils.getAccount() != null)
                 {
                     List<UserBean> userBeans = DataSupport.where("account=?", ShareUtils.getAccount()).find(UserBean.class);
-                    if (userBeans.size() != 0)
+                    if (userBeans!=null&&userBeans.size() != 0)
                     {
                         mUserBean = userBeans.get(0);
                         userName.setText(mUserBean.getNickname());
@@ -126,12 +121,6 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
-    }
-
-    @Override
-    public void onAttachFragment(Fragment fragment)
-    {
-        super.onAttachFragment(fragment);
     }
 
     @OnClick(R.id.menu_toggle)
@@ -155,7 +144,7 @@ public class MainActivity extends AppCompatActivity
                 changeFragment(new FragmentHome(),true,"home");
                 break;
             case R.id.myproduct:
-                if(ShareUtils.getAccount(this)==null&&ShareUtils.getPassword(this)==null)
+                if(ShareUtils.getAccount()==null&&ShareUtils.getPassword()==null)
                 {
                     ToaskUtils.displayToast("请登录你的账号");
                 }
@@ -188,7 +177,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 break;
             case R.id.header_image:
-                if(ShareUtils.getAccount(this)==null&&ShareUtils.getPassword(this)==null)
+                if(ShareUtils.getAccount()==null&&ShareUtils.getPassword()==null)
                 {
                     ToaskUtils.displayToast("请登录你的账号");
                 }
@@ -198,7 +187,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 break;
             case R.id.mycollect:
-                if(ShareUtils.getAccount(this)==null&&ShareUtils.getPassword(this)==null)
+                if(ShareUtils.getAccount()==null&&ShareUtils.getPassword()==null)
                 {
                     ToaskUtils.displayToast("请登录你的账号");
                 }
@@ -229,17 +218,11 @@ public class MainActivity extends AppCompatActivity
             fragmentGetCash.setArguments(intent.getExtras());
             changeFragment(fragmentGetCash,true,"getcash");
         }
-        else if(intent.getBooleanExtra(Consts.FRAGMENT_PLAY,false))
+       /* else if(intent.getBooleanExtra(Consts.FRAGMENT_PLAY,false))
         {
             FragmentPlay fragmentPlay=new FragmentPlay();
             fragmentPlay.setArguments(intent.getExtras());
             changeFragment(fragmentPlay,true,"play");
-        }
-        /*else if(intent.getBooleanExtra(Consts.FRAGMENT_LISTEN,false))
-        {
-           *//* ListenBlessActivity fragmentListen=new ListenBlessActivity();
-            fragmentListen.setArguments(intent.getExtras());
-            changeFragment(fragmentListen, true);*//*
         }*/
     }
 
@@ -251,10 +234,6 @@ public class MainActivity extends AppCompatActivity
     //切换不同的fragment
     public void changeFragment(Fragment fragment,boolean isAddToStack,String tag)
     {
-       /* if(mFragmentManager.findFragmentByTag(tag)!=null)
-        {
-            return;
-        }*/
         //开启事务
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
         transaction.replace(R.id.content_frame, fragment,tag);
@@ -274,10 +253,5 @@ public class MainActivity extends AppCompatActivity
     public void setNickName(String nickName)
     {
         userName.setText(nickName);
-    }
-    @Override
-    protected void onDestroy()
-    {
-        super.onDestroy();
     }
 }

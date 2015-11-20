@@ -10,6 +10,7 @@ import android.os.Parcelable;
  * Time: 10:59
  * 扫描信息实体对象
  */
+@SuppressWarnings("ALL")
 public class ScanCodeBean implements Parcelable
 {
     private int type;

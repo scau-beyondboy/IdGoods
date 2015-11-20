@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
  * 字符工具类
  * 说明：代码来自网上的博客
  */
+@SuppressWarnings("ALL")
 public class StringUtils
 {
     private final static Pattern emailer = Pattern

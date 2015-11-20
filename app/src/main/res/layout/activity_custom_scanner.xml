@@ -1,34 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:zxing_view="http://schemas.android.com/apk/res-auto"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      >
+  xmlns:tools="http://schemas.android.com/tools"
+  xmlns:zxing_view="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  >
   <com.journeyapps.barcodescanner.CompoundBarcodeView
     android:id="@+id/zxing_barcode_scanner"
-    android:background="@android:color/black"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    zxing_view:zxing_scanner_layout="@layout/custom_barcode_scanner">
+    android:background="@android:color/black"
+    zxing_view:zxing_scanner_layout="@layout/custom_barcode_scanner"
+    >
   </com.journeyapps.barcodescanner.CompoundBarcodeView>
   <Button
-    android:background="@android:color/transparent"
     android:id="@+id/switch_flashlight"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="@string/turn_on_flashlight"
-    android:textColor="@android:color/white"
     android:layout_alignParentLeft="true"
-    android:layout_margin="20dp"
     android:layout_centerHorizontal="true"
-    android:onClick="switchFlashlight"/>
-    <Button
-      android:id="@+id/scan_barcode_cancel"
-      android:layout_alignParentRight="true"
-      android:textColor="@android:color/white"
-      android:layout_margin="20dp"
-      android:background="@android:color/transparent"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="取消"/>
-   </RelativeLayout>
+    android:onClick="switchFlashlight"
+    android:text="@string/turn_on_flashlight"
+    tools:ignore="RtlHardcoded"
+    style="@style/button_style3"
+    />
+  <Button
+    android:id="@+id/scan_barcode_cancel"
+    android:layout_alignParentRight="true"
+    android:text="@string/cancle"
+    tools:ignore="RelativeOverlap,RtlHardcoded"
+    style="@style/button_style3"
+    />
+</RelativeLayout>

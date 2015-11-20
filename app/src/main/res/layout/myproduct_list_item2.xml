@@ -24,13 +24,13 @@
       android:id="@+id/product_name"
       android:paddingTop="5dp"
       android:text="beyondboy"
-      style="@style/text_style1"
+      style="@style/text_style3"
       />
     <TextView
       android:id="@+id/adverse_serialnumber"
       android:layout_toRightOf="@id/header_image"
       android:layout_below="@id/product_name"
-      style="@style/text_style1"
+      style="@style/text_style3"
       android:layout_marginTop="25dp"
       android:text="12345678898"
       />

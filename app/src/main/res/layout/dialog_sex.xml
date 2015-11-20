@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:orientation="vertical"
@@ -9,23 +10,23 @@
   <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="?android:attr/actionBarSize"
+    android:background="@drawable/button_bound"
     >
     <TextView
       android:id="@+id/cancel"
       android:layout_alignParentBottom="true"
-      android:textSize="20sp"
-      android:text="取消"
+      android:text="@string/cancle"
       android:background="@drawable/button_bound"
       android:padding="5dp"
       android:layout_marginLeft="10dp"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      style="@style/text_style8"
+      tools:ignore="RtlHardcoded"
       />
     <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textSize="25sp"
-      android:text="请选择性别"
+      android:text="@string/choose_sex"
       android:layout_centerHorizontal="true"
       />
     <TextView
@@ -33,12 +34,11 @@
       android:layout_alignParentBottom="true"
       android:layout_alignParentRight="true"
       android:layout_marginRight="10dp"
-      android:textSize="20sp"
       android:background="@drawable/button_bound"
       android:padding="5dp"
-      android:text="确定"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:text="@string/certain"
+      style="@style/text_style8"
+      tools:ignore="RtlHardcoded"
       />
   </RelativeLayout>
   <RadioGroup
@@ -48,33 +48,21 @@
     >
     <RadioButton
       android:id="@+id/other"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:textSize="40sp"
       android:button="@null"
-      android:background="@drawable/dialog_sex_selector"
-      android:gravity="center"
-      android:text="其他"
+      android:text="@string/other"
+      style="@style/rediobutton_style1"
       />
     <RadioButton
       android:id="@+id/man"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:textSize="40sp"
       android:button="@null"
-      android:background="@drawable/dialog_sex_selector"
-      android:gravity="center"
-      android:text="男"
+      android:text="@string/man"
+      style="@style/rediobutton_style1"
       />
     <RadioButton
       android:id="@+id/female"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:textSize="40sp"
       android:button="@null"
-      android:background="@drawable/dialog_sex_selector"
-      android:gravity="center"
-      android:text="女"
+      android:text="@string/woman"
+      style="@style/rediobutton_style1"
       />
   </RadioGroup>
 </LinearLayout>

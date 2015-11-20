@@ -37,22 +37,18 @@
     />
   <TextView
     android:id="@+id/record_date"
-    android:textSize="20sp"
     android:textColor="@color/black"
     android:text="date"
     android:layout_gravity="center_horizontal"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    style="@style/text_style8"
     />
   <TextView
     android:id="@+id/current_date"
-    android:textSize="20sp"
     android:textColor="@color/black"
     android:layout_marginTop="15dp"
     android:text="date"
     android:layout_gravity="center_horizontal"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    style="@style/text_style8"
     />
   <RelativeLayout
     android:layout_width="match_parent"
@@ -72,12 +68,10 @@
       android:id="@+id/total_date"
       android:layout_below="@id/seekbar"
       android:layout_alignParentRight="true"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:textSize="20sp"
       android:layout_marginRight="30dp"
       android:text="05:88"
       android:layout_gravity="right"
+      style="@style/text_style8"
       />
     <Button
       android:id="@+id/play"
@@ -87,7 +81,7 @@
       android:layout_alignParentBottom="true"
       android:textSize="25sp"
       android:layout_marginBottom="70dp"
-      android:textColor="@drawable/textcolorselector"
+      android:textColor="@color/text_color_selector1"
       android:background="@drawable/bg_play_circle"
       android:text="播放录音"
       />
@@ -98,10 +92,10 @@
       android:textSize="25sp"
       android:layout_marginRight="20dp"
       android:layout_alignParentRight="true"
-      android:textColor="@drawable/textcolorselector"
+      android:textColor="@color/text_color_selector1"
       android:layout_alignParentBottom="true"
       android:layout_marginBottom="50dp"
-      android:background="@drawable/bg_special_disease_circle"
+      android:background="@drawable/bg_button_circle_style3"
       android:text="分享"
       />
     <Button
@@ -110,10 +104,10 @@
       android:layout_height="90dp"
       android:textSize="25sp"
       android:layout_marginLeft="20dp"
-      android:textColor="@drawable/textcolorselector"
+      android:textColor="@color/text_color_selector1"
       android:layout_alignParentBottom="true"
       android:layout_marginBottom="50dp"
-      android:background="@drawable/bg_special_disease_circle"
+      android:background="@drawable/bg_button_circle_style3"
       android:text="保存"
       />
   </RelativeLayout>

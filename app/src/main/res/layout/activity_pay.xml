@@ -24,7 +24,7 @@
           android:text="取消"
           android:textSize="20dp"
           android:layout_alignParentRight="true"
-          android:background="@drawable/buttonselector"/>
+          android:background="@drawable/button_color_selector1"/>
     </RelativeLayout>
 
     <TextView
@@ -50,7 +50,7 @@
         android:gravity="center_horizontal"
         android:layout_gravity="center_horizontal"
         android:textColor="@color/payway_textcolor"
-        android:background="@drawable/buttonblackselector"
+        android:background="@drawable/button_color_selector2"
          />
       <RadioButton
         android:id="@+id/wechatpay"
@@ -63,7 +63,7 @@
         android:button="@null"
         android:textSize="25dp"
         android:textColor="@color/payway_textcolor"
-        android:background="@drawable/buttonblackselector"
+        android:background="@drawable/button_color_selector2"
         />
   </RadioGroup>
   <RelativeLayout
@@ -97,16 +97,9 @@
       android:layout_gravity="center_horizontal"/>
     <Button
       android:id="@+id/nextstep"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
       android:clickable="true"
-      android:padding="10dp"
-      android:gravity="center"
-      android:textSize="25sp"
-      android:textColor="@android:color/white"
-      android:background="@android:color/black"
-      android:layout_alignParentBottom="true"
       android:text="下一步"
-    />
+      style="@style/button_style1"
+      />
   </RelativeLayout>
 </LinearLayout>

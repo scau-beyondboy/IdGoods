@@ -12,6 +12,7 @@ import org.litepal.crud.DataSupport;
  * Time: 08:48
  *  收藏列表详情信息
  */
+@SuppressWarnings("ALL")
 public class CollectInfo extends DataSupport implements Parcelable
 {
     private String name;

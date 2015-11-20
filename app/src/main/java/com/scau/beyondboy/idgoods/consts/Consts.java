@@ -44,8 +44,8 @@ public class Consts
     public static final String NICKNAME_KEY = "nickname";
     public static final String DATE="date";
     public static final String FINISHREGISTER = "finishregister";
-    public static final String MEDIA_BEAN = "MediaBean";
-    public static final String FRAGMENT_PLAY = "FragmentPlay";
+    //public static final String MEDIA_BEAN = "MediaBean";
+    //public static final String FRAGMENT_PLAY = "FragmentPlay";
     public static final String UPLOAD_TOKEN = HOST+"/ConfigController/qiniuUploadToken";
     public static final String SAVE_RADIO = HOST+"/GoodsController/saveRadio";
     public static final String RADIO_KEY = "radio";
@@ -58,7 +58,7 @@ public class Consts
     public static final String RECEIVEBLESS = "receivebless";
     public static final String FRAGMENT_COLLECT = "FragmentCollect";
     public static final String BLESSING_ACTIVITY = "BlessingActivity";
-    public static final String RECORD_POPUP = "RecordPopupWindow";
+    public static final String RECORD_POPUP = "RecordPlayPopupWindow";
     public static final String BLESS_ACTIVITY = "ListenBlessActivity";
     public static final String BLESS_POPUP = "ListenBlessPopupWindow";
 }

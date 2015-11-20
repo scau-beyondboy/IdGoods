@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.util.ArrayMap;
+import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -31,7 +32,7 @@ import butterknife.OnEditorAction;
  * Time: 10:16
  * 支付界面
  */
-public class PayActivity extends BaseActivity
+public class PayActivity extends AppCompatActivity
 {
     //private static final String TAG = PayActivity.class.getName();
     /**0代表支付宝，1代表微信*/

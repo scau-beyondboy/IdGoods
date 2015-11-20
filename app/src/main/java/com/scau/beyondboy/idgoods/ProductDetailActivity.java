@@ -3,6 +3,7 @@ package com.scau.beyondboy.idgoods;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.util.ArrayMap;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 
 import com.scau.beyondboy.idgoods.consts.Consts;
@@ -23,19 +24,11 @@ import butterknife.OnClick;
  * Time: 10:53
  * 产品详细介绍界面
  */
-public class ProductDetailActivity extends BaseActivity
+public class ProductDetailActivity extends AppCompatActivity
 {
     //private static final String TAG = ProductDetailActivity.class.getName();
     @Bind(R.id.header_image)
     ImageView headerImage;
-//    @Bind(R.id.product_name)
-//    TextView productName;
-//    @Bind(R.id.adverse_serialnumber)
-//    TextView adverseSerialNumber;
-//    @Bind(R.id.discount)
-//    TextView discount;
-//    @Bind(R.id.date)
-//    TextView date;
     private ProductBean mProductBean;
     private Intent mIntent;
 
@@ -67,13 +60,6 @@ public class ProductDetailActivity extends BaseActivity
                 bundle.putInt(Consts.GET_DIS_COUNT, result.getDiscount());
                 bundle.putString(Consts.DATE, result.getTime());
                 mIntent.putExtras(bundle);
-                /*mIntent.putExtra(Consts.NICKNAME_KEY, result.getName());
-                //adverseSerialNumber.setText(result.getSerialNumber());
-                mIntent.putExtra(Consts.SERIALNUMBERVALUEKEY, result.getSerialNumber());
-                //discount.setText(String.format("优惠%d元", result.getDiscount()));
-                mIntent.putExtra(Consts.GET_DIS_COUNT, result.getDiscount());
-                //date.setText(result.getTime());
-                mIntent.putExtra(Consts.DATE, result.getTime());*/
             }
         }, ProductInfo.class);
     }

@@ -15,9 +15,11 @@
       android:layout_height="wrap_content"
       android:layout_centerVertical="true"
       android:layout_marginLeft="15dp"
+      android:layout_marginStart="15dp"
       android:paddingLeft="5dp"
       android:paddingRight="5dp"
       android:src="@drawable/ic_navigate_black_24dp"
+      android:contentDescription="@null"
       />
   </RelativeLayout>
   <RelativeLayout
@@ -32,48 +34,5 @@
         android:layout_height="150dp"
         android:background="@drawable/iconx"
         />
-      <!--<TextView
-        android:id="@+id/product_name"
-        android:layout_below="@id/header_image"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:paddingTop="5dp"
-        android:textSize="20sp"
-        android:text="beyondboy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />
-      <TextView
-        android:id="@+id/adverse_serialnumber"
-        android:layout_below="@id/product_name"
-        android:layout_marginTop="10dp"
-        android:layout_centerHorizontal="true"
-        android:paddingTop="5dp"
-        android:textSize="20sp"
-        android:text="12345678898"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />
-      <TextView
-        android:id="@+id/discount"
-        android:layout_below="@id/adverse_serialnumber"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:paddingTop="5dp"
-        android:textSize="20sp"
-        android:text="优惠90元"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />
-      <TextView
-        android:id="@+id/date"
-        android:layout_below="@id/discount"
-        android:layout_centerHorizontal="true"
-        android:paddingTop="5dp"
-        android:textSize="20sp"
-        android:text="2015/03/03"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />-->
   </RelativeLayout>
 </LinearLayout>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <style name="relativelayout_style1">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:background">@drawable/button_color_selector1</item>
+    <item name="android:clickable">true</item>
+  </style>
+  <style name="slide_style">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">match_parent</item>
+    <item name="android:divider">?android:attr/listDivider</item>
+    <item name="android:listSelector">@android:color/transparent</item>
+    <item name="android:cacheColorHint">@android:color/transparent</item>
+    <item name="android:dividerHeight">2dp</item>
+  </style>
+</resources>

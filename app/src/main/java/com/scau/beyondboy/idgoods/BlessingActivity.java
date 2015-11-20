@@ -8,7 +8,7 @@ import android.widget.Button;
 
 import com.scau.beyondboy.idgoods.consts.Consts;
 import com.scau.beyondboy.idgoods.view.CircleProgressBar;
-import com.scau.beyondboy.idgoods.view.RecordPopupWindow;
+import com.scau.beyondboy.idgoods.view.RecordPlayPopupWindow;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -23,7 +23,7 @@ import butterknife.OnClick;
  */
 public class BlessingActivity extends AppCompatActivity
 {
-    @Bind(R.id.voice_blessing)
+    @Bind(R.id.record_play)
     Button voiceBlessing;
     @Bind(R.id.progressbar)
     public CircleProgressBar mProgressbar;
@@ -37,7 +37,7 @@ public class BlessingActivity extends AppCompatActivity
         MyApplication.sActivityMap.put(Consts.BLESSING_ACTIVITY, this);
     }
 
-    @OnClick({R.id.blessing_back,R.id.voice_blessing})
+    @OnClick({R.id.blessing_back,R.id.record_play})
     public void onClick(View view)
     {
         switch (view.getId())
@@ -47,9 +47,9 @@ public class BlessingActivity extends AppCompatActivity
                 MyApplication.sActivityMap.remove(Consts.RECORD_POPUP);
                 finish();
                 break;
-            case R.id.voice_blessing:
+            case R.id.record_play:
                 voiceBlessing.setVisibility(View.GONE);
-                startActivity(new Intent(this, RecordPopupWindow.class));
+                startActivity(new Intent(this, RecordPlayPopupWindow.class));
                 break;
         }
     }

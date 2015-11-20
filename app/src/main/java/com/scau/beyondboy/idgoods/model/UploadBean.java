@@ -7,6 +7,7 @@ package com.scau.beyondboy.idgoods.model;
  * Time: 16:01
  * 七牛token信息
  */
+@SuppressWarnings("ALL")
 public class UploadBean
 {
     private String token;

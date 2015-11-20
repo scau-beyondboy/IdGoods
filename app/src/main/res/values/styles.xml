@@ -1,16 +1,19 @@
 <resources>
   <!-- Base application theme. -->
-  <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+  <style name="AppTheme"
+    parent="Theme.AppCompat.Light.NoActionBar">
     <!-- Customize your theme here. -->
   </style>
 
-  <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+  <style name="AppCompatAlertDialogStyle"
+    parent="Theme.AppCompat.Light.Dialog.Alert">
     <item name="colorAccent">#5fa3d0</item>
     <item name="android:textColorPrimary">#000000</item>
     <item name="android:background">#FFFFFF</item>
   </style>
 
-  <style name="AnimBottom" parent="@android:style/Animation.Activity">
+  <style name="AnimBottom"
+    parent="@android:style/Animation.Activity">
     <item name="android:windowEnterAnimation">@anim/push_bottom_in</item>
     <item name="android:windowExitAnimation">@anim/push_buttom_out</item>
     <item name="android:activityOpenEnterAnimation">@anim/push_bottom_in</item>
@@ -19,7 +22,8 @@
     <item name="android:activityCloseExitAnimation">@anim/push_buttom_out</item>
   </style>
 
-  <style name="MyDialogStyleBottom" parent="Theme.AppCompat.NoActionBar">
+  <style name="MyDialogStyleBottom"
+    parent="Theme.AppCompat.NoActionBar">
     <item name="android:windowAnimationStyle">@style/AnimBottom</item>
     <item name="android:windowFrame">@null</item>
     <item name="android:background">@android:color/transparent</item>
@@ -38,23 +42,25 @@
     <!-- 模糊 -->
   </style>
 
-  <style name="InfoDialogStyle" parent="Theme.AppCompat.NoActionBar">
-    <item name="android:windowFrame">@null</item>
-   <item name="android:background">@android:color/transparent</item>
+  <style name="InfoDialogStyle"
+    parent="MyDialogStyleBottom">
+    <!--<item name="android:windowFrame">@null</item>-->
+    <!--<item name="android:background">@android:color/transparent</item>-->
     <!-- 边框 -->
     <!-- 是否浮现在activity之上 -->
-    <item name="android:windowIsTranslucent">true</item>
+    <!--<item name="android:windowIsTranslucent">true</item>-->
     <!-- 半透明 -->
-    <item name="android:windowNoTitle">true</item>
+    <!--<item name="android:windowNoTitle">true</item>-->
     <item name="android:windowBackground">@color/lightgrey</item>
     <item name="android:alpha">0.85</item>
     <!-- 无标题 -->
     <item name="android:layout_height">match_parent</item>
-    <item name="android:layout_width">match_parent</item>
+    <!--<item name="android:layout_width">match_parent</item>-->
     <!--<item name="android:backgroundDimEnabled">true</item>-->
   </style>
 
-  <style name="dialog" parent="Theme.AppCompat.Dialog">
+  <style name="dialog"
+    parent="Theme.AppCompat.Dialog">
     <item name="android:windowFrame">@null</item>
     <item name="android:background">@android:color/transparent</item>
     <!-- 边框 -->
@@ -68,12 +74,5 @@
     <!-- 无标题 -->
     <item name="android:layout_height">wrap_content</item>
     <item name="android:layout_width">match_parent</item>
-  </style>
-  <style name="text_style1">
-    <item name="android:layout_toRightOf">@id/header_image</item>
-    <item name="android:layout_marginLeft">30dp</item>
-    <item name="android:textSize">15sp</item>
-    <item name="android:layout_width">wrap_content</item>
-    <item name="android:layout_height">wrap_content</item>
   </style>
 </resources>

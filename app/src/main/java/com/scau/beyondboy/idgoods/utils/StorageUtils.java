@@ -15,6 +15,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.IOException;
 /**可以提供应用文件路径来创建缓存目录，或默认目录下创建缓存目录*/
+@SuppressWarnings("ALL")
 public  final class StorageUtils
 {
     private static final String EXTERNAL_STORAGE_PERMISSION = "android.permission.WRITE_EXTERNAL_STORAGE";

@@ -15,8 +15,9 @@ import java.util.List;
  */
 public class ParseJsonUtils
 {
-    private static final String TAG = ParseJsonUtils.class.getName();
+    //private static final String TAG = ParseJsonUtils.class.getName();
 
+    @SuppressWarnings("UnnecessaryReturnStatement")
     public static <T> void parseDataJson(ResponseObject<T> responseObject,String successMessage)
   {
       Gson gson=new Gson();
@@ -25,7 +26,7 @@ public class ParseJsonUtils
       {
           ToaskUtils.displayToast(successMessage);
       }
-      else if(responseObject.getResult()==1&&successMessage==null)
+      else if(responseObject.getResult() == 1)
       {
           return;
       }

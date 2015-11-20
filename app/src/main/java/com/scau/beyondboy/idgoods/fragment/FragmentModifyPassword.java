@@ -75,7 +75,7 @@ public class FragmentModifyPassword extends Fragment
                 modifyPassword();
                 break;
             case R.id.logout:
-                ShareUtils.clearTempDate(mActivity);
+                ShareUtils.clearTempDate();
                 mActivity.changeFragment(new FragmentLogin(), true, "login");
                 mActivity.setChangeSetting("登陆");
                 mActivity.setUserName("未登录");
@@ -93,7 +93,7 @@ public class FragmentModifyPassword extends Fragment
             if (newPassword.getText().toString().equals(newPasswordSecond.getText().toString()))
             {
                 Map<String, String> params = new LinkedHashMap<>();
-                params.put(Consts.USERID_KEY, ShareUtils.getUserId(mActivity));
+                params.put(Consts.USERID_KEY, ShareUtils.getUserId());
                 params.put(Consts.ORIPASSWORD_KEY, originPassword.getText().toString());
                 params.put(Consts.NEWPASSWORD_KEY, newPassword.getText().toString());
                 NetWorkHandlerUtils.postAsynHandler(Consts.UPDATE_PASSWORD, params, "更改密码成功");

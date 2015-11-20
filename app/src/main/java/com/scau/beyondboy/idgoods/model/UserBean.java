@@ -12,6 +12,7 @@ import org.litepal.crud.DataSupport;
  * Time: 15:55
  * 可序列化的用户信息实体
  */
+@SuppressWarnings("ALL")
 public class UserBean extends DataSupport implements Parcelable
 {
     private int id;

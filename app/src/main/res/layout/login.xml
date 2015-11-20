@@ -1,52 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:orientation="vertical">
 
-  <!--<RelativeLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="250dp">-->
 
     <ImageView
       android:layout_width="150dp"
       android:layout_height="250dp"
       android:layout_gravity="center"
       android:background="@android:color/transparent"
-      android:src="@drawable/iconx" />
-  <!--</RelativeLayout>-->
+      android:src="@drawable/iconx"
+      android:contentDescription="@null"
+      />
 
   <com.scau.beyondboy.idgoods.view.ClearEditText
-    android:hint="请输入用户名"
+    android:hint="@string/phone_hint"
     android:id="@+id/et_name"
-    android:layout_width="300dp"
-    android:layout_height="wrap_content"
-    android:singleLine="true"
-    android:layout_gravity="center"
     android:drawableLeft="@drawable/loginuserx"
-    android:inputType="textVisiblePassword" />
+    android:inputType="textVisiblePassword"
+    style="@style/edittext_style1"
+    tools:ignore="RtlHardcoded"
+    />
 
   <com.scau.beyondboy.idgoods.view.ClearEditText
-    android:hint="请输入密码"
+    android:hint="@string/input_password_hint"
     android:id="@+id/et_password"
-    android:layout_width="300dp"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:singleLine="true"
     android:imeOptions="actionSend"
     android:drawableLeft="@drawable/loginpasswordx"
-    android:inputType="textPassword" />
+    android:inputType="textPassword"
+    style="@style/edittext_style1"
+    tools:ignore="RtlHardcoded"
+    />
 
   <com.scau.beyondboy.idgoods.view.ClearEditText
-    android:hint="邀请码/可不填"
+    android:hint="@string/input_invite_code"
     android:id="@+id/et_invitenumber"
-    android:layout_width="300dp"
-    android:singleLine="true"
     android:imeOptions="actionSend"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
     android:inputType="textVisiblePassword"
     android:drawableLeft="@drawable/logininvitedcodex"
+    style="@style/edittext_style1"
+    tools:ignore="RtlHardcoded"
     />
   <Button
     android:id="@+id/btn_signup"
@@ -54,15 +49,17 @@
     android:layout_height="wrap_content"
     android:layout_gravity="right"
     android:layout_marginTop="5dp"
-    android:text="注册"
+    android:text="@string/register"
     android:layout_marginRight="15dp"
-    android:background="@drawable/button_bound"/>
+    android:background="@drawable/button_bound"
+    tools:ignore="RtlHardcoded"
+    />
   <Button
     android:id="@+id/btn_login"
     android:layout_marginTop="40dp"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:text="登录"
+    android:text="@string/login"
     android:background="@drawable/button_bound"/>
 </LinearLayout>

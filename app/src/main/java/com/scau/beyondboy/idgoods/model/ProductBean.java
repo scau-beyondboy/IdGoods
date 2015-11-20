@@ -12,6 +12,7 @@ import org.litepal.crud.DataSupport;
  * Time: 00:49
  * 产品实体
  */
+@SuppressWarnings("ALL")
 public class ProductBean extends DataSupport implements Parcelable
 {
     private static final String TAG = ProductBean.class.getName();

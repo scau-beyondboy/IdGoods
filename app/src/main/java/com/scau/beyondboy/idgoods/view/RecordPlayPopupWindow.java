@@ -75,10 +75,10 @@ import butterknife.OnTouch;
  * Date: 2015-10-29
  * Time: 18:36
  */
-public class RecordPopupWindow extends AppCompatActivity
+public class RecordPlayPopupWindow extends AppCompatActivity
 {
 
-    private static final String TAG = RecordPopupWindow.class.getName();
+    private static final String TAG = RecordPlayPopupWindow.class.getName();
     @Bind(R.id.uploading)
     Button uploading;
     @Bind(R.id.delete)
@@ -153,8 +153,8 @@ public class RecordPopupWindow extends AppCompatActivity
     TextView date;
     @Bind(R.id.oscillograph)
     SurfaceView oscillograph;
-    @Bind(R.id.voice_blessing)
-    Button voiceBlessing;
+    @Bind(R.id.record_play)
+    Button RecordPlay;
     private short baseLine;
     private Paint mPaint;
     private DrawRunnable mDrawRunnable;
@@ -183,7 +183,7 @@ public class RecordPopupWindow extends AppCompatActivity
         lp.gravity = Gravity.BOTTOM;//设置对话框置顶显示
         super.onCreate(savedInstanceState);
         win.setAttributes(lp);
-        setContentView(R.layout.record_popupwindow);
+        setContentView(R.layout.play_record_popupwindow);
         //点击会销毁窗口，并返回首页的标记
         lp.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
         this.getWindow().setAttributes(lp);
@@ -213,7 +213,7 @@ public class RecordPopupWindow extends AppCompatActivity
 
             }
         });
-        MyApplication.sActivityMap.put("RecordPopupWindow", this);
+        MyApplication.sActivityMap.put("RecordPlayPopupWindow", this);
     }
 
     /**
@@ -366,7 +366,7 @@ public class RecordPopupWindow extends AppCompatActivity
                 });
             }
             Date date = new Date();
-            File file = StorageUtils.getIndividualCacheDirectory(RecordPopupWindow.this, "music");
+            File file = StorageUtils.getIndividualCacheDirectory(RecordPlayPopupWindow.this, "music");
             //文件目录
             filePath = String.format("%s/%d.wav", file.getAbsolutePath(), date.getTime());
             randomAccessWriter = new RandomAccessFile(filePath, "rw");
@@ -420,23 +420,23 @@ public class RecordPopupWindow extends AppCompatActivity
      */
     private static class MyHandler extends Handler
     {
-        private final WeakReference<RecordPopupWindow> mRecordActivityWeakReference;
+        private final WeakReference<RecordPlayPopupWindow> mRecordActivityWeakReference;
 
-        public MyHandler(RecordPopupWindow recordPopupWindow)
+        public MyHandler(RecordPlayPopupWindow recordPlayPopupWindow)
         {
-            mRecordActivityWeakReference = new WeakReference<>(recordPopupWindow);
+            mRecordActivityWeakReference = new WeakReference<>(recordPlayPopupWindow);
         }
 
         @Override
         public void handleMessage(Message msg)
         {
-            RecordPopupWindow recordPopupWindow = mRecordActivityWeakReference.get();
-            if (recordPopupWindow != null)
+            RecordPlayPopupWindow recordPlayPopupWindow = mRecordActivityWeakReference.get();
+            if (recordPlayPopupWindow != null)
             {
                 if (msg.what == 0x123)
                 {
-                    recordPopupWindow.countDate++;
-                    recordPopupWindow.date.setText(TimeUtils.converTommss(recordPopupWindow.countDate));
+                    recordPlayPopupWindow.countDate++;
+                    recordPlayPopupWindow.date.setText(TimeUtils.converTommss(recordPlayPopupWindow.countDate));
                 }
             }
         }
@@ -565,7 +565,7 @@ public class RecordPopupWindow extends AppCompatActivity
     /**
      * 绘画波形图
      */
-    @OnLongClick(R.id.voice_blessing)
+    @OnLongClick(R.id.record_play)
     public boolean recordStart()
     {
         if(state.get()!=0)
@@ -589,8 +589,8 @@ public class RecordPopupWindow extends AppCompatActivity
                         mHandler.obtainMessage(0x123).sendToTarget();
                     }
                 }, 0, 1000);
-                voiceBlessing.setSelected(true);
-                voiceBlessing.setText("松开停止");
+                RecordPlay.setSelected(true);
+                RecordPlay.setText("松开停止");
                 start();
             } catch (Exception e)
             {
@@ -601,7 +601,7 @@ public class RecordPopupWindow extends AppCompatActivity
         }
     }
 
-    @OnTouch(R.id.voice_blessing)
+    @OnTouch(R.id.record_play)
     public boolean record(MotionEvent event)
     {
         //录完音时
@@ -621,15 +621,15 @@ public class RecordPopupWindow extends AppCompatActivity
         return false;
     }
 
-    @OnClick(R.id.voice_blessing)
+    @OnClick(R.id.record_play)
     public void play()
     {
         if(state.get()==5)
         {
             state.set(6);
             mAudioTrack.pause();
-            voiceBlessing.setSelected(false);
-            voiceBlessing.setText("回放录音");
+            RecordPlay.setSelected(false);
+            RecordPlay.setText("回放录音");
         }
         else if(state.get()==4||state.get()==6||state.get()==7)
         {
@@ -654,19 +654,10 @@ public class RecordPopupWindow extends AppCompatActivity
                     ToaskUtils.displayToast("文件读入异常");
                 }
             }
-            voiceBlessing.setSelected(true);
-            voiceBlessing.setText("暂停");
+            RecordPlay.setSelected(true);
+            RecordPlay.setText("暂停");
             state.set(5);
             ThreadManager.addSingalExecutorTask(createPlayRuannble());
-            //ThreadManager.addSingalExecutorTask(createPlayRuannble());
-          //  state.set(5);
-           /* if(state.get()==6)
-            {
-                //防止多次阻塞
-                state.set(5);
-                mSemaphore.release();
-            }*/
-
         }
     }
     /**
@@ -700,8 +691,8 @@ public class RecordPopupWindow extends AppCompatActivity
                 mAudioTrack.setStereoVolume(1.0f,1.0f);
             }
         }
-        voiceBlessing.setText("回放录音");
-        voiceBlessing.setSelected(false);
+        RecordPlay.setText("回放录音");
+        RecordPlay.setSelected(false);
         audioFile = new File(filePath);
         seekbar.setMax(countDate);
         seekbar.setProgress(0);
@@ -720,22 +711,6 @@ public class RecordPopupWindow extends AppCompatActivity
                     int seconds=Math.round(mAudioTrack.getPlaybackHeadPosition() /mAudioTrack.getSampleRate( ));
                     seekbar.setProgress(seconds);
                     mAudioTrack.write(buffer, 0, readByte);
-                   /* //当正在播放，且按暂停时
-                    if(state.get()==6&&mAudioTrack.getPlayState()==AudioTrack.PLAYSTATE_PAUSED)
-                    {
-                        runOnUiThread(new Runnable()
-                        {
-                            @Override
-                            public void run()
-                            {
-                                voiceBlessing.setSelected(false);
-                                voiceBlessing.setText("回放录音");
-                            }
-                        });
-                        //阻塞当前线程
-                        //mSemaphore.acquire();
-                        return;
-                    }*/
                 }
                 //当正在播放，且按暂停时
                 if(state.get()==6&&mAudioTrack.getPlayState()==AudioTrack.PLAYSTATE_PAUSED)
@@ -745,8 +720,8 @@ public class RecordPopupWindow extends AppCompatActivity
                         @Override
                         public void run()
                         {
-                            voiceBlessing.setSelected(false);
-                            voiceBlessing.setText("回放录音");
+                            RecordPlay.setSelected(false);
+                            RecordPlay.setText("回放录音");
                         }
                     });
                     //阻塞当前线程
@@ -755,14 +730,14 @@ public class RecordPopupWindow extends AppCompatActivity
                 }
                 //播放完时候
                 seekbar.setProgress(countDate);
-                if(state.get()!=8)
+                if(state.get()!=8&&state.get()!=0)
                     runOnUiThread(new Runnable()
                     {
                         @Override
                         public void run()
                         {
-                            voiceBlessing.setSelected(false);
-                            voiceBlessing.setText("回放录音");
+                            RecordPlay.setSelected(false);
+                            RecordPlay.setText("回放录音");
                         }
                     });
                 mInputStream.close();
@@ -834,10 +809,19 @@ public class RecordPopupWindow extends AppCompatActivity
             public void run()
             {
                 prepareRecord();
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        RecordPlay.setSelected(false);
+                        RecordPlay.setText("长按说话");
+                    }
+                });
             }
         });
-        voiceBlessing.setSelected(false);
-        voiceBlessing.setText("长按说话");
+       // RecordPlay.setSelected(false);
+       // RecordPlay.setText("长按说话");
     }
 
     private void showDeleteDailog()
@@ -851,6 +835,7 @@ public class RecordPopupWindow extends AppCompatActivity
             //Grab the window of the dialog, and change the width
             WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
             Window window = mDialog.getWindow();
+            //noinspection deprecation
             window.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.zxing_transparent)));
             window.getDecorView().setPadding(0, 0, 0, 0);
             lp.copyFrom(window.getAttributes());

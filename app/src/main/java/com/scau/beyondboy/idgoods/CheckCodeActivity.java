@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.util.ArrayMap;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,7 +26,7 @@ import butterknife.OnClick;
  * Time: 14:02
  * 短信验证
  */
-public class CheckCodeActivity extends BaseActivity
+public class CheckCodeActivity extends AppCompatActivity
 {
     @Bind(R.id.btn_getCheckCode)
     Button checkCodeBn;

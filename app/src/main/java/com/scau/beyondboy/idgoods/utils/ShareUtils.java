@@ -24,7 +24,7 @@ public class ShareUtils
     public static final String NUMBER_VALUE = "serialNumberValue";
     public static final Context appContext= MyApplication.getContext();
 
-    public static  void putUserId(Context context,String userId)
+    /*public static  void putUserId(Context context,String userId)
     {
         appContext.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE).edit().putString(USER_ID, userId).apply();
     }
@@ -74,7 +74,7 @@ public class ShareUtils
     public static  void putSerialNumberValue(Context context,String serialNumberValue)
     {
         appContext.getSharedPreferences(IMPORTINFOFILE,Context.MODE_PRIVATE).edit().putString(NUMBER_VALUE, serialNumberValue).apply();
-    }
+    }*/
 
     /**====================================================================================================================================*/
     public static  void putUserId(String userId)
@@ -99,10 +99,10 @@ public class ShareUtils
     }
     public static void putUserInfo(UserBean userBean,String password)
     {
-        putUserId(appContext, userBean.getUserId());
-        putInviteCodeValue(appContext, userBean.getInviteCodeValue());
-        putAccount(appContext, userBean.getAccount());
-        putPassword(appContext, password);
+        putUserId(userBean.getUserId());
+        putInviteCodeValue(userBean.getInviteCodeValue());
+        putAccount(userBean.getAccount());
+        putPassword(password);
     }
     public static String getAccount()
     {

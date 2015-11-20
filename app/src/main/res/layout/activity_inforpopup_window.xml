@@ -10,11 +10,9 @@
     android:layout_centerHorizontal="true"
     android:layout_marginTop="150dp"
     android:paddingTop="5dp"
-    android:textSize="20sp"
     android:text="beyondboy"
     android:textColor="@color/black"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    style="@style/text_style8"
     />
   <TextView
     android:id="@+id/adverse_serialnumber"
@@ -22,11 +20,9 @@
     android:layout_marginTop="10dp"
     android:layout_centerHorizontal="true"
     android:paddingTop="5dp"
-    android:textSize="20sp"
     android:text="12345678898"
     android:textColor="@color/black"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    style="@style/text_style8"
     />
   <TextView
     android:id="@+id/discount"
@@ -35,10 +31,8 @@
     android:layout_marginTop="30dp"
     android:paddingTop="5dp"
     android:textColor="@color/black"
-    android:textSize="20sp"
     android:text="优惠90元"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    style="@style/text_style8"
     />
   <TextView
     android:id="@+id/date"
@@ -46,9 +40,7 @@
     android:layout_centerHorizontal="true"
     android:paddingTop="5dp"
     android:textColor="@color/black"
-    android:textSize="20sp"
     android:text="2015/03/03"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    style="@style/text_style8"
     />
 </RelativeLayout>

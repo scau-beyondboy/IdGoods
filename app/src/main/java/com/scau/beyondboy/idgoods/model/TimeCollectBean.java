@@ -12,6 +12,7 @@ import java.util.Set;
  * Time: 09:43
  * 收藏列表
  */
+@SuppressWarnings("ALL")
 public class TimeCollectBean extends DataSupport
 {
     Long currentDayStartTime;

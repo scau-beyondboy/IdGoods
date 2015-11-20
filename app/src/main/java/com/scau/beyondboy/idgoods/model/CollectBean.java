@@ -12,6 +12,7 @@ import org.litepal.crud.DataSupport;
  * Time: 08:41
  * 收藏信息列表
  */
+@SuppressWarnings("unused")
 public class CollectBean extends DataSupport implements Parcelable
 {
     private TimeCollectBean timeCollectBean;
@@ -140,8 +141,7 @@ public class CollectBean extends DataSupport implements Parcelable
 
         CollectBean that = (CollectBean) o;
 
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        return !(serialNumberValue != null ? !serialNumberValue.equals(that.serialNumberValue) : that.serialNumberValue != null);
+        return !(name != null ? !name.equals(that.name) : that.name != null) && !(serialNumberValue != null ? !serialNumberValue.equals(that.serialNumberValue) : that.serialNumberValue != null);
 
     }
 }

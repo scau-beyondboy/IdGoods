@@ -59,7 +59,6 @@ public class FragmentCollect extends Fragment
     public void onAttach(Context context)
     {
         super.onAttach(context);
-       // mMainActivity=(MainActivity)context;
         ThreadManager.scoolPoolSize=3;
     }
 
@@ -68,18 +67,10 @@ public class FragmentCollect extends Fragment
         View view=inflater.inflate(R.layout.mycollect,container,false);
         ButterKnife.bind(this, view);
         View empty=inflater.inflate(R.layout.list_item_empty_view,container,false);
-       // ((ViewGroup)mCollectListView.getParent()).addView(empty);
         mCollectListView.setEmptyView(empty);
-        //mMainActivity.mSearchView.setVisibility(View.VISIBLE);
         return view;
     }
 
-    @Override
-    public void onDetach()
-    {
-        super.onDetach();
-       // mMainActivity.mSearchView.setVisibility(View.GONE);
-    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState)

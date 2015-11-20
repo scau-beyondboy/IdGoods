@@ -15,15 +15,13 @@
   >
   <Button
     android:id="@+id/play"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
     android:layout_centerHorizontal="true"
     android:layout_marginBottom="50dp"
-    android:background="@drawable/bg_special_disease_circle"
+    android:background="@drawable/bg_button_circle_style3"
     android:text="播放录音"
-    android:textColor="@drawable/textcolorselector"
-    android:textSize="20sp"
+    android:textColor="@color/text_color_selector1"
+    style="@style/text_style8"
     />
   <Button
     android:id="@+id/share"
@@ -33,7 +31,7 @@
     android:layout_marginRight="20dp"
     android:layout_marginBottom="10dp"
     android:layout_alignParentRight="true"
-    android:textColor="@drawable/textcolorselector"
+    android:textColor="@color/text_color_selector1"
     android:layout_alignParentBottom="true"
     android:background="@drawable/bg_button_circle_style2"
     android:text="分享"
@@ -45,7 +43,7 @@
     android:textSize="15sp"
     android:layout_marginLeft="20dp"
     android:layout_marginBottom="10dp"
-    android:textColor="@drawable/textcolorselector"
+    android:textColor="@color/text_color_selector1"
     android:layout_alignParentBottom="true"
     android:background="@drawable/bg_button_circle_style2"
     android:text="保存"

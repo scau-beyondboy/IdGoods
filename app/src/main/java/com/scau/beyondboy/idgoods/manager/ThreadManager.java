@@ -1,5 +1,6 @@
 package com.scau.beyondboy.idgoods.manager;
 
+import android.support.annotation.NonNull;
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
@@ -66,6 +67,7 @@ public class ThreadManager
     }
 
     /**获得FutureTask,并根据对象地址保存其FutureTask*/
+    @SuppressWarnings("unused")
     public static <T> Future<T> getFutureTask(Callable<T> task)
     {
         sExecutorService=createThreadPool();
@@ -116,7 +118,7 @@ public class ThreadManager
         @Override
         public void uncaughtException(Thread thread, Throwable ex)
         {
-            Log.e(TAG, thread.currentThread().getName() + "线程run方法运行异常", ex);
+            Log.e(TAG, Thread.currentThread().getName() + "线程run方法运行异常", ex);
         }
     }
 
@@ -126,7 +128,7 @@ public class ThreadManager
     static class  HandlerThreadFactory implements ThreadFactory
     {
         @Override
-        public Thread newThread(Runnable r)
+        public Thread newThread(@NonNull Runnable r)
         {
             Thread t = new Thread(r);
             //设置线程处理器
