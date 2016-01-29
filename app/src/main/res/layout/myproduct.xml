@@ -7,5 +7,6 @@
 <com.scau.beyondboy.idgoods.view.SlideListView
   android:id="@+id/product_slidelistview"
   style="@style/slide_style"
+  android:background="@android:color/transparent"
   />
   </RelativeLayout>

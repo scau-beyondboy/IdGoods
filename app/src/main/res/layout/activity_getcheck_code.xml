@@ -29,8 +29,8 @@
   <com.scau.beyondboy.idgoods.view.ClearEditText
     android:id="@+id/et_phone"
     android:layout_above="@+id/btn_getCheckCode"
-    android:drawableLeft="@drawable/loginuserx"
-    android:drawableStart="@drawable/loginuserx"
+    android:drawableLeft="@drawable/phone"
+    android:drawableStart="@drawable/phone"
     android:hint="@string/phone_hint"
     android:inputType="phone"
     style="@style/text_style9"
@@ -38,8 +38,8 @@
   <com.scau.beyondboy.idgoods.view.ClearEditText
     android:id="@+id/et_checkcode"
     android:layout_below="@+id/btn_getCheckCode"
-    android:drawableLeft="@drawable/loginuserx"
-    android:drawableStart="@drawable/loginuserx"
+    android:drawableLeft="@drawable/checkcode"
+    android:drawableStart="@drawable/checkcode"
     android:hint="@string/checkcode_hint"
     android:inputType="number"
     style="@style/text_style9"

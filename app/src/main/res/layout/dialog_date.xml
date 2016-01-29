@@ -42,9 +42,11 @@
   </RelativeLayout>
   <DatePicker
     android:id="@+id/datePicker"
+    android:layout_marginTop="15dp"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
+    android:background="@android:color/transparent"
     android:calendarViewShown="false"
     />
 </LinearLayout>

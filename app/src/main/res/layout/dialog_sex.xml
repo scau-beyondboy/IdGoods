@@ -9,13 +9,13 @@
   >
   <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="?android:attr/actionBarSize"
-    android:background="@drawable/button_bound"
+    android:layout_height="80dp"
     >
     <TextView
       android:id="@+id/cancel"
       android:layout_alignParentBottom="true"
       android:text="@string/cancle"
+      android:layout_marginBottom="@dimen/x10"
       android:background="@drawable/button_bound"
       android:padding="5dp"
       android:layout_marginLeft="10dp"
@@ -32,6 +32,7 @@
     <TextView
       android:id="@+id/comfirm"
       android:layout_alignParentBottom="true"
+      android:layout_marginBottom="@dimen/x10"
       android:layout_alignParentRight="true"
       android:layout_marginRight="10dp"
       android:background="@drawable/button_bound"
@@ -42,7 +43,7 @@
       />
   </RelativeLayout>
   <RadioGroup
-    android:layout_marginTop="80dp"
+    android:layout_marginTop="10dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     >

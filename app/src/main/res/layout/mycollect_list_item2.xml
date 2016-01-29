@@ -5,7 +5,6 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:descendantFocusability="blocksDescendants"
-  android:background="@drawable/friendactivity_comment_detail_list2"
   >
   <RelativeLayout
     android:layout_marginTop="10dp"

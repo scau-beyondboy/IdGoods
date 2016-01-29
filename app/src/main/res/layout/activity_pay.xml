@@ -2,7 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white">
+   >
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
@@ -22,7 +22,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="取消"
-          android:textSize="20dp"
+          android:textSize="20sp"
           android:layout_alignParentRight="true"
           android:background="@drawable/button_color_selector1"/>
     </RelativeLayout>
@@ -33,7 +33,7 @@
       android:layout_height="wrap_content"
       android:text="请选择支付方式"
       android:layout_gravity="center_horizontal"
-      android:textSize="20dp"/>
+      android:textSize="20sp"/>
   <RadioGroup
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:text="支付宝"
-        android:textSize="25dp"
+        android:textSize="25sp"
         android:button="@null"
         android:gravity="center_horizontal"
         android:layout_gravity="center_horizontal"
@@ -61,7 +61,7 @@
         android:layout_gravity="center_horizontal"
         android:text="微信"
         android:button="@null"
-        android:textSize="25dp"
+        android:textSize="25sp"
         android:textColor="@color/payway_textcolor"
         android:background="@drawable/button_color_selector2"
         />
@@ -74,9 +74,10 @@
     <com.scau.beyondboy.idgoods.view.ClearEditText
       android:id="@+id/account1"
       android:layout_marginTop="50dp"
-      android:drawableLeft="@drawable/logininvitedcodex"
+      android:drawableLeft="@drawable/account"
       android:layout_centerHorizontal="true"
       android:hint="请输入收款账号"
+      android:drawablePadding="@dimen/x10"
       android:layout_width="300dp"
       android:inputType="textVisiblePassword"
       android:layout_height="wrap_content"
@@ -87,9 +88,10 @@
       android:layout_centerHorizontal="true"
       android:layout_below="@id/account1"
       android:layout_marginTop="10dp"
-      android:drawableLeft="@drawable/logininvitedcodex"
+      android:drawableLeft="@drawable/account"
       android:singleLine="true"
       android:hint="请再次输入收款账户"
+      android:drawablePadding="@dimen/x10"
       android:layout_width="300dp"
       android:layout_height="wrap_content"
       android:imeOptions="actionSend"

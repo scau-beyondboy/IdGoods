@@ -50,7 +50,7 @@
     />
   <com.scau.beyondboy.idgoods.view.ClearEditText
     android:id="@+id/et_password"
-    android:drawableLeft="@drawable/loginpasswordx"
+    android:drawableLeft="@drawable/locked"
     android:hint="@string/input_password_hint"
     android:inputType="textPassword"
     tools:ignore="RtlHardcoded"

@@ -4,7 +4,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="wrap_content"
   android:layout_height="wrap_content"
-  android:background="@drawable/ic_chevron_right_black_24dp"
+  android:background="@drawable/nav_cell_arrow"
   android:layout_alignParentRight="true"
   android:layout_centerVertical="true"
   android:layout_marginRight="30dp"

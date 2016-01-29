@@ -272,6 +272,7 @@ public class RecordPlayPopupWindow extends AppCompatActivity
                 try
                 {
                     audioRecorder.read(buffer, 0, buffer.length);
+                    Log.i(TAG,"这里抛异常");
                     randomAccessWriter.write(buffer, 0, buffer.length);
                     paylaodSize += buffer.length;
                     short[] temBuf = new short[buffer.length / (2 * RATEX)];
@@ -552,6 +553,7 @@ public class RecordPlayPopupWindow extends AppCompatActivity
                 randomAccessWriter.seek(40); // 写到Subchunk2Size区域
                 randomAccessWriter.writeInt(Integer.reverseBytes(paylaodSize));
                 randomAccessWriter.close();
+                randomAccessWriter=null;
             }
             state.set(3);
         } catch (IOException e)
@@ -706,12 +708,14 @@ public class RecordPlayPopupWindow extends AppCompatActivity
             try
             {
                 int readByte;
+                Log.i(TAG,"播放来了吗");
                 while (state.get()==5&&(readByte=mInputStream.read(buffer,0,buffer.length))>=0)
                 {
                     int seconds=Math.round(mAudioTrack.getPlaybackHeadPosition() /mAudioTrack.getSampleRate( ));
                     seekbar.setProgress(seconds);
                     mAudioTrack.write(buffer, 0, readByte);
                 }
+                Log.i(TAG,"播放");
                 //当正在播放，且按暂停时
                 if(state.get()==6&&mAudioTrack.getPlayState()==AudioTrack.PLAYSTATE_PAUSED)
                 {

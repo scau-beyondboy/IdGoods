@@ -31,22 +31,22 @@ import butterknife.OnClick;
  * Time: 20:15
  * 设置时间
  */
-public class FragmentDatePicker extends DialogFragment
+public class FragmentBirthday extends DialogFragment
 {
-    //private static final String TAG = FragmentDatePicker.class.getName();
-    private static FragmentDatePicker sDatePicker;
+    //private static final String TAG = FragmentBirthday.class.getName();
+    private static FragmentBirthday sDatePicker;
     private Date mDate;
     @Bind(R.id.datePicker)
     DatePicker datePicker;
     private PersonInfoActivity mActivity;
 
-    public static FragmentDatePicker newInstance(Date date)
+    public static FragmentBirthday newInstance(Date date)
     {
         Bundle args = new Bundle();
         args.putSerializable(Consts.DATE, date);
         if(sDatePicker==null)
         {
-            sDatePicker=new FragmentDatePicker();
+            sDatePicker=new FragmentBirthday();
         }
         sDatePicker.setArguments(args);
         return sDatePicker;

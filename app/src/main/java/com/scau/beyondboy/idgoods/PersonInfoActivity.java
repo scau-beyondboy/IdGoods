@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.scau.beyondboy.idgoods.consts.Consts;
-import com.scau.beyondboy.idgoods.fragment.FragmentDatePicker;
+import com.scau.beyondboy.idgoods.fragment.FragmentBirthday;
 import com.scau.beyondboy.idgoods.fragment.FragmentSex;
 import com.scau.beyondboy.idgoods.manager.ThreadManager;
 import com.scau.beyondboy.idgoods.model.ResponseObject;
@@ -155,7 +155,7 @@ public class PersonInfoActivity extends AppCompatActivity
                 startActivity(intent);
                 break;
             case R.id.birthday_layout:
-                FragmentDatePicker datePicker=FragmentDatePicker.newInstance(mDate);
+                FragmentBirthday datePicker= FragmentBirthday.newInstance(mDate);
                 datePicker.show(mManager, Consts.DATE);
                 break;
             case R.id.sex_layout:

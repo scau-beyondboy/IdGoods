@@ -1,9 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        release {
+            keyAlias 'beyondboy'
+            keyPassword KEY_PASSWORD
+            storeFile file('E:/AndroidProject/密匙/idgoods.jks')
+            storePassword KEYSTORE_PASSWORD
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion '23.0.0'
-
     defaultConfig {
         applicationId "com.scau.beyondboy.idgoods"
         minSdkVersion 15
@@ -11,15 +18,36 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        // dex突破65535的限制
+        multiDexEnabled true
     }
-
     buildTypes {
-        rel
-        ease {
-            minifyEnabled false
+        release {
+            // 不显示Log
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+            zipAlignEnabled true
+            // 这里是在 applicationId 中添加了一个后缀。所以『.』要加上
+            applicationIdSuffix ".release"
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release // 签名配置
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    def outputFile = output.outputFile
+                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                        // 输出apk名称为boohee_v1.0_2015-01-15_wandoujia.apk
+                        def fileName = "idgoods_release.apk"
+                        output.outputFile = new File(outputFile.parent, fileName)
+                    }
+                }
+            }
+
         }
     }
+    packagingOptions
+            {
+                exclude 'LICENSE.txt'
+            }
 }
 
 dependencies {
@@ -37,6 +65,12 @@ dependencies {
     androidTestCompile 'com.android.support.test:runner:0.4.1'
     androidTestCompile 'com.android.support.test:rules:0.4.1'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
+    androidTestCompile 'com.android.support.test.espresso:espresso-intents:2.2.1'
     compile project(':onekeyshare')
     androidTestCompile 'com.android.support:support-annotations:23.1.0'
+    androidTestCompile('com.android.support.test.espresso:espresso-contrib:2.0') {
+        exclude group: 'com.android.support', module: 'appcompat'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude module: 'recyclerview-v7'
+    }
 }

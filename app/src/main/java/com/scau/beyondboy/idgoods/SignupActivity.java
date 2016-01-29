@@ -68,7 +68,7 @@ public class SignupActivity extends AppCompatActivity
                         ThreadManager.addSingalExecutorTask(new Runnable()
                         {
                             @Override
-                            public void run()
+                            public void run() 
                             {
                                 //添加数据库中
                                 if(DataSupport.where("account=?", result.getAccount()).find(UserBean.class).size()==0)

@@ -30,8 +30,8 @@
 
   <style name="text_style4"
     parent="text_style8">
-    <item name="android:layout_width">wrap_content</item>
-    <item name="android:layout_height">wrap_content</item>
+    <!--<item name="android:layout_width">wrap_content</item>-->
+    <!--<item name="android:layout_height">wrap_content</item>-->
     <item name="android:layout_centerInParent">true</item>
     <item name="android:textSize">25sp</item>
   </style>
@@ -62,7 +62,7 @@
   </style>
 
   <style name="text_style8">
-    <item name="android:textSize">20sp</item>
+    <item name="android:textSize">17sp</item>
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
   </style>
@@ -70,7 +70,9 @@
   <style name="text_style9">
     <item name="android:layout_width">300dp</item>
     <item name="android:layout_height">wrap_content</item>
+    <item name="android:drawablePadding">@dimen/x15</item>
     <item name="android:layout_centerInParent">true</item>
     <item name="android:singleLine">true</item>
+    <item name="android:gravity">center_vertical</item>
   </style>
 </resources>

@@ -103,6 +103,7 @@
     </activity>
     <activity
       android:name=".ChangeNickNameActivity"
+      android:theme="@style/Theme.AppCompat.Light.NoActionBar"
       android:label="@string/title_activity_change_address"
       android:screenOrientation="portrait"
       >
@@ -115,6 +116,7 @@
     </activity>
     <activity
       android:name=".PersonInfoActivity"
+      android:theme="@style/Theme.AppCompat.Light.NoActionBar"
       android:label="@string/title_activity_selecte_pay"
       android:launchMode="singleTop"
       android:screenOrientation="portrait"

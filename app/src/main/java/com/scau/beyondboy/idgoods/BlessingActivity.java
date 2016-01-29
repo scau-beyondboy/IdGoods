@@ -43,8 +43,11 @@ public class BlessingActivity extends AppCompatActivity
         switch (view.getId())
         {
             case R.id.blessing_back:
-                MyApplication.sActivityMap.get(Consts.RECORD_POPUP).finish();
-                MyApplication.sActivityMap.remove(Consts.RECORD_POPUP);
+                if(MyApplication.sActivityMap.get(Consts.RECORD_POPUP)!=null)
+                {
+                    MyApplication.sActivityMap.get(Consts.RECORD_POPUP).finish();
+                    MyApplication.sActivityMap.remove(Consts.RECORD_POPUP);
+                }
                 finish();
                 break;
             case R.id.record_play:
